@@ -6,6 +6,7 @@
 
 ## Table of Contents
 
+- [Architecture Principles](#architecture-principles)
 - [System Overview](#system-overview)
 - [Core Data Model](#core-data-model)
 - [Content Schema](#content-schema)
@@ -19,6 +20,25 @@
 - [Scalability Considerations](#scalability-considerations)
 - [Failure Modes](#failure-modes)
 - [Architecture Decision Records](#architecture-decision-records)
+
+---
+
+## Architecture Principles
+
+These principles govern every technical decision in Career OS — from package design to schema changes to AI integration. They are non-negotiable. Any proposal that violates a principle must either be revised or accompanied by a documented rationale explaining the exception, filed as an ADR.
+
+| # | Principle | Implication |
+|---|-----------|-------------|
+| **P1** | **Git is the single source of truth.** | All authoritative data lives in this repository as plain text. No external system has authority over what is in `content/raw/`. |
+| **P2** | **Every piece of information has exactly one owner.** | A schema, a type, a business rule — defined in one place, imported everywhere. Duplication is a defect. |
+| **P3** | **Everything else is generated.** | If a file can be derived from source data, it is generated — not hand-authored. Generated files are never committed unless explicitly justified. |
+| **P4** | **No duplicated business logic.** | Parsing rules, validation rules, formatting rules — live in a shared package and are imported by consumers. Copy-pasted logic is a bug. |
+| **P5** | **Every package has one responsibility.** | Before adding a capability to an existing package, verify it fits the package's stated responsibility. If it does not, create a new package or file an ADR. |
+| **P6** | **Consumers never mutate content.** | Packages that read the `ContentGraph` (website, resume generator, GitHub generator) treat it as immutable. Mutations occur only in the content pipeline. |
+| **P7** | **Generated artifacts are reproducible.** | Given identical input, the pipeline must produce identical output. Non-determinism in generation is a defect, not a feature. |
+| **P8** | **AI assists generation but never owns canonical data.** | AI output is staged in `output/ai-drafts/` for human review. No AI-generated content is written to `content/raw/` or committed without explicit human approval. |
+| **P9** | **Every architectural change requires an ADR.** | Decisions affecting package structure, content schema, generator interfaces, CI pipeline, or technology stack are documented as an ADR in `docs/adr/` before implementation begins. |
+| **P10** | **Backward compatibility is preferred over breaking changes.** | Content files authored under an older schema must parse correctly under newer versions. Breaking changes require a migration guide in `docs/migrations/` and a major version bump. |
 
 ---
 
