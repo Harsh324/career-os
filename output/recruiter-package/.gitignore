@@ -1,0 +1,4 @@
+# Generated files in this directory are not committed.
+# This .gitignore file is the only tracked file here.
+*
+!.gitignore
