@@ -1,0 +1,23 @@
+{
+  "name": "@career-os/content-parser",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Transforms raw Markdown files from content/raw/ into a validated, normalized ContentGraph. The only package that reads from content/raw/ — consumers never touch raw content directly (P6).",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "type-check": "tsc --noEmit --project tsconfig.json",
+    "lint": "eslint src/",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@career-os/content-schema": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}

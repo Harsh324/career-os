@@ -30,11 +30,71 @@ importers:
         specifier: ^5.7.0
         version: 5.9.3
 
+  apps/api: {}
+
+  packages/content-parser:
+    dependencies:
+      '@career-os/content-schema':
+        specifier: workspace:*
+        version: link:../content-schema
+    devDependencies:
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
+
   packages/content-schema:
     dependencies:
       zod:
         specifier: ^3.25.76
         version: 3.25.76
+    devDependencies:
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
+
+  packages/github-generator:
+    dependencies:
+      '@career-os/content-schema':
+        specifier: workspace:*
+        version: link:../content-schema
+      '@career-os/shared-utils':
+        specifier: workspace:*
+        version: link:../shared-utils
+    devDependencies:
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
+
+  packages/resume-generator:
+    dependencies:
+      '@career-os/content-schema':
+        specifier: workspace:*
+        version: link:../content-schema
+      '@career-os/shared-utils':
+        specifier: workspace:*
+        version: link:../shared-utils
+    devDependencies:
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
+
+  packages/shared-utils:
+    devDependencies:
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
+
+  packages/website-generator:
+    dependencies:
+      '@career-os/content-parser':
+        specifier: workspace:*
+        version: link:../content-parser
+      '@career-os/content-schema':
+        specifier: workspace:*
+        version: link:../content-schema
+      '@career-os/shared-utils':
+        specifier: workspace:*
+        version: link:../shared-utils
     devDependencies:
       typescript:
         specifier: ^5.7.0

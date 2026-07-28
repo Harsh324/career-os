@@ -1,0 +1,25 @@
+{
+  "name": "@career-os/website-generator",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Provides typed data-loading functions for the Next.js website. Transforms ContentGraph into server-component-ready data. Not a file-writing generator — it is a data-access layer (P5).",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "type-check": "tsc --noEmit --project tsconfig.json",
+    "lint": "eslint src/",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@career-os/content-schema": "workspace:*",
+    "@career-os/content-parser": "workspace:*",
+    "@career-os/shared-utils": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}
