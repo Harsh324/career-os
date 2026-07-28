@@ -17,6 +17,12 @@ export const ProjectSchema = z.object({
   startDate: YearMonthSchema.optional(),
   endDate: z.union([YearMonthSchema, z.literal("present")]).optional(),
   featured: z.boolean().default(false),
+  /**
+   * Controls whether this project appears in generated resume output.
+   * YAML key: resume_include (snake_case) — normalised to resumeInclude by content-parser.
+   * Default is false — projects must opt-in to resume inclusion.
+   * See ARCHITECTURE.md §Field Semantics for full explanation.
+   */
   resumeInclude: z.boolean().default(false),
   technologies: z.array(z.string()).default([]),
   tags: z.array(z.string()).default([]),

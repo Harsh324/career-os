@@ -15,6 +15,10 @@ export const AwardSchema = z.object({
   description: z.string().optional(),
   url: z.string().url().optional(),
   featured: z.boolean().default(false),
+  /**
+   * Controls whether this award appears in generated resume output.
+   * YAML key: resume_include (snake_case) — normalised to resumeInclude by content-parser.
+   */
   resumeInclude: z.boolean().default(true),
   tags: z.array(z.string()).default([]),
   slug: z.string().optional(),

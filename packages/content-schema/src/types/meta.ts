@@ -21,6 +21,11 @@ export const SocialLinksSchema = z.object({
 export const CareerMetaSchema = z.object({
   name: z.string().min(1, "name is required"),
   title: z.string().min(1, "title is required"),
+  /**
+   * Primary contact email — required per architecture (ARCHITECTURE.md §Core Data Model).
+   * YAML key: email
+   */
+  email: z.string().email("email must be a valid email address"),
   location: z.string().optional(),
   tagline: z.string().max(160).optional(),
   summary: z.string().optional(),

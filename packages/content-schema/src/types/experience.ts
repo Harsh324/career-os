@@ -30,6 +30,12 @@ export const ExperienceSchema = z.object({
   endDate: z.union([YearMonthSchema, z.literal("present")]),
   employmentType: EmploymentTypeSchema.optional(),
   featured: z.boolean().default(false),
+  /**
+   * Controls whether this entry appears in any generated resume output.
+   * YAML key: resume_include (snake_case) — normalised to resumeInclude by content-parser.
+   * Distinct from featured: an entry can be resume_include: true without being featured.
+   * See ARCHITECTURE.md §Field Semantics for full explanation.
+   */
   resumeInclude: z.boolean().default(true),
   technologies: z.array(z.string()).default([]),
   tags: z.array(z.string()).default([]),

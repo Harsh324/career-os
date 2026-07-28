@@ -1,0 +1,20 @@
+{
+  "name": "@career-os/ai-engine",
+  "version": "0.0.0",
+  "description": "LLM provider abstraction and prompt orchestration for Career OS",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@career-os/content-schema": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5"
+  }
+}

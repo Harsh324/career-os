@@ -16,6 +16,10 @@ export const CertificationSchema = z.object({
   credentialId: z.string().optional(),
   credentialUrl: z.string().url().optional(),
   featured: z.boolean().default(false),
+  /**
+   * Controls whether this certification appears in generated resume output.
+   * YAML key: resume_include (snake_case) — normalised to resumeInclude by content-parser.
+   */
   resumeInclude: z.boolean().default(true),
   tags: z.array(z.string()).default([]),
   slug: z.string().optional(),

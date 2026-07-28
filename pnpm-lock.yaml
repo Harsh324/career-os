@@ -90,6 +90,16 @@ importers:
         specifier: ^5
         version: 5.9.3
 
+  packages/ai-engine:
+    dependencies:
+      '@career-os/content-schema':
+        specifier: workspace:*
+        version: link:../content-schema
+    devDependencies:
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+
   packages/content-parser:
     dependencies:
       '@career-os/content-schema':
