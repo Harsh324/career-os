@@ -99,14 +99,14 @@ The **ContentGraph** is the central data structure of Career OS. It is an in-mem
 ```typescript
 interface ContentGraph {
   meta: CareerMeta;
-  experience: ExperienceEntry[];
-  projects: ProjectEntry[];
-  education: EducationEntry[];
-  skills: SkillsProfile;
-  certifications: CertificationEntry[];
-  awards: AwardEntry[];
+  experience: Experience[];
+  projects: Project[];
+  education: Education[];
+  skills: Skill[];              // flat array of skill entries
+  certifications: Certification[];
+  awards: Award[];
   blog: BlogPost[];
-  publications: PublicationEntry[];
+  publications: Publication[];
   timeline: TimelineEvent[];
   /**
    * Extension point for community-contributed content types.
@@ -120,17 +120,24 @@ interface ContentGraph {
 interface CareerMeta {
   name: string;
   title: string;
-  email: string;
-  location: string;
-  website?: string;
-  github?: string;
-  linkedin?: string;
-  tagline?: string;
+  email: string;              // required — primary contact address
+  location?: string;          // optional — not all authors publish location
+  tagline?: string;           // max 160 characters
   summary?: string;
+  avatarUrl?: string;
+  social?: {
+    github?: string;
+    linkedin?: string;
+    twitter?: string;
+    bluesky?: string;
+    website?: string;
+    email?: string;           // secondary/public email alias (distinct from top-level email)
+  };
 }
 ```
 
-All types are defined in `packages/content-parser/src/types/`. Generators consume the `ContentGraph` interface — they are never coupled to the Markdown file format directly.
+All types are defined in `packages/content-schema/src/types/` (not `content-parser`). Generators
+consume the `ContentGraph` interface — they are never coupled to the Markdown file format directly.
 
 ---
 
@@ -194,15 +201,33 @@ Pre-v1.0, the schema is treated as unstable. Post-v1.0, a `schema_version` field
 
 Career OS is structured as a **monorepo** with independent, composable packages under `packages/`. Each package has a single, well-defined responsibility and can be used independently.
 
-### `packages/content-parser`
+### `packages/content-schema`
 
-**Responsibility:** Reading, validating, and normalizing content from the `content/` directory into a `ContentGraph`.
+**Responsibility:** Defining all Zod schemas and inferred TypeScript types for career content. This is the
+root of the dependency graph — zero external runtime dependencies. The single authoritative location
+for `ContentGraph`, `Generator`, and all domain types (P2).
 
 **Key design decisions:**
-- Strict schema validation — any invalid front matter causes a hard error with a precise, actionable message.
-- Normalization includes resolving relative dates (`present` → current date), sorting entries chronologically, and inferring derived fields.
-- The package exposes a single primary API: `parseContentDirectory(path: string): Promise<ContentGraph>`.
-- Owns the `Generator` interface (see [Generator Interface](#generator-interface)) and all shared TypeScript types.
+- Zod is used instead of JSON Schema/Ajv: schemas produce both runtime validators and TypeScript types
+  from a single definition, eliminating the risk of type/schema drift.
+- All schemas are exported as both a Zod schema (e.g., `ExperienceSchema`) and an inferred TypeScript
+  type (`Experience`). Generators import only the TypeScript type.
+- The `Generator<TConfig>` interface is defined here — not in `content-parser` — so generators can
+  depend on this package without depending on parsing logic.
+
+### `packages/content-parser`
+
+**Responsibility:** Reading raw Markdown files from `content/raw/`, validating front matter against schemas
+from `packages/content-schema`, normalising fields, and returning a `ContentGraph`.
+
+**Key design decisions:**
+- Strict validation — any invalid front matter causes a hard error with a precise, actionable message
+  including file path, field name, and expected type.
+- Normalisation includes: resolving relative dates (`present` → current date), deriving slugs from
+  filenames, sorting entries chronologically, and translating snake_case YAML keys (e.g., `resume_include`)
+  to camelCase TypeScript fields (e.g., `resumeInclude`).
+- Public API: `parseContent(rawDir: string, options?: ParseOptions): Promise<ContentGraph>`.
+- This is the ONLY package that reads from `content/raw/`. All other packages receive a `ContentGraph`.
 
 ### `packages/resume-generator`
 
@@ -210,33 +235,62 @@ Career OS is structured as a **monorepo** with independent, composable packages 
 
 **Key design decisions:**
 - Uses LaTeX as the intermediate representation for typographic quality and ATS compatibility.
-- Template system is file-based: each template is a directory with LaTeX partials and a configuration file.
-- Filtering is content-driven: `resume_include` gates inclusion; `featured` influences ordering. See [Field Semantics](#field-semantics-featured-vs-resume_include).
-- Implements the `Generator` interface.
+- Template system is file-based: each template is a directory with LaTeX partials and a config file.
+- Filtering is content-driven: `resumeInclude` gates inclusion; `featured` influences ordering.
+  See [Field Semantics](#field-semantics-featured-vs-resume_include).
+- Implements the `Generator<ResumeConfig>` interface.
 
 ### `packages/ai-engine`
 
-**Responsibility:** Orchestrating LLM calls to generate content from a `ContentGraph`.
+**Responsibility:** Orchestrating LLM calls to enrich a `ContentGraph` with AI-generated content.
 
 **Key design decisions:**
-- LLM provider is abstracted behind a `LLMProvider` interface. Switching from OpenAI to Anthropic requires a single configuration change.
-- All prompts live in `ai/prompts/` as versioned Markdown files. Prompts are never hardcoded.
-- All AI outputs are staged in `output/ai-drafts/` for human review before any downstream consumption. The package never writes directly to the `content/` directory.
+- LLM provider is abstracted behind a `LLMProvider` interface. Switching from OpenAI to Anthropic
+  requires only a configuration change — no code changes in consumers.
+- All prompts live in `ai/prompts/` as versioned Markdown files with YAML front matter. Prompts are
+  never hardcoded in source.
+- All AI outputs are staged in `output/ai-drafts/` for human review. The package never writes
+  to `content/raw/` (P8).
+- Deferred to Milestone 5.
 
-### `packages/publisher`
+### `packages/github-generator`
 
-**Responsibility:** Generating and publishing artifacts to external surfaces (GitHub profile, project READMEs).
+**Responsibility:** Transforming a `ContentGraph` into GitHub-flavoured Markdown artifacts.
 
 **Key design decisions:**
-- Designed as a multi-target package. The initial implementation targets GitHub (via Octokit); future targets (Notion, DEV.to) are added as named exports without breaking the public API.
-- Outputs are generated locally first and committed to the repository before being pushed. This creates an auditable record of what was published and when.
-- Implements the `Generator` interface.
+- Initial output: a `README.md` for the GitHub profile repository (username/username).
+- The `featured` field on content entries determines what is surfaced in the profile.
+- Output is written to `output/github-profile/` (gitignored), then pushed to the profile repo
+  by a separate publishing step in CI.
+- Implements the `Generator<GitHubConfig>` interface.
+- Deferred to Milestone 4.
+
+### `packages/website-generator`
+
+**Responsibility:** Providing typed data-access functions for the Next.js portfolio website.
+
+**Key design decisions:**
+- This is NOT a file-writing generator. It is a server-side data layer that Next.js React Server
+  Components call at build time.
+- The website app (`apps/website`) is a thin UI shell. All data logic lives here, making it
+  independently testable without spinning up Next.js.
+- Public API: `getExperience()`, `getProjects()`, `getFeaturedProjects()`, `getTimeline()`, etc.
+- Deferred to Milestone 2.
+
+### `packages/shared-utils`
+
+**Responsibility:** Zero-dependency utility functions shared across all packages (date formatting,
+string manipulation, slug generation, etc.).
+
+**Key design decisions:**
+- No runtime dependencies — pure TypeScript utilities.
+- Importable by any package without introducing circular dependencies.
 
 ---
 
 ## Generator Interface
 
-All output generators implement the `Generator` interface, defined in `packages/content-parser/src/types/generator.ts`. This is the shared contract that enables the plugin system planned for post-v1.0.
+All output generators implement the `Generator` interface, defined in `packages/content-schema/src/generator.ts`. This is the single authoritative location (P2) for the shared contract that enables the plugin system planned for post-v1.0.
 
 ```typescript
 interface Generator<TConfig = unknown> {
@@ -399,13 +453,15 @@ All workflows use pinned, hash-versioned action dependencies to prevent supply-c
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
 | **Primary Language** | TypeScript | Type safety is essential when operating on structured career data. Schema types serve as both validation and documentation. |
-| **Monorepo Tool** | npm Workspaces | Minimal tooling overhead. Can be upgraded to Turborepo if build performance becomes a concern. |
+| **Monorepo Tool** | Turborepo (ADR-0001) | Task pipeline with local + remote caching, topological execution order, and first-class pnpm workspace support. Adopted from day one — not deferred. |
+| **Package Manager** | pnpm 9.x | Strict hoisting, workspace protocol, fast installs with content-addressable store. |
+| **Dev Environment** | Docker-first (ADR-0002) | Zero host dependencies beyond Docker + Git. Guarantees CI/local parity. All commands run via `make` targets. |
 | **Content Format** | Markdown + YAML Front Matter | Human-readable, Git-diffable, widely supported, and compatible with most static site generators. |
-| **Schema Validation** | JSON Schema (Ajv) | Industry standard, language-agnostic schemas. Ajv provides fast validation with precise error messages. |
+| **Schema Validation** | Zod | Single definition produces both a runtime validator and a TypeScript type. Eliminates schema/type drift. More ergonomic than JSON Schema + Ajv for TypeScript-first projects. |
 | **Resume Generation** | LaTeX → PDF | LaTeX produces typographically superior output and is ATS-compatible. Pandoc is used for format conversion. |
-| **Website Framework** | Next.js App Router (static export) | First-class TypeScript support, React Server Components for build-time data fetching, static export capability, and wide deployment target support. |
-| **LLM Abstraction** | Custom provider interface | Avoids coupling to any single LLM vendor's SDK. The provider interface is deliberately minimal with reserved fields for non-breaking future additions (streaming, dry-run). |
-| **Testing** | Vitest | Fast, TypeScript-native, compatible with the npm workspace setup. |
+| **Website Framework** | Next.js App Router | First-class TypeScript support, React Server Components for build-time data fetching, and wide deployment target support. Uses Tailwind CSS v4 + shadcn/ui. |
+| **LLM Abstraction** | Custom `LLMProvider` interface | Avoids coupling to any single LLM vendor's SDK. The interface is deliberately minimal with reserved fields for non-breaking future additions (streaming, dry-run). |
+| **Testing** | Vitest | Fast, TypeScript-native, ES module compatible. Planned for Milestone 1. |
 
 ---
 

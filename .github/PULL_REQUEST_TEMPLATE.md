@@ -61,5 +61,5 @@ make build
 - [ ] Tests pass (`make test`)
 - [ ] TypeScript compiles (`make type-check`)
 - [ ] Lint passes (`make lint`)
-- [ ] Documentation updated (if applicable)
+- [ ] **Documentation Ownership Map consulted** — all required docs updated per `CONTRIBUTING.md`
 - [ ] CHANGELOG.md updated (for user-facing changes)

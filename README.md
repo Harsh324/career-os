@@ -76,7 +76,7 @@ Career OS transforms your structured Markdown content into:
 ```
 career-os/
 │
-├── content/                  # Source of truth — all career data lives here
+├── content/raw/              # Source of truth — all career data lives here
 │   ├── experience/           # Work history (one .md file per role)
 │   ├── projects/             # Projects and open-source contributions
 │   ├── education/            # Degrees, courses, and academic history
@@ -88,13 +88,16 @@ career-os/
 │   └── timeline/             # Career milestones and life events
 │
 ├── apps/
-│   └── website/              # Portfolio website application
+│   └── website/              # Portfolio website (Next.js 16 + Tailwind v4 + shadcn/ui)
 │
 ├── packages/                 # Shared internal libraries
-│   ├── content-parser/       # Parses and validates Markdown content
-│   ├── resume-generator/     # Builds resume artifacts (PDF, LaTeX, JSON)
-│   ├── ai-engine/            # AI prompt orchestration and output generation
-│   └── publisher/            # Publishes generated assets to external surfaces
+│   ├── content-schema/       # Zod schemas + TypeScript types (root type authority)
+│   ├── content-parser/       # Parses and validates Markdown content → ContentGraph
+│   ├── website-generator/    # Data-access layer for the Next.js website
+│   ├── resume-generator/     # Builds resume artifacts (PDF, LaTeX)
+│   ├── github-generator/     # Generates GitHub profile README
+│   ├── ai-engine/            # LLM provider abstraction and prompt orchestration
+│   └── shared-utils/         # Zero-dependency shared utilities
 │
 ├── ai/                       # AI layer — agents and versioned prompt templates
 │   ├── agents/               # Agent definitions and orchestration configs
@@ -124,10 +127,9 @@ career-os/
 │   ├── requirements/         # Feature and non-functional requirements
 │   └── schemas/              # JSON Schema files for all content types
 │
-├── public/                   # Static public files (favicons, robots.txt, etc.)
 ├── .github/                  # GitHub Actions workflows and issue templates
 │
-├── career-os.config.ts       # Platform configuration (outputs, providers, deployment)
+├── career-os.config.ts       # Platform configuration (generators, paths, providers)
 │
 ├── README.md                 # This file
 ├── PROJECT.md                # Project vision, goals, and non-goals
@@ -142,47 +144,56 @@ career-os/
 
 ## Getting Started
 
-> **Note:** Career OS is currently in the **Alpha** phase. The project scaffolding is in place, and active development is underway. The following steps will be updated as the tooling matures.
+> **Note:** Career OS is currently in the **Alpha** phase. The project scaffolding is in place, and active development is underway.
 
 ### Prerequisites
 
-- Node.js ≥ 20.x
-- Git ≥ 2.x
-- An OpenAI or compatible LLM API key (for AI generation features)
+| Tool | Minimum Version |
+|------|----------------|
+| [Docker](https://docs.docker.com/get-docker/) | 24.x |
+| [Git](https://git-scm.com) | 2.x |
 
-### Installation
+That's it. Node.js, pnpm, and all build tools run **inside Docker**. Nothing is installed on your host machine.
+
+### Setup
 
 ```bash
-# Clone the repository
+# 1. Clone the repository
 git clone https://github.com/Harsh324/career-os.git
 cd career-os
 
-# Install dependencies (available once packages are initialized)
-npm install
+# 2. Build the dev container and install all dependencies
+make install
 
-# Copy environment configuration
-cp .env.example .env
-# Add your LLM API key to .env
+# 3. Start the development server
+make dev
+```
+
+### Available Commands
+
+```bash
+make dev          # Start Next.js dev server (http://localhost:3000)
+make shell        # Open a shell inside the dev container
+make build        # Production build
+make lint         # Run ESLint across all packages
+make type-check   # TypeScript type check across all packages
+make test         # Run all tests (Vitest)
+make format       # Auto-format with Prettier
+make clean        # Remove all build artifacts
 ```
 
 ### Populating Your Content
 
-Career OS content lives in the `content/` directory. Each subdirectory corresponds to a domain of your professional life. See the [Content Schema documentation](docs/architecture/) for the full YAML front matter specification for each content type.
+Career OS content lives in the `content/raw/` directory. Each subdirectory corresponds to a domain of your professional life. Add one Markdown file per entry with YAML front matter. See [ARCHITECTURE.md](ARCHITECTURE.md) for the full schema specification.
 
 ### Generating Outputs
 
 ```bash
-# Validate and parse all content
-npm run content:validate
+# Validate all content against schemas
+make content:validate
 
-# Generate all outputs
-npm run generate
-
-# Start the portfolio website locally
-npm run dev
-
-# Build static portfolio for deployment
-npm run build
+# Generate all configured outputs
+make generate
 ```
 
 ---
