@@ -286,6 +286,15 @@ string manipulation, slug generation, etc.).
 - No runtime dependencies — pure TypeScript utilities.
 - Importable by any package without introducing circular dependencies.
 
+### `apps/api`
+
+**Responsibility:** Future REST/GraphQL API server for Career OS (Milestone: Future API).
+
+**Key design decisions:**
+- Registered in `pnpm-workspace.yaml` as an architectural marker to signal platform-first intent.
+- Exposes `ContentGraph` data over HTTP for third-party integrations, mobile apps, or headless consumers.
+- Reads immutable `ContentGraph` from `@career-os/content-parser` (P6).
+
 ---
 
 ## Generator Interface

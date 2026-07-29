@@ -51,8 +51,11 @@ test: ## Run all test suites via Turborepo
 
 # ── Content Pipeline ─────────────────────────────────────────────────────────
 
-.PHONY: validate
+.PHONY: validate content\:validate
 validate: ## Validate all content in content/raw/ against Zod schemas
+	$(RUN) pnpm content:validate
+
+content\:validate: ## Alias for validate target
 	$(RUN) pnpm content:validate
 
 .PHONY: generate

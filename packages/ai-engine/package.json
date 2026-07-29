@@ -1,20 +1,23 @@
 {
   "name": "@career-os/ai-engine",
   "version": "0.0.0",
-  "description": "LLM provider abstraction and prompt orchestration for Career OS",
   "private": true,
-  "type": "module",
+  "description": "LLM provider abstraction and prompt orchestration for Career OS. Orchestrates LLM calls to enrich ContentGraph. Writes to output/ai-drafts/ — never to content/raw/ (P1, P6, P8).",
   "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "build": "tsc --build",
-    "type-check": "tsc --noEmit",
-    "lint": "eslint",
-    "clean": "rm -rf dist"
+    "type-check": "tsc --noEmit --project tsconfig.json",
+    "lint": "eslint src/",
+    "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
     "@career-os/content-schema": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5"
+    "typescript": "^5.7.0"
   }
 }
