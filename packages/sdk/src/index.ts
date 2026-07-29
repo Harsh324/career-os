@@ -19,4 +19,16 @@
 
 export { CareerOS, createCareerOS } from "./sdk.js";
 export type { ProjectFilter, ExperienceFilter, BlogFilter } from "./sdk.js";
-export type { ContentGraph } from "@career-os/content-schema";
+export type {
+  ContentGraph,
+  CareerMeta,
+  Experience,
+  Project,
+  Education,
+  Skill,
+  Certification,
+  Award,
+  BlogPost,
+  Publication,
+  TimelineEvent,
+} from "@career-os/content-schema";
