@@ -8,7 +8,7 @@
     { "path": "packages/content-parser" },
     { "path": "packages/shared-utils" },
     { "path": "packages/ai-engine" },
-    { "path": "packages/website-generator" },
+    { "path": "packages/sdk" },
     { "path": "packages/resume-generator" },
     { "path": "packages/github-generator" }
   ]

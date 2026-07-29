@@ -281,17 +281,16 @@ from `packages/content-schema`, normalising fields, and returning a `ContentGrap
 - Implements the `Generator<GitHubConfig>` interface.
 - Deferred to Milestone 4.
 
-### `packages/website-generator`
+### `packages/sdk`
 
-**Responsibility:** Providing typed data-access functions for the Next.js portfolio website.
+**Responsibility:** Typed query SDK over the canonical `ContentGraph` for all platform consumers (website, API, CLI, AI agents).
 
 **Key design decisions:**
-- This is NOT a file-writing generator. It is a server-side data layer that Next.js React Server
-  Components call at build time.
-- The website app (`apps/website`) is a thin UI shell. All data logic lives here, making it
-  independently testable without spinning up Next.js.
-- Public API: `getExperience()`, `getProjects()`, `getFeaturedProjects()`, `getTimeline()`, etc.
-- Deferred to Milestone 2.
+- Repurposed from `website-generator` (ADR-0004): data-loading and query functions (`getExperience()`,
+  `getFeaturedProjects()`, `getSkillsByCategory()`, `getTimeline()`) are needed by ALL consumers.
+- Read-only layer — treats `ContentGraph` as immutable (P6).
+- The website app (`apps/website`) and future API (`apps/api`) are thin shells that query data via `@career-os/sdk`.
+- Public API: `getExperience()`, `getProjects()`, `getFeaturedProjects()`, `getSkillsByCategory()`, `getTimeline()`, etc.
 
 ### `packages/shared-utils`
 
@@ -556,9 +555,13 @@ Significant architectural decisions are documented as ADRs in `docs/adr/`. Each 
 
 | ADR | Title | Status |
 |-----|-------|--------|
-| [ADR-0001](docs/adr/0001-content-schema-format.md) | Use Markdown + YAML front matter as the content format | Proposed |
-| [ADR-0002](docs/adr/0002-monorepo-structure.md) | Use npm Workspaces for monorepo management | Proposed |
-| [ADR-0003](docs/adr/0003-llm-provider-abstraction.md) | Abstract LLM providers behind a common interface | Proposed |
+| [ADR-0001](docs/adr/0001-turborepo-monorepo.md) | Turborepo Monorepo Architecture | Accepted |
+| [ADR-0002](docs/adr/0002-docker-first-development.md) | Docker-First Development Container Setup | Accepted |
+| [ADR-0003](docs/adr/0003-git-as-single-source-of-truth.md) | Git as the Single Source of Truth for Content | Accepted |
+| [ADR-0004](docs/adr/0004-canonical-content-graph-and-sdk-layer.md) | Canonical Content Graph and Query SDK Layer | Accepted |
+| [ADR-0005](docs/adr/0005-plugin-architecture-for-output-generators.md) | Plugin Architecture for Output Generators | Accepted |
+| [ADR-0006](docs/adr/0006-deterministic-pipeline-over-event-driven-architecture.md) | Deterministic Pipeline Over Event-Driven Architecture | Accepted |
+| [ADR-0007](docs/adr/0007-unified-cli-interface-architecture.md) | Unified CLI Interface Architecture | Accepted |
 
 > ADRs are created when a decision is first made (status: `Proposed`), updated when implemented (status: `Accepted`), and marked obsolete if superseded (status: `Superseded by ADR-XXXX`).
 

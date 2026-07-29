@@ -113,7 +113,7 @@ career-os/
 ├── packages/
 │   ├── content-schema/    # Zod schemas + TypeScript types — root type authority (P2)
 │   ├── content-parser/    # Markdown + YAML parsing and validation → ContentGraph
-│   ├── website-generator/ # Data-access layer for the Next.js website
+│   ├── sdk/               # Typed read-only query SDK for all consumers (@career-os/sdk)
 │   ├── resume-generator/  # Resume artifact generation (PDF, LaTeX)
 │   ├── github-generator/  # GitHub profile README generation
 │   ├── ai-engine/         # LLM provider abstraction, prompts (prompts/), orchestration
@@ -220,7 +220,7 @@ Career OS uses [Conventional Commits](https://www.conventionalcommits.org/). All
 
 Use the package or area of the codebase affected:
 
-- `content-schema`, `content-parser`, `website-generator`
+- `content-schema`, `content-parser`, `sdk`
 - `resume-generator`, `github-generator`, `ai-engine`, `shared-utils`
 - `website`, `scripts`, `docs`, `schema`, `prompts`, `agents`, `ci`
 

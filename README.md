@@ -93,9 +93,9 @@ career-os/
 │   └── api/                  # Future REST/GraphQL API server (marker)
 │
 ├── packages/                 # Shared internal libraries
-│   ├── content-schema/       # Zod schemas + TypeScript types (root type authority)
+│   ├── content-schema/       # Zod schemas + TypeScript types + defineConfig() (Root Type Authority)
 │   ├── content-parser/       # Parses and validates Markdown content → ContentGraph
-│   ├── website-generator/    # Data-access layer for the Next.js website
+│   ├── sdk/                  # Single read-only query SDK for all platform consumers (@career-os/sdk)
 │   ├── resume-generator/     # Builds resume artifacts (PDF, LaTeX)
 │   ├── github-generator/     # Generates GitHub profile README
 │   ├── ai-engine/            # LLM provider abstraction, prompts (prompts/), orchestration

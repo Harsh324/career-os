@@ -1,8 +1,8 @@
 {
-  "name": "@career-os/website-generator",
+  "name": "@career-os/sdk",
   "version": "0.0.0",
   "private": true,
-  "description": "Provides typed data-loading functions for the Next.js website. Transforms ContentGraph into server-component-ready data. Not a file-writing generator — it is a data-access layer (P5).",
+  "description": "Typed query SDK over the canonical ContentGraph for Career OS consumers (website, API, CLI, agents). Single read-only data access layer (P4, P5, P6).",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
@@ -15,8 +15,8 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@career-os/content-schema": "workspace:*",
     "@career-os/content-parser": "workspace:*",
+    "@career-os/content-schema": "workspace:*",
     "@career-os/shared-utils": "workspace:*"
   },
   "devDependencies": {

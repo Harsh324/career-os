@@ -100,7 +100,7 @@ importers:
         version: link:../content-schema
     devDependencies:
       typescript:
-        specifier: ^5
+        specifier: ^5.7.0
         version: 5.9.3
 
   packages/content-parser:
@@ -149,13 +149,7 @@ importers:
         specifier: ^5.7.0
         version: 5.9.3
 
-  packages/shared-utils:
-    devDependencies:
-      typescript:
-        specifier: ^5.7.0
-        version: 5.9.3
-
-  packages/website-generator:
+  packages/sdk:
     dependencies:
       '@career-os/content-parser':
         specifier: workspace:*
@@ -166,6 +160,12 @@ importers:
       '@career-os/shared-utils':
         specifier: workspace:*
         version: link:../shared-utils
+    devDependencies:
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
+
+  packages/shared-utils:
     devDependencies:
       typescript:
         specifier: ^5.7.0

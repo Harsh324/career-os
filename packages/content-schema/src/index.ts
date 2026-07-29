@@ -77,3 +77,7 @@ export type { ContentGraph } from "./graph.js";
 // ── Generator Interface ───────────────────────────────────────────────────────
 
 export type { Generator, GeneratorResult, GeneratedFile } from "./generator.js";
+
+// ── Platform Configuration ────────────────────────────────────────────────────
+
+export { defineConfig, type CareerOSConfig } from "./config.js";
