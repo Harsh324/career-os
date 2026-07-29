@@ -12,6 +12,7 @@
     "build": "tsc --build",
     "type-check": "tsc --noEmit --project tsconfig.json",
     "lint": "eslint src/",
+    "test": "vitest run",
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
@@ -20,6 +21,7 @@
     "@career-os/shared-utils": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "^4.1.10"
   }
 }

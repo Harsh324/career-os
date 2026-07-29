@@ -11,14 +11,12 @@
  *
  * Architecture reference: ARCHITECTURE.md §SDK Layer & ADR-0004
  *
- * Public API (Milestone 2 implementation):
- *   career.getContentGraph()       → ContentGraph
- *   career.getExperience(filter?)  → Experience[]
- *   career.getFeaturedProjects()   → Project[]
- *   career.getSkillsByCategory()   → Record<SkillCategory, Skill[]>
- *   career.getTimeline()           → TimelineEvent[]
+ * Usage:
+ *   import { createCareerOS } from "@career-os/sdk";
+ *   const career = createCareerOS(graph);
+ *   const projects = career.projects({ featured: true });
  */
 
+export { CareerOS, createCareerOS } from "./sdk.js";
+export type { ProjectFilter, ExperienceFilter, BlogFilter } from "./sdk.js";
 export type { ContentGraph } from "@career-os/content-schema";
-
-// TODO: Implement SDK query functions in Milestone 2

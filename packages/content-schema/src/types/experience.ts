@@ -3,7 +3,7 @@ import { z } from "zod";
 /** YYYY-MM date format — the canonical date format for all content (P7 — reproducible). */
 const YearMonthSchema = z
   .string()
-  .regex(/^\d{4}-(0[1-9]|1[0-2])$/, "Date must be in YYYY-MM format");
+  .regex(/^\d{4}-(0[1-9]|1[0-2])(-(0[1-9]|[12]\d|3[01]))?$/, "Date must be in YYYY-MM or YYYY-MM-DD format");
 
 export const EmploymentTypeSchema = z.enum([
   "full-time",
