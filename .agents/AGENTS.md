@@ -72,6 +72,22 @@ and architectural conversation in this repository. Apply them without exception.
 
 ---
 
+## Architecture Evolution Rule
+
+Before introducing any new folder, package, abstraction, or dependency, evaluate it against the following questions:
+
+1. Does this solve an existing problem?
+2. Will this still be valuable in one year?
+3. Can the same result be achieved with less complexity?
+4. Does this reduce future maintenance?
+5. Is there another package already responsible for this concern?
+
+If any answer is "No", prefer the simpler solution.
+
+**Career OS values clarity over cleverness.** Architecture should evolve only when justified by real requirements. Avoid speculative engineering. Every major architectural decision must be documented in an ADR in `docs/adr/` before implementation.
+
+---
+
 ## Project Context
 
 - **Repository:** career-os

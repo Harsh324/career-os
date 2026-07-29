@@ -42,6 +42,22 @@ These principles govern every technical decision in Career OS — from package d
 
 ---
 
+### Architecture Evolution Rule
+
+Before introducing any new folder, package, abstraction, or dependency, evaluate it against the following 5 questions:
+
+1. **Does this solve an existing problem?**
+2. **Will this still be valuable in one year?**
+3. **Can the same result be achieved with less complexity?**
+4. **Does this reduce future maintenance?**
+5. **Is there another package already responsible for this concern?**
+
+> **If any answer is "No", prefer the simpler solution.**
+
+*Career OS values clarity over cleverness. Architecture should evolve only when justified by real requirements. Avoid speculative engineering. Every major architectural decision must be documented in an ADR in `docs/adr/` before implementation.*
+
+---
+
 ## System Overview
 
 Career OS is a content transformation platform. It does not run as a server, does not manage a database, and does not require a cloud account to function. At its core, it is a **pipeline** that:
