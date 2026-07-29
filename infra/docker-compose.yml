@@ -25,8 +25,8 @@ services:
       # Named volume for Turborepo cache
       - turbo_cache:/workspace/.turbo
     ports:
-      - "3000:3000"   # Next.js website
-      - "3001:3001"   # Future: API server
+      - "${PORT:-3000}:3000"   # Next.js website (override with PORT=3005 in env or CLI)
+      - "${API_PORT:-3001}:3001"   # Future: API server
     working_dir: /workspace
     # Keep container alive for exec commands
     stdin_open: true
