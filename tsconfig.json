@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  // Root project references — enables workspace-wide type checking via `pnpm type-check`
+  // Add new packages and apps here as they are created
+  "files": [],
+  "references": [
+    { "path": "packages/content-schema" },
+    { "path": "packages/content-parser" },
+    { "path": "packages/shared-utils" },
+    { "path": "packages/ai-engine" },
+    { "path": "packages/sdk" },
+    { "path": "packages/resume-generator" },
+    { "path": "packages/github-generator" }
+  ]
+}

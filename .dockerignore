@@ -1,0 +1,36 @@
+# Git internals
+.git
+.gitignore
+
+# Dependencies (installed fresh inside container)
+node_modules
+**/node_modules
+
+# Build artifacts (generated, never copied into image)
+.next
+**/dist
+**/.turbo
+
+# Generated output (P3 — everything else is generated)
+output/json
+output/resume
+output/github-profile
+output/website
+output/recruiter-package
+output/ai-drafts
+
+# Editor and OS files
+.DS_Store
+*.log
+.vscode
+*.swp
+*.swo
+
+# Test coverage
+coverage
+**/.nyc_output
+
+# Environment files (never copy secrets into image)
+.env
+.env.*
+!.env.example

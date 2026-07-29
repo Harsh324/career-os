@@ -1,0 +1,74 @@
+name: RFC — Request for Comments
+description: Propose a significant architectural or design change that requires discussion and an ADR
+title: "[RFC]: "
+labels: ["rfc", "architecture"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for proposals that would affect:
+        - Package structure or boundaries
+        - Content schema or generator interfaces
+        - CI/CD pipeline or technology stack
+        - Anything covered by **Architecture Principle P9**
+
+        Per P9, every such change requires an ADR in `docs/adr/` before implementation begins.
+        Use this issue to discuss the proposal before writing the ADR.
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context and Motivation
+      description: Why is this change needed? What problem does it solve?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Change
+      description: Describe the architectural change in detail.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: What other approaches did you consider and why were they rejected?
+    validations:
+      required: true
+
+  - type: textarea
+    id: consequences
+    attributes:
+      label: Consequences
+      description: |
+        What are the expected consequences of this change?
+        List both positive outcomes and trade-offs or risks.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: breaking
+    attributes:
+      label: Is this a breaking change?
+      description: Does this change break backward compatibility (P10)?
+      options:
+        - "No — fully backward compatible"
+        - "Yes — migration guide will be provided in docs/migrations/"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: RFC Checklist
+      options:
+        - label: I have read the Architecture Principles (P1–P10) in ARCHITECTURE.md.
+          required: true
+        - label: I am prepared to write an ADR in `docs/adr/` if this RFC is accepted.
+          required: true
+        - label: I have considered backward compatibility (P10).
+          required: true

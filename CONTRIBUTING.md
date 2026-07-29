@@ -59,9 +59,11 @@ There are many ways to contribute to Career OS, regardless of your skill level:
 
 | Tool | Minimum Version | Installation |
 |------|----------------|-------------|
-| Node.js | 20.x LTS | [nodejs.org](https://nodejs.org) |
-| npm | 10.x | Bundled with Node.js |
+| Docker | 24.x | [docs.docker.com](https://docs.docker.com/get-docker/) |
 | Git | 2.x | [git-scm.com](https://git-scm.com) |
+
+> **That's it.** Node.js, pnpm, TypeScript, and all build tools run inside Docker.
+> Nothing is installed on your host machine beyond Docker and Git.
 
 ### Local Setup
 
@@ -73,25 +75,24 @@ cd career-os
 # 2. Add the upstream remote
 git remote add upstream https://github.com/Harsh324/career-os.git
 
-# 3. Install all workspace dependencies
-npm install
+# 3. Build the dev container and install all workspace dependencies
+make install
 
-# 4. Copy the environment configuration
-cp .env.example .env
-# Edit .env if you need LLM API keys for AI synthesis features
+# 4. Open a shell inside the container (for running commands manually)
+make shell
 ```
 
 ### Verifying Your Setup
 
 ```bash
 # Validate that all example content parses correctly
-npm run content:validate
+make content:validate
 
 # Run all test suites across all packages
-npm test
+make test
 
 # Run the linter
-npm run lint
+make lint
 ```
 
 If all three commands complete without errors, your environment is correctly set up.
@@ -104,18 +105,20 @@ Familiarize yourself with the repository layout before contributing:
 
 ```
 career-os/
-├── content/               # Live career data — the single source of truth
+├── content/raw/           # Source of truth — human-authored Markdown (P1)
+│   └── assets/            # Raw static media (images, logos, brand)
 ├── apps/
-│   └── website/           # Portfolio website (Next.js)
+│   ├── website/           # Portfolio website (Next.js 16 + Tailwind v4 + shadcn/ui)
+│   └── api/               # Future REST/GraphQL API server (marker)
 ├── packages/
-│   ├── content-parser/    # Core: Markdown + YAML parsing and validation
-│   ├── resume-generator/  # Resume artifact generation
-│   ├── ai-engine/         # LLM integration and prompt orchestration
-│   └── publisher/         # Publishing to GitHub and other surfaces
-├── ai/
-│   ├── agents/            # AI agent definitions and orchestration configs
-│   └── prompts/           # Versioned LLM prompt templates
-├── assets/                # Committed static assets (images, logos, brand)
+│   ├── content-schema/    # Zod schemas + TypeScript types — root type authority (P2)
+│   ├── content-parser/    # Markdown + YAML parsing and validation → ContentGraph
+│   ├── sdk/               # Typed read-only query SDK for all consumers (@career-os/sdk)
+│   ├── resume-generator/  # Resume artifact generation (PDF, LaTeX)
+│   ├── github-generator/  # GitHub profile README generation
+│   ├── ai-engine/         # LLM provider abstraction, prompts (prompts/), orchestration
+│   └── shared-utils/      # Zero-dependency shared utilities
+├── infra/                # Container infra (Dockerfile.dev, docker-compose.yml, .env.example)
 ├── output/                # Generated artifacts — gitignored, never committed
 │   ├── resume/            # Generated PDF and LaTeX resume files
 │   ├── github-profile/    # Generated GitHub profile README
@@ -131,11 +134,14 @@ career-os/
 │   ├── architecture/      # Diagrams and design documents
 │   ├── migrations/        # Breaking change migration guides
 │   ├── requirements/      # Feature and non-functional requirements
-│   └── schemas/           # JSON Schema files for all content types
-└── career-os.config.ts    # Platform configuration (outputs, providers, deployment)
+│   ├── schemas/           # JSON Schema files for all content types
+│   ├── PROJECT.md         # Project vision, goals, non-goals, principles
+│   └── ROADMAP.md         # Versioned development roadmap
+├── Makefile               # 1-command developer interface (make dev, make install)
+└── career-os.config.ts    # Platform configuration (generators, paths, providers)
 ```
 
-Each package under `packages/` is an independent npm workspace with its own `package.json`, `src/`, and `tests/` directory. Changes to one package should not break another unless there is an intentional API change.
+Each package under `packages/` is an independent pnpm workspace with its own `package.json`, `src/`, and `tests/` directory. Changes to one package should not break another unless there is an intentional API change.
 
 ---
 
@@ -169,8 +175,8 @@ git checkout -b feat/my-contribution
 # 3. Make your changes
 # ... edit files ...
 
-# 4. Run tests and linting
-npm test && npm run lint
+# 4. Run tests and linting inside the container
+make test && make lint
 
 # 5. Commit with a conventional commit message (see below)
 git commit -m "feat(resume-generator): add two-column layout template"
@@ -214,8 +220,9 @@ Career OS uses [Conventional Commits](https://www.conventionalcommits.org/). All
 
 Use the package or area of the codebase affected:
 
-- `content-parser`, `resume-generator`, `ai-engine`, `publisher`
-- `website`, `scripts`, `docs`, `schema`, `prompts`, `agents`
+- `content-schema`, `content-parser`, `sdk`
+- `resume-generator`, `github-generator`, `ai-engine`, `shared-utils`
+- `website`, `scripts`, `docs`, `schema`, `prompts`, `agents`, `ci`
 
 ### Examples
 
@@ -245,11 +252,11 @@ Migration guide: docs/migrations/v0.1-to-v0.2.md
 ### Before Submitting
 
 - [ ] Your branch is based on the latest `main`.
-- [ ] `npm test` passes with no failures.
-- [ ] `npm run lint` passes with no errors.
-- [ ] `npm run content:validate` passes.
+- [ ] `make test` passes with no failures.
+- [ ] `make lint` passes with no errors.
+- [ ] `make content:validate` passes.
 - [ ] You have written or updated tests for your changes.
-- [ ] You have updated relevant documentation.
+- [ ] You have consulted the **Documentation Ownership Map** (see below) and updated all required documents.
 - [ ] Your commit messages follow the Conventional Commits standard.
 
 ### PR Title
@@ -294,14 +301,14 @@ Use the PR template provided in `.github/PULL_REQUEST_TEMPLATE.md`. At minimum, 
 The project uses ESLint and Prettier with configuration files at the repository root. No formatting debates — the formatter is the authority.
 
 ```bash
-# Auto-format all files
-npm run format
+# Auto-format all files (runs inside the container)
+make format
 
 # Check linting without fixing
-npm run lint
+make lint
 
 # Fix auto-fixable lint errors
-npm run lint:fix
+make lint:fix
 ```
 
 Do not commit code with outstanding lint errors. CI will fail and the PR will not be mergeable.
@@ -332,16 +339,16 @@ Every package must have tests. Career OS uses **Vitest** as the test runner acro
 
 ```bash
 # Run all tests across all workspaces
-npm test
+make test
 
 # Run tests for a specific package
-npm test --workspace packages/content-parser
+make test --filter @career-os/content-parser
 
-# Run tests in watch mode during development
-npm run test:watch
+# Run tests in watch mode during development (inside shell)
+pnpm --filter @career-os/content-parser test:watch
 
 # Generate a coverage report
-npm run test:coverage
+make test:coverage
 ```
 
 ### Coverage Requirements
@@ -369,6 +376,23 @@ All documentation is written in Markdown. Follow these guidelines:
 - **Tables for comparisons.** Use tables when comparing three or more items across two or more dimensions.
 - **ADRs for architectural decisions.** If your change involves a significant design decision, write an ADR (see below).
 
+### Documentation Ownership Map
+
+When you change any file in the left column, you **must** update every document in the right column in the same PR. This is enforced by the PR checklist.
+
+| If you change… | You must also update… |
+|---|---|
+| `infra/*`, `Makefile` | `README.md` (Getting Started, commands), `CONTRIBUTING.md` (Setup, commands), `docs/adr/0002-docker-first-development.md` |
+| Any `packages/content-schema` type or Zod schema | `ARCHITECTURE.md` (ContentGraph / CareerMeta shapes), `CONTRIBUTING.md` (schema change process) |
+| `packages/ai-engine/prompts/` | `ARCHITECTURE.md` (§AI Integration Architecture), `packages/ai-engine/README.md` |
+| `career-os.config.ts` interface | `ARCHITECTURE.md` (§Generator Interface, §Scalability), `README.md` (structure) |
+| `pnpm-workspace.yaml` or root `package.json` | `CONTRIBUTING.md` (project structure), `README.md` (structure) |
+| `turbo.json` | `ARCHITECTURE.md` (tech decisions table), `docs/adr/0001-turborepo-monorepo.md` |
+| `.github/workflows/*.yml` | `ARCHITECTURE.md` (§CI/CD Architecture table) |
+| Any new package added to `packages/` | `README.md` (structure), `CONTRIBUTING.md` (structure + commit scopes), `ARCHITECTURE.md` (§Package Architecture), `tsconfig.json` (root references) |
+| Any new generator registered in `career-os.config.ts` | `ARCHITECTURE.md` (§Output Generation Pipeline), `README.md` (What Career OS Generates) |
+| `ARCHITECTURE.md` principles (P1–P10) | `.agents/AGENTS.md` (enforcement rules) |
+
 ### Updating Documentation with Code
 
 If your code change affects:
@@ -376,9 +400,9 @@ If your code change affects:
 - A public API → update the relevant package `README.md`.
 - The content schema → update `ARCHITECTURE.md` and the relevant schema file.
 - The overall workflow → update `README.md` and/or `ARCHITECTURE.md`.
-- A CLI command → update the `scripts/` documentation and the top-level `README.md`.
+- A CLI command → update `README.md` (Available Commands).
 
-Documentation updates must be included in the same PR as the code change. PRs that change behavior without updating documentation will not be merged.
+Documentation updates must be included in the same PR as the code change. PRs that change behaviour without updating documentation will not be merged.
 
 ---
 
@@ -399,7 +423,7 @@ The content schema (YAML front matter format for `content/` files) is a **public
 1. Open a GitHub Issue with the `schema-change` label describing the proposed field.
 2. Allow a 14-day community comment period.
 3. Write an ADR documenting the decision.
-4. Implement the change: update the JSON Schema file in `docs/schemas/`, the TypeScript types in `packages/content-parser/src/types/`, the content parser, and the example content.
+4. Implement the change: update the Zod schema in `packages/content-schema/src/types/`, the TypeScript types (auto-inferred via `z.infer`), the content parser, and any example content.
 5. Update `ARCHITECTURE.md` with any schema table changes.
 6. If the change is a breaking change post-v1.0, write a migration guide in `docs/migrations/`.
 

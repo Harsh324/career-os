@@ -1,0 +1,64 @@
+name: Feature Request
+description: Propose a new feature or improvement
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for proposing a feature. Please read [CONTRIBUTING.md](../../CONTRIBUTING.md)
+        before submitting. Large architectural changes should use the RFC template instead.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve? What is the current limitation?
+      placeholder: As a developer, I find it difficult to...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the feature you would like to see implemented.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Describe any alternative solutions or features you have considered.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the platform does this feature affect?
+      options:
+        - Content pipeline (content-schema / content-parser)
+        - Portfolio website (apps/website)
+        - Resume generation (packages/resume-generator)
+        - GitHub generation (packages/github-generator)
+        - AI layer (future)
+        - Developer experience (Docker / Makefile / CI)
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: principles
+    attributes:
+      label: Architecture Principles
+      description: Confirm this feature aligns with the project's principles.
+      options:
+        - label: This feature does not duplicate existing functionality (P2, P4).
+          required: true
+        - label: This feature has a single, well-defined responsibility (P5).
+          required: true
+        - label: If this is an architectural change, I will file an ADR with the PR (P9).
+          required: false

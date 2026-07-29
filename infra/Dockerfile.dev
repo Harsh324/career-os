@@ -1,0 +1,34 @@
+# Career OS — Development Container
+#
+# Base: node:20-alpine (pinned to LTS; update quarterly via ADR or chore PR)
+# Tools: pnpm 9 (via corepack), turbo (global), git, curl
+#
+# All development commands are run inside this container.
+# Never install Node.js, pnpm, or Turborepo on the host machine.
+# Use `make shell` to open an interactive shell.
+
+FROM node:20-alpine
+
+# Install system dependencies
+# - git: required by Turborepo for remote caching and git-aware tasks
+# - curl: useful for healthchecks and debugging
+RUN apk add --no-cache git curl
+
+# Enable corepack and activate pnpm
+# Pinning pnpm version ensures reproducible installs (P7)
+RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
+
+# Install Turborepo globally
+# Version is pinned in root package.json; this global install is for CLI usage
+RUN npm install -g turbo@^2
+
+# Set working directory — matches the workspace mount in docker-compose.yml
+WORKDIR /workspace
+
+# Expose ports
+# 3000: Next.js website dev server
+# 3001: Future API server (apps/api)
+EXPOSE 3000 3001
+
+# Default command: open a shell (overridden by docker-compose for specific services)
+CMD ["sh"]

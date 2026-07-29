@@ -1,0 +1,47 @@
+name: Validate Content
+
+on:
+  push:
+    paths:
+      - "content/raw/**"
+    branches:
+      - main
+      - "feat/**"
+  pull_request:
+    paths:
+      - "content/raw/**"
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate Content
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate content against schemas
+        run: pnpm content:validate
+        # This workflow runs ONLY when content/raw/ changes.
+        # content:validate runs content-parser's Zod validation — fails the
+        # build if any required fields are missing or malformed (P7).
