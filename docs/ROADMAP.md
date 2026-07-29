@@ -59,12 +59,12 @@ Milestones do not have fixed release dates in the early alpha phase. Dates will 
 
 #### Documentation
 - [x] `README.md` — Project overview and getting started guide
-- [x] `PROJECT.md` — Vision, goals, and non-goals
+- [x] `docs/PROJECT.md` — Vision, goals, and non-goals
 - [x] `ARCHITECTURE.md` — System design and data flow
-- [x] `ROADMAP.md` — This document
+- [x] `docs/ROADMAP.md` — This document
 - [x] `CONTRIBUTING.md` — Contribution guide
-- [ ] `docs/adr/template.md` — ADR template for contributors
-- [ ] `docs/adr/0001-content-schema-format.md` — First ADR documenting the schema decision
+- [x] `docs/adr/template.md` — ADR template for contributors
+- [x] `docs/adr/0001-turborepo-monorepo.md` — First ADR documenting Turborepo monorepo build setup
 
 #### Content Schema
 - [ ] Define YAML front matter specification for `experience/`
@@ -164,14 +164,14 @@ Milestones do not have fixed release dates in the early alpha phase. Dates will 
 - [ ] Implement output persistence — all AI drafts written to `output/ai-drafts/` for human review
 - [ ] Implement diff-based review workflow (compare AI draft vs. current content)
 
-#### Prompt Library (`ai/prompts/`)
+#### Prompt Library (`packages/ai-engine/prompts/`)
 - [ ] `professional-bio.md` — Generate a professional bio from experience + skills data
 - [ ] `project-summary.md` — Generate a one-paragraph project summary from front matter
 - [ ] `role-tailored-summary.md` — Tailor resume summary for a specific job description
 - [ ] `cover-letter-draft.md` — Generate a cover letter draft given a job description input
 - [ ] `gap-analysis.md` — Identify skills gaps between content and a target role
 
-#### Agents (`ai/agents/`)
+#### Agents (`.agents/ai/`)
 - [ ] `career-synthesizer` agent — Orchestrates bio, summary, and profile generation
 - [ ] `resume-tailor` agent — Takes a job description URL and produces a tailored resume variant
 
