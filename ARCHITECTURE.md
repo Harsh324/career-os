@@ -247,7 +247,7 @@ from `packages/content-schema`, normalising fields, and returning a `ContentGrap
 **Key design decisions:**
 - LLM provider is abstracted behind a `LLMProvider` interface. Switching from OpenAI to Anthropic
   requires only a configuration change — no code changes in consumers.
-- All prompts live in `ai/prompts/` as versioned Markdown files with YAML front matter. Prompts are
+- All prompts live in `packages/ai-engine/prompts/` as versioned Markdown files with YAML front matter. Prompts are
   never hardcoded in source.
 - All AI outputs are staged in `output/ai-drafts/` for human review. The package never writes
   to `content/raw/` (P8).

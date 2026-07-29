@@ -106,20 +106,19 @@ Familiarize yourself with the repository layout before contributing:
 ```
 career-os/
 ├── content/raw/           # Source of truth — human-authored Markdown (P1)
+│   └── assets/            # Raw static media (images, logos, brand)
 ├── apps/
-│   └── website/           # Portfolio website (Next.js 16 + Tailwind v4 + shadcn/ui)
+│   ├── website/           # Portfolio website (Next.js 16 + Tailwind v4 + shadcn/ui)
+│   └── api/               # Future REST/GraphQL API server (marker)
 ├── packages/
 │   ├── content-schema/    # Zod schemas + TypeScript types — root type authority (P2)
 │   ├── content-parser/    # Markdown + YAML parsing and validation → ContentGraph
 │   ├── website-generator/ # Data-access layer for the Next.js website
 │   ├── resume-generator/  # Resume artifact generation (PDF, LaTeX)
 │   ├── github-generator/  # GitHub profile README generation
-│   ├── ai-engine/         # LLM provider abstraction and prompt orchestration
+│   ├── ai-engine/         # LLM provider abstraction, prompts (prompts/), orchestration
 │   └── shared-utils/      # Zero-dependency shared utilities
-├── ai/
-│   ├── agents/            # AI agent definitions and orchestration configs
-│   └── prompts/           # Versioned LLM prompt templates
-├── assets/                # Committed static assets (images, logos, brand)
+├── infra/                # Container infra (Dockerfile.dev, docker-compose.yml, .env.example)
 ├── output/                # Generated artifacts — gitignored, never committed
 │   ├── resume/            # Generated PDF and LaTeX resume files
 │   ├── github-profile/    # Generated GitHub profile README
@@ -135,7 +134,10 @@ career-os/
 │   ├── architecture/      # Diagrams and design documents
 │   ├── migrations/        # Breaking change migration guides
 │   ├── requirements/      # Feature and non-functional requirements
-│   └── schemas/           # JSON Schema files for all content types
+│   ├── schemas/           # JSON Schema files for all content types
+│   ├── PROJECT.md         # Project vision, goals, non-goals, principles
+│   └── ROADMAP.md         # Versioned development roadmap
+├── Makefile               # 1-command developer interface (make dev, make install)
 └── career-os.config.ts    # Platform configuration (generators, paths, providers)
 ```
 
@@ -380,8 +382,9 @@ When you change any file in the left column, you **must** update every document 
 
 | If you change… | You must also update… |
 |---|---|
-| `Dockerfile.dev`, `docker-compose.yml`, `Makefile` | `README.md` (Getting Started, commands), `CONTRIBUTING.md` (Setup, commands), `docs/adr/0002-docker-first-development.md` |
+| `infra/*`, `Makefile` | `README.md` (Getting Started, commands), `CONTRIBUTING.md` (Setup, commands), `docs/adr/0002-docker-first-development.md` |
 | Any `packages/content-schema` type or Zod schema | `ARCHITECTURE.md` (ContentGraph / CareerMeta shapes), `CONTRIBUTING.md` (schema change process) |
+| `packages/ai-engine/prompts/` | `ARCHITECTURE.md` (§AI Integration Architecture), `packages/ai-engine/README.md` |
 | `career-os.config.ts` interface | `ARCHITECTURE.md` (§Generator Interface, §Scalability), `README.md` (structure) |
 | `pnpm-workspace.yaml` or root `package.json` | `CONTRIBUTING.md` (project structure), `README.md` (structure) |
 | `turbo.json` | `ARCHITECTURE.md` (tech decisions table), `docs/adr/0001-turborepo-monorepo.md` |

@@ -13,12 +13,12 @@ name: career-os
 services:
   dev:
     build:
-      context: .
-      dockerfile: Dockerfile.dev
+      context: ..
+      dockerfile: infra/Dockerfile.dev
     image: career-os-dev:local
     volumes:
       # Mount the entire workspace for live code changes
-      - .:/workspace
+      - ..:/workspace
       # Named volume for pnpm content-addressable store
       # Prevents re-downloading packages on container restart (P7 — reproducibility)
       - pnpm_store:/root/.local/share/pnpm/store

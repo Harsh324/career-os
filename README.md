@@ -76,7 +76,7 @@ Career OS transforms your structured Markdown content into:
 ```
 career-os/
 │
-├── content/raw/              # Source of truth — all career data lives here
+├── content/raw/              # Source of truth — all career data lives here (P1)
 │   ├── experience/           # Work history (one .md file per role)
 │   ├── projects/             # Projects and open-source contributions
 │   ├── education/            # Degrees, courses, and academic history
@@ -85,10 +85,12 @@ career-os/
 │   ├── awards/               # Achievements and recognitions
 │   ├── blog/                 # Long-form writing and technical posts
 │   ├── publications/         # External articles, talks, and conference papers
-│   └── timeline/             # Career milestones and life events
+│   ├── timeline/             # Career milestones and life events
+│   └── assets/               # Raw static media (images, logos, brand)
 │
 ├── apps/
-│   └── website/              # Portfolio website (Next.js 16 + Tailwind v4 + shadcn/ui)
+│   ├── website/              # Portfolio website (Next.js 16 + Tailwind v4 + shadcn/ui)
+│   └── api/                  # Future REST/GraphQL API server (marker)
 │
 ├── packages/                 # Shared internal libraries
 │   ├── content-schema/       # Zod schemas + TypeScript types (root type authority)
@@ -96,16 +98,10 @@ career-os/
 │   ├── website-generator/    # Data-access layer for the Next.js website
 │   ├── resume-generator/     # Builds resume artifacts (PDF, LaTeX)
 │   ├── github-generator/     # Generates GitHub profile README
-│   ├── ai-engine/            # LLM provider abstraction and prompt orchestration
+│   ├── ai-engine/            # LLM provider abstraction, prompts (prompts/), orchestration
 │   └── shared-utils/         # Zero-dependency shared utilities
 │
-├── ai/                       # AI layer — agents and versioned prompt templates
-│   ├── agents/               # Agent definitions and orchestration configs
-│   └── prompts/              # LLM prompt templates (versioned and auditable)
-│
-├── assets/                   # Committed static assets (images, logos, brand)
-│   ├── images/               # Profile photos and project screenshots
-│   └── logos/                # Brand assets and icons
+├── infra/                    # Container infrastructure (Dockerfile.dev, compose, .env.example)
 │
 ├── output/                   # Generated artifacts — gitignored, never committed
 │   ├── resume/               # Generated PDF and LaTeX resume files
@@ -125,15 +121,17 @@ career-os/
 │   ├── architecture/         # Diagrams and system design notes
 │   ├── migrations/           # Breaking change migration guides
 │   ├── requirements/         # Feature and non-functional requirements
-│   └── schemas/              # JSON Schema files for all content types
+│   ├── schemas/              # JSON Schema files for all content types
+│   ├── PROJECT.md            # Vision, goals, non-goals, guiding principles
+│   └── ROADMAP.md            # Versioned development roadmap
 │
+├── .agents/                  # Agent rules and orchestration definitions
 ├── .github/                  # GitHub Actions workflows and issue templates
 │
+├── Makefile                  # 1-command developer interface (make dev, make install)
 ├── career-os.config.ts       # Platform configuration (generators, paths, providers)
 │
-├── README.md                 # This file
-├── PROJECT.md                # Project vision, goals, and non-goals
-├── ROADMAP.md                # Versioned development roadmap
+├── README.md                 # Primary project landing doc
 ├── ARCHITECTURE.md           # System architecture and design decisions
 ├── CONTRIBUTING.md           # Contribution guide for collaborators
 ├── CHANGELOG.md              # Version-tagged changelog
@@ -202,9 +200,9 @@ make generate
 
 | Document | Purpose |
 |----------|---------|
-| [PROJECT.md](PROJECT.md) | Vision, goals, non-goals, and guiding principles |
+| [docs/PROJECT.md](docs/PROJECT.md) | Vision, goals, non-goals, and guiding principles |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | System design, data flow, and technical decisions |
-| [ROADMAP.md](ROADMAP.md) | Versioned feature roadmap and milestone planning |
+| [docs/ROADMAP.md](docs/ROADMAP.md) | Versioned feature roadmap and milestone planning |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute, coding standards, and PR process |
 | [CHANGELOG.md](CHANGELOG.md) | Release notes and version history |
 | [docs/adr/](docs/adr/) | Architecture Decision Records |
@@ -213,7 +211,7 @@ make generate
 
 ## Roadmap
 
-Career OS follows a milestone-based roadmap. See [ROADMAP.md](ROADMAP.md) for the full plan.
+Career OS follows a milestone-based roadmap. See [docs/ROADMAP.md](docs/ROADMAP.md) for the full plan.
 
 | Milestone | Status | Description |
 |-----------|--------|-------------|

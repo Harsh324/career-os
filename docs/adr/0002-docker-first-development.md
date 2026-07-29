@@ -88,8 +88,8 @@ is not possible; contributors must have GitHub accounts and Codespaces access.
 
 ## Links
 
-- [Dockerfile.dev](../../Dockerfile.dev)
-- [docker-compose.yml](../../docker-compose.yml)
+- [Dockerfile.dev](../../infra/Dockerfile.dev)
+- [docker-compose.yml](../../infra/docker-compose.yml)
 - [Makefile](../../Makefile)
 - [ADR-0001 — Turborepo](./0001-turborepo-monorepo.md)
 - [ADR-0003 — Git as Single Source of Truth](./0003-git-as-single-source-of-truth.md)

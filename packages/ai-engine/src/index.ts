@@ -7,8 +7,7 @@
  * Design constraints:
  *   - All AI output is staged to output/ai-drafts/ — never written to content/raw/ (P1, P8)
  *   - LLM providers are abstracted behind LLMProvider — switching providers is a config change (P4)
- *   - All prompts live in ai/prompts/ as versioned Markdown files — never hardcoded (P1)
- *   - The ContentGraph passed in is never mutated (P6)
+ *   - All prompts live in packages/ai-engine/prompts/ as versioned Markdown files — never hardcoded (P1)
  *
  * Architecture reference: ARCHITECTURE.md §AI Integration Architecture
  *
@@ -60,9 +59,9 @@ export interface LLMProvider {
 // ─── Prompt System ───────────────────────────────────────────────────────────
 
 /**
- * Metadata declared in the YAML front matter of every prompt file in ai/prompts/.
+ * Metadata declared in the YAML front matter of every prompt file in packages/ai-engine/prompts/.
  *
- * Prompt files are versioned Markdown: ai/prompts/professional-bio.v1.md
+ * Prompt files are versioned Markdown: packages/ai-engine/prompts/professional-bio.v1.md
  * They use Handlebars-style {{variable}} placeholders for dynamic data injection.
  */
 export interface PromptMetadata {

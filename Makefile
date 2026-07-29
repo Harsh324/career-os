@@ -9,7 +9,7 @@
 #   make help      → List all available commands
 
 .DEFAULT_GOAL := help
-DOCKER_COMPOSE := docker compose
+DOCKER_COMPOSE := docker compose -f infra/docker-compose.yml
 EXEC := $(DOCKER_COMPOSE) exec dev
 RUN  := $(DOCKER_COMPOSE) run --rm dev
 

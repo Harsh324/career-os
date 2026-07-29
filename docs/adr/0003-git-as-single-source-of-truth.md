@@ -69,7 +69,7 @@ Career OS architecture.
 - Editing requires familiarity with Git and Markdown (higher barrier than a CMS UI)
 - Structured data (dates, lists) requires YAML discipline — malformed front matter
   is a validation error caught by content-parser
-- Binary assets (images, PDFs) are less suited to Git — `assets/` directory handles
+- Binary assets (images, PDFs) are less suited to Git — `content/raw/assets/` directory handles
   committed images; generated PDFs live in `output/` and are never committed
 
 ## Architecture Implications
