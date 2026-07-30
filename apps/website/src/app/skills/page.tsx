@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getCareerSDK } from "@/lib/get-career-os";
-import { Cpu, CheckCircle2 } from "lucide-react";
+import { Cpu } from "lucide-react";
 import { getLanguageColor } from "@/lib/language-colors";
 
 export const metadata: Metadata = {

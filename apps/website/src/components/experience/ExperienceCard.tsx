@@ -25,7 +25,7 @@ export function ExperienceCard({ experience: exp }: ExperienceCardProps) {
           <div className="flex items-center gap-2">
             {company?.logo ? (
               <div className="relative h-5 w-5 shrink-0 overflow-hidden rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#0d1117] p-0.5">
-                {/* eslint-disable-next-html-element-for-img */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={company.logo}
                   alt={company.name}

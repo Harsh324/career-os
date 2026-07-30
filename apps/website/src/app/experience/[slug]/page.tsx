@@ -90,7 +90,7 @@ export default async function ExperienceDetailPage({ params }: ExperienceDetailP
             {/* Company Logo */}
             {company?.logo ? (
               <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-2xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#0d1117] p-2 shadow-xs">
-                {/* eslint-disable-next-html-element-for-img */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={company.logo}
                   alt={company.name}

@@ -3,7 +3,6 @@ import { getCareerSDK } from "@/lib/get-career-os";
 import {
   Briefcase,
   FolderGit2,
-  Calendar,
   Sparkles,
   Award,
   Star,
@@ -40,7 +39,7 @@ export default async function HomePage() {
             {meta.avatarUrl && (
               <div className="relative group">
                 <div className="h-32 w-32 sm:h-44 sm:w-44 lg:h-60 lg:w-60 overflow-hidden rounded-full border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-md">
-                  {/* eslint-disable-next-html-element-for-img */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={meta.avatarUrl}
                     alt={meta.name}

@@ -23,10 +23,12 @@ interface NavbarProps {
 export function Navbar({ name = "Harsh Tripathi" }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const pathname = usePathname();
+  const [prevPathname, setPrevPathname] = React.useState(pathname);
 
-  React.useEffect(() => {
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
     setMobileMenuOpen(false);
-  }, [pathname]);
+  }
 
   const navItems = [
     { label: "Overview", href: "/", icon: BookOpen },

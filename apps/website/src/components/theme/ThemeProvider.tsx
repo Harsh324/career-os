@@ -28,27 +28,26 @@ export function ThemeProvider({
   enableSystem?: boolean;
   enableColorScheme?: boolean;
 }) {
-  const [theme, setThemeState] = React.useState<Theme>(defaultTheme);
+  const [theme, setThemeState] = React.useState<Theme>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem(storageKey) as Theme;
+      if (saved === "dark" || saved === "light") return saved;
+    }
+    return defaultTheme;
+  });
 
   React.useEffect(() => {
-    const savedTheme = (localStorage.getItem(storageKey) as Theme) || defaultTheme;
-    setThemeState(savedTheme);
-    if (savedTheme === "dark") {
+    if (theme === "dark") {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
     }
-  }, [defaultTheme, storageKey]);
+  }, [theme]);
 
   const setTheme = React.useCallback(
     (newTheme: Theme) => {
       localStorage.setItem(storageKey, newTheme);
       setThemeState(newTheme);
-      if (newTheme === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
     },
     [storageKey]
   );

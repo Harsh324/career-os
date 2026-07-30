@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getCareerSDK } from "@/lib/get-career-os";
-import { ArrowLeft, ExternalLink, Calendar, Code2, Layers, Cpu, CheckCircle2, ShieldCheck, Terminal, Sparkles } from "lucide-react";
+import { ArrowLeft, ExternalLink, Calendar, Layers, Cpu, CheckCircle2, ShieldCheck, Sparkles } from "lucide-react";
 import { GithubIcon } from "@/components/icons/SocialIcons";
 import { CopyCodeButton } from "@/components/ui/CopyCodeButton";
 import { getLanguageColor } from "@/lib/language-colors";

@@ -1,5 +1,5 @@
 import React from "react";
-import { Cpu, Terminal, ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
+import { Terminal } from "lucide-react";
 
 interface ProjectBodyRendererProps {
   content: string;
