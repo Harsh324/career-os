@@ -1,6 +1,7 @@
 import type {
   ContentGraph,
   CareerMeta,
+  Company,
   Experience,
   Project,
   Education,
@@ -28,6 +29,10 @@ export interface BlogFilter {
   tag?: string;
 }
 
+export interface ExperienceWithCompany extends Experience {
+  companyData?: Readonly<Company> | undefined;
+}
+
 /**
  * CareerOS SDK Client class wrapper.
  * Provides typed, immutable, read-only query access over a parsed ContentGraph.
@@ -38,6 +43,18 @@ export class CareerOS {
   /** Returns the single identity record (meta.md). */
   meta(): Readonly<CareerMeta> {
     return this.graph.meta;
+  }
+
+  /** Returns all companies. */
+  companies(): ReadonlyArray<Company> {
+    return this.graph.companies || [];
+  }
+
+  /** Returns a single company by slug, or undefined if not found. */
+  company(slug: string): Readonly<Company> | undefined {
+    return (this.graph.companies || []).find(
+      (c) => c.slug === slug || c.name.toLowerCase() === slug.toLowerCase()
+    );
   }
 
   /** Returns all projects, optionally filtered by featured status or tag. */
@@ -58,8 +75,8 @@ export class CareerOS {
     return this.graph.projects.find((p) => p.slug === slug);
   }
 
-  /** Returns work experience entries, optionally filtered by resumeInclude or company. */
-  experience(filter?: ExperienceFilter): ReadonlyArray<Experience> {
+  /** Returns work experience entries with resolved company metadata. */
+  experience(filter?: ExperienceFilter): ReadonlyArray<ExperienceWithCompany> {
     let items = this.graph.experience;
     if (filter?.resumeInclude !== undefined) {
       items = items.filter((e) => e.resumeInclude === filter.resumeInclude);
@@ -68,7 +85,27 @@ export class CareerOS {
       const companyLower = filter.company.toLowerCase();
       items = items.filter((e) => e.company.toLowerCase() === companyLower);
     }
-    return items;
+
+    return items.map((exp) => {
+      const companySlug = exp.companySlug || exp.company;
+      const companyData = this.company(companySlug);
+      return {
+        ...exp,
+        companyData,
+      };
+    });
+  }
+
+  /** Returns a single experience item by slug. */
+  experienceItem(slug: string): Readonly<ExperienceWithCompany> | undefined {
+    const exp = this.graph.experience.find((e) => e.slug === slug);
+    if (!exp) return undefined;
+    const companySlug = exp.companySlug || exp.company;
+    const companyData = this.company(companySlug);
+    return {
+      ...exp,
+      companyData,
+    };
   }
 
   /** Returns all education entries sorted chronologically. */
@@ -118,6 +155,11 @@ export class CareerOS {
       items = items.filter((b) => b.tags?.some((t) => t.toLowerCase() === tagLower));
     }
     return items;
+  }
+
+  /** Returns a single blog post by slug, or undefined if not found. */
+  blogPost(slug: string): Readonly<BlogPost> | undefined {
+    return this.graph.blog.find((b) => b.slug === slug);
   }
 
   /** Returns all academic and technical publications. */

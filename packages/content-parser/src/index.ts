@@ -8,4 +8,4 @@
  * Architecture reference: ARCHITECTURE.md §Package Architecture
  */
 
-export { parseContent, ContentValidationError } from "./parser.js";
+export { parseContent, ContentValidationError } from "./parser";

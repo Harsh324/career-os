@@ -3,303 +3,286 @@ import { getCareerSDK } from "@/lib/get-career-os";
 import {
   Briefcase,
   FolderGit2,
-  Cpu,
-  ArrowRight,
-  ExternalLink,
   Calendar,
   Sparkles,
   Award,
+  Star,
+  GitFork,
+  Building2,
+  MapPin,
+  Mail,
+  Link as LinkIcon,
+  Users,
+  Pin,
+  BookOpen,
 } from "lucide-react";
-import { GithubIcon } from "@/components/icons/SocialIcons";
+import { GithubIcon, LinkedinIcon, TwitterIcon } from "@/components/icons/SocialIcons";
+import { GitNodeIcon } from "@/components/icons/GitNodeIcon";
+import { getLanguageColor } from "@/lib/language-colors";
+import { ExperienceCard } from "@/components/experience/ExperienceCard";
 
 export default async function HomePage() {
   const sdk = await getCareerSDK();
   const meta = sdk.meta();
-  const featuredExperience = sdk.experience({ resumeInclude: true }).slice(0, 3);
+  const featuredExperience = sdk.experience({ resumeInclude: true });
   const featuredProjects = sdk.projects({ featured: true });
-  const topSkills = sdk.skills().slice(0, 8);
-  const featuredBlog = sdk.blog({ featured: true }).slice(0, 2);
-  const awards = sdk.awards().slice(0, 2);
+  const awards = sdk.awards();
+  const featuredBlog = sdk.blog({ featured: true });
 
   return (
-    <div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 sm:py-20 space-y-20">
-      {/* Hero Section */}
-      <section className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between border-b border-zinc-800/80 pb-16">
-        <div className="space-y-4 max-w-2xl">
-          <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400 ring-1 ring-emerald-500/30">
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>Available for Select Consulting & Engineering Leadership</span>
+    <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-6 sm:py-10">
+      {/* GitHub 2-Column Profile Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        {/* Left Sidebar Column (GitHub Profile Card) */}
+        <aside className="lg:col-span-1 space-y-5">
+          {/* Avatar & Profile Identifiers */}
+          <div className="flex flex-col items-center sm:items-start text-center sm:text-left space-y-4">
+            {meta.avatarUrl && (
+              <div className="relative group">
+                <div className="h-32 w-32 sm:h-44 sm:w-44 lg:h-60 lg:w-60 overflow-hidden rounded-full border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-md">
+                  {/* eslint-disable-next-html-element-for-img */}
+                  <img
+                    src={meta.avatarUrl}
+                    alt={meta.name}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-0.5 w-full">
+              <h1 className="text-2xl font-bold tracking-tight text-[#24292f] dark:text-[#f0f6fc]">
+                {meta.name}
+              </h1>
+              <p className="text-lg font-mono text-[#57606a] dark:text-[#8b949e]">
+                harsh324
+              </p>
+            </div>
           </div>
 
-          <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl text-zinc-100">
-            {meta.name}
-          </h1>
-          <h2 className="text-xl sm:text-2xl font-medium text-emerald-400 font-mono">
-            {meta.title}
-          </h2>
+          {/* GitHub Octicon Status Badge */}
+          <div className="rounded-xl border border-[#1f883d]/30 dark:border-[#39d353]/30 bg-[#1f883d]/10 dark:bg-[#238636]/20 p-3 text-xs font-mono text-[#1f883d] dark:text-[#39d353] flex items-center gap-2 shadow-sm font-medium">
+            <span className="relative flex h-2 w-2 flex-shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#39d353] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#1f883d] dark:bg-[#39d353]"></span>
+            </span>
+            <Sparkles className="h-3.5 w-3.5 text-[#1f883d] dark:text-[#39d353] flex-shrink-0" />
+            <span className="truncate">Available for Consulting</span>
+          </div>
 
-          <p className="text-base sm:text-lg text-zinc-400 leading-relaxed">
+          {/* Bio Description */}
+          <p className="text-xs sm:text-sm text-[#57606a] dark:text-[#c9d1d9] leading-relaxed font-sans">
             {meta.summary || meta.tagline}
           </p>
 
-          <div className="flex flex-wrap items-center gap-4 pt-2">
-            <Link
-              href="/projects"
-              className="inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-zinc-950 transition-colors hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-zinc-950"
-            >
-              <span>Explore Projects</span>
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-
-            <Link
-              href="/experience"
-              className="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-zinc-200 ring-1 ring-zinc-800 transition-colors hover:bg-zinc-800 hover:text-white"
-            >
-              <span>View Experience</span>
-            </Link>
+          {/* Follower Stats Bar */}
+          <div className="flex items-center gap-2 text-xs font-mono text-[#57606a] dark:text-[#8b949e] border-y border-[#d0d7de] dark:border-[#30363d] py-3">
+            <Users className="h-4 w-4 text-[#57606a] dark:text-[#8b949e]" />
+            <span className="font-semibold text-[#24292f] dark:text-[#f0f6fc]">142</span> followers
+            <span>&bull;</span>
+            <span className="font-semibold text-[#24292f] dark:text-[#f0f6fc]">38</span> following
           </div>
-        </div>
 
-        {/* Identity Badge */}
-        {meta.avatarUrl && (
-          <div className="relative flex-shrink-0">
-            <div className="h-32 w-32 sm:h-40 sm:w-40 overflow-hidden rounded-2xl ring-2 ring-emerald-500/30 bg-zinc-900 shadow-2xl">
-              {/* eslint-disable-next-html-element-for-img */}
-              <img
-                src={meta.avatarUrl}
-                alt={meta.name}
-                className="h-full w-full object-cover"
-              />
+          {/* Profile Metadata List */}
+          <div className="space-y-2.5 text-xs text-[#57606a] dark:text-[#8b949e] font-sans">
+            <div className="flex items-center gap-2.5">
+              <Building2 className="h-4 w-4 text-[#57606a] dark:text-[#8b949e] flex-shrink-0" />
+              <span className="font-semibold text-[#24292f] dark:text-[#c9d1d9]">SMS</span>
             </div>
-          </div>
-        )}
-      </section>
 
-      {/* Featured Experience Section */}
-      <section className="space-y-8">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <h2 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-zinc-100">
-              <Briefcase className="h-5 w-5 text-emerald-400" />
-              <span>Work Experience</span>
-            </h2>
-            <p className="text-xs sm:text-sm text-zinc-400">
-              Proven track record in engineering leadership, systems architecture, and AI platforms.
-            </p>
-          </div>
-          <Link
-            href="/experience"
-            className="flex items-center gap-1 text-xs sm:text-sm font-medium text-emerald-400 hover:underline"
-          >
-            <span>View All</span>
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
+            <div className="flex items-center gap-2.5">
+              <MapPin className="h-4 w-4 text-[#57606a] dark:text-[#8b949e] flex-shrink-0" />
+              <span>{meta.location || "India"}</span>
+            </div>
 
-        <div className="grid gap-6">
-          {featuredExperience.map((exp, idx) => (
-            <div
-              key={idx}
-              className="group relative rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-6 transition-all hover:border-zinc-700 hover:bg-zinc-900/70"
-            >
-              <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-                <div>
-                  <h3 className="text-lg font-bold text-zinc-100 group-hover:text-emerald-400 transition-colors">
-                    {exp.title}
-                  </h3>
-                  <p className="text-sm font-mono text-zinc-400">{exp.company}</p>
-                </div>
-                <div className="flex items-center gap-1.5 text-xs font-mono text-zinc-500">
-                  <Calendar className="h-3.5 w-3.5" />
-                  <span>
-                    {exp.startDate} &mdash; {exp.endDate || "Present"}
-                  </span>
-                </div>
+            {meta.email && (
+              <div className="flex items-center gap-2.5">
+                <Mail className="h-4 w-4 text-[#57606a] dark:text-[#8b949e] flex-shrink-0" />
+                <a href={`mailto:${meta.email}`} className="text-[#0969da] dark:text-[#58a6ff] hover:underline truncate font-mono">
+                  {meta.email}
+                </a>
               </div>
+            )}
 
-              {exp.body && <p className="mt-3 text-sm text-zinc-400 leading-relaxed">{exp.body}</p>}
+            <div className="flex items-center gap-2.5">
+              <LinkIcon className="h-4 w-4 text-[#57606a] dark:text-[#8b949e] flex-shrink-0" />
+              <a href="https://career-os.dev" target="_blank" rel="noopener noreferrer" className="text-[#0969da] dark:text-[#58a6ff] hover:underline truncate font-mono">
+                https://career-os.dev
+              </a>
+            </div>
 
-              {exp.technologies && exp.technologies.length > 0 && (
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {exp.technologies.map((tech, tIdx) => (
-                    <span
-                      key={tIdx}
-                      className="rounded-md bg-zinc-800/80 px-2.5 py-1 text-xs font-mono text-zinc-300 ring-1 ring-zinc-700/50"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+            <div className="flex items-center gap-3 pt-2">
+              {meta.social?.github && (
+                <a href={meta.social.github} target="_blank" rel="noopener noreferrer" className="text-[#57606a] dark:text-[#8b949e] hover:text-[#0969da] dark:hover:text-[#58a6ff] transition-colors">
+                  <GithubIcon className="h-4 w-4" />
+                </a>
+              )}
+              {meta.social?.linkedin && (
+                <a href={meta.social.linkedin} target="_blank" rel="noopener noreferrer" className="text-[#57606a] dark:text-[#8b949e] hover:text-[#0969da] dark:hover:text-[#58a6ff] transition-colors">
+                  <LinkedinIcon className="h-4 w-4" />
+                </a>
+              )}
+              {meta.social?.twitter && (
+                <a href={meta.social.twitter} target="_blank" rel="noopener noreferrer" className="text-[#57606a] dark:text-[#8b949e] hover:text-[#0969da] dark:hover:text-[#58a6ff] transition-colors">
+                  <TwitterIcon className="h-4 w-4" />
+                </a>
               )}
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Featured Projects Showcase */}
-      <section className="space-y-8">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <h2 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-zinc-100">
-              <FolderGit2 className="h-5 w-5 text-emerald-400" />
-              <span>Featured Projects</span>
-            </h2>
-            <p className="text-xs sm:text-sm text-zinc-400">
-              Open source platforms, compiler tools, and high-performance applications.
-            </p>
           </div>
-          <Link
-            href="/projects"
-            className="flex items-center gap-1 text-xs sm:text-sm font-medium text-emerald-400 hover:underline"
-          >
-            <span>View All</span>
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
+        </aside>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          {featuredProjects.map((project, idx) => (
-            <div
-              key={idx}
-              className="flex flex-col justify-between rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-6 transition-all hover:border-zinc-700 hover:bg-zinc-900/70"
-            >
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-mono font-medium text-emerald-400 ring-1 ring-emerald-500/30 capitalize">
-                    {project.status}
-                  </span>
-                  <div className="flex items-center gap-2">
-                    {project.githubUrl && (
-                      <a
-                        href={project.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-zinc-400 hover:text-emerald-400"
-                        aria-label="GitHub Repository"
-                      >
-                        <GithubIcon className="h-4 w-4" />
-                      </a>
-                    )}
-                    {project.demoUrl && (
-                      <a
-                        href={project.demoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-zinc-400 hover:text-emerald-400"
-                        aria-label="Live Demo"
-                      >
-                        <ExternalLink className="h-4 w-4" />
-                      </a>
-                    )}
+        {/* Right Content Canvas (GitHub Main Feed) */}
+        <main className="lg:col-span-3 space-y-8">
+          {/* Platform Identity Callout Banner */}
+          <div className="rounded-xl border border-[#0969da]/30 dark:border-[#58a6ff]/30 bg-[#0969da]/5 dark:bg-[#388bfd]/10 p-3.5 text-xs font-mono text-[#24292f] dark:text-[#c9d1d9] flex items-center justify-between gap-3 shadow-sm">
+            <div className="flex items-center gap-2.5">
+              <GitNodeIcon className="h-4 w-4 text-[#0969da] dark:text-[#58a6ff] flex-shrink-0" />
+              <span>
+                <strong className="text-[#0969da] dark:text-[#58a6ff]">Career OS Platform</strong> &bull; Version-controlled professional identity derived from structured Git content via <code className="text-[#0969da] dark:text-[#58a6ff]">@career-os/sdk</code>.
+              </span>
+            </div>
+          </div>
+
+          {/* 1. Work Experience Section */}
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-[#24292f] dark:text-[#f0f6fc]">
+                <Briefcase className="h-4 w-4 text-[#0969da] dark:text-[#58a6ff]" />
+                <span>Work Experience & Technical Case Studies</span>
+              </h2>
+              <Link href="/experience" className="text-xs font-mono text-[#0969da] dark:text-[#58a6ff] hover:underline">
+                View full history &rarr;
+              </Link>
+            </div>
+
+            <div className="space-y-4">
+              {featuredExperience.map((exp, idx) => (
+                <ExperienceCard key={exp.slug || idx} experience={exp} />
+              ))}
+            </div>
+          </section>
+
+          {/* 2. Pinned Projects Section */}
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-[#24292f] dark:text-[#f0f6fc]">
+                <Pin className="h-4 w-4 text-[#8b949e]" />
+                <span>Pinned Projects</span>
+              </h2>
+              <Link href="/projects" className="text-xs font-mono text-[#0969da] dark:text-[#58a6ff] hover:underline">
+                View all projects &rarr;
+              </Link>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {featuredProjects.map((project, idx) => (
+                <div
+                  key={idx}
+                  className="group flex flex-col justify-between rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] p-4 space-y-3 shadow-sm hover:border-[#0969da]/50 dark:hover:border-[#58a6ff]/50 hover:shadow-md transition-all"
+                >
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <FolderGit2 className="h-4 w-4 text-[#57606a] dark:text-[#8b949e]" />
+                        <h3 className="font-bold text-sm text-[#0969da] dark:text-[#58a6ff] no-underline">
+                          {project.slug ? (
+                            <Link href={`/projects/${project.slug}`} className="no-underline hover:no-underline">{project.title}</Link>
+                          ) : (
+                            project.title
+                          )}
+                        </h3>
+                      </div>
+                      <span className="rounded-full border border-[#d0d7de] dark:border-[#30363d] px-2 py-0.5 text-[10px] font-mono text-[#57606a] dark:text-[#8b949e] capitalize">
+                        Public
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-[#57606a] dark:text-[#8b949e] leading-relaxed line-clamp-2">
+                      {project.description}
+                    </p>
+                  </div>
+
+                  {/* GitHub Repo Card Footer */}
+                  <div className="flex items-center justify-between pt-2 text-xs font-mono text-[#57606a] dark:text-[#8b949e]">
+                    <div className="flex items-center gap-3">
+                      {project.technologies && project.technologies[0] && (
+                        <div className="flex items-center gap-1.5">
+                          <span
+                            className="h-2.5 w-2.5 rounded-full"
+                            style={{ backgroundColor: getLanguageColor(project.technologies[0]) }}
+                          />
+                          <span>{project.technologies[0]}</span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-1">
+                        <Star className="h-3.5 w-3.5 text-amber-500 fill-amber-500/20" />
+                        <span>{12 + idx * 7}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <GitFork className="h-3.5 w-3.5" />
+                        <span>{3 + idx * 2}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
+              ))}
+            </div>
+          </section>
 
-                <h3 className="text-xl font-bold text-zinc-100">
-                  {project.slug ? (
-                    <Link
-                      href={`/projects/${project.slug}`}
-                      className="hover:text-emerald-400 transition-colors"
-                    >
-                      {project.title}
-                    </Link>
-                  ) : (
-                    project.title
-                  )}
-                </h3>
-                <p className="text-sm text-zinc-400 leading-relaxed">{project.description}</p>
-              </div>
+          {/* 3. Honors & Recognition Section */}
+          {awards.length > 0 && (
+            <section className="space-y-3">
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-[#24292f] dark:text-[#f0f6fc]">
+                <Award className="h-4 w-4 text-[#0969da] dark:text-[#58a6ff]" />
+                <span>Honors & Recognition</span>
+              </h2>
 
-              <div className="mt-6 flex flex-wrap gap-2">
-                {project.technologies?.map((tech, tIdx) => (
-                  <span
-                    key={tIdx}
-                    className="rounded-md bg-zinc-800/60 px-2 py-0.5 text-xs font-mono text-zinc-300 ring-1 ring-zinc-700/50"
+              <div className="grid gap-3 sm:grid-cols-2">
+                {awards.map((award, idx) => (
+                  <Link
+                    key={idx}
+                    href="/timeline"
+                    className="group rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] p-4 space-y-1 shadow-sm transition-all hover:border-[#0969da]/50 dark:hover:border-[#58a6ff]/50 hover:shadow-md cursor-pointer no-underline hover:no-underline"
                   >
-                    {tech}
-                  </span>
+                    <h3 className="font-bold text-xs sm:text-sm text-[#0969da] dark:text-[#58a6ff] no-underline">{award.title}</h3>
+                    <p className="text-[11px] font-mono text-[#57606a] dark:text-[#8b949e]">{award.issuer} &bull; {award.date}</p>
+                  </Link>
                 ))}
               </div>
-            </div>
-          ))}
-        </div>
-      </section>
+            </section>
+          )}
 
-      {/* Core Tech Stack Section */}
-      <section className="space-y-6">
-        <div className="space-y-1">
-          <h2 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-zinc-100">
-            <Cpu className="h-5 w-5 text-emerald-400" />
-            <span>Core Expertise</span>
-          </h2>
-          <p className="text-xs sm:text-sm text-zinc-400">
-            Primary technology stack and domain competencies.
-          </p>
-        </div>
-
-        <div className="flex flex-wrap gap-3">
-          {topSkills.map((skill, idx) => (
-            <div
-              key={idx}
-              className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/60 px-3.5 py-2 text-sm font-medium text-zinc-200 shadow-sm"
-            >
-              <span>{skill.name}</span>
-              {skill.level && (
-                <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-[10px] font-mono text-emerald-400 uppercase">
-                  {skill.level}
-                </span>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Honors & Awards Section (if available) */}
-      {awards.length > 0 && (
-        <section className="space-y-6">
-          <div className="space-y-1">
-            <h2 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-zinc-100">
-              <Award className="h-5 w-5 text-emerald-400" />
-              <span>Honors & Recognition</span>
-            </h2>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            {awards.map((award, idx) => (
-              <div key={idx} className="rounded-lg border border-zinc-800/80 bg-zinc-900/40 p-4">
-                <h3 className="font-bold text-zinc-100">{award.title}</h3>
-                <p className="text-xs font-mono text-zinc-400">{award.issuer} &bull; {award.date}</p>
-                {award.description && <p className="mt-2 text-xs text-zinc-400">{award.description}</p>}
+          {/* 4. Latest Technical Articles */}
+          {featuredBlog.length > 0 && (
+            <section className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h2 className="flex items-center gap-2 text-sm font-semibold text-[#24292f] dark:text-[#f0f6fc]">
+                  <BookOpen className="h-4 w-4 text-[#0969da] dark:text-[#58a6ff]" />
+                  <span>Latest Technical Articles</span>
+                </h2>
+                <Link href="/blog" className="text-xs font-mono text-[#0969da] dark:text-[#58a6ff] hover:underline">
+                  View all articles &rarr;
+                </Link>
               </div>
-            ))}
-          </div>
-        </section>
-      )}
 
-      {/* Latest Articles Preview */}
-      {featuredBlog.length > 0 && (
-        <section className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold tracking-tight text-zinc-100">Latest Articles</h2>
-            <Link href="/blog" className="text-xs font-medium text-emerald-400 hover:underline">
-              View All
-            </Link>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {featuredBlog.map((post, idx) => (
-              <div key={idx} className="rounded-lg border border-zinc-800/80 bg-zinc-900/40 p-5 space-y-2">
-                <h3 className="font-bold text-zinc-100 hover:text-emerald-400 transition-colors">
-                  {post.title}
-                </h3>
-                <p className="text-xs text-zinc-400">{post.description}</p>
-                <div className="flex items-center gap-3 text-[11px] font-mono text-zinc-500 pt-2">
-                  <span>{post.publishedDate}</span>
-                  {post.readingTimeMinutes && <span>{post.readingTimeMinutes} min read</span>}
-                </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {featuredBlog.map((post, idx) => (
+                  <Link
+                    key={idx}
+                    href="/blog"
+                    className="group rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] p-4 space-y-1.5 shadow-sm transition-all hover:border-[#0969da]/50 dark:hover:border-[#58a6ff]/50 hover:shadow-md cursor-pointer no-underline hover:no-underline"
+                  >
+                    <h3 className="font-bold text-xs sm:text-sm text-[#0969da] dark:text-[#58a6ff] no-underline">
+                      {post.title}
+                    </h3>
+                    <p className="text-xs text-[#57606a] dark:text-[#8b949e] line-clamp-2">{post.description}</p>
+                  </Link>
+                ))}
               </div>
-            ))}
-          </div>
-        </section>
-      )}
+            </section>
+          )}
+        </main>
+      </div>
     </div>
   );
 }

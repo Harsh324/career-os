@@ -17,8 +17,8 @@
  *   const projects = career.projects({ featured: true });
  */
 
-export { CareerOS, createCareerOS } from "./sdk.js";
-export type { ProjectFilter, ExperienceFilter, BlogFilter } from "./sdk.js";
+export { CareerOS, createCareerOS } from "./sdk";
+export type { ProjectFilter, ExperienceFilter, BlogFilter, ExperienceWithCompany } from "./sdk";
 export type {
   ContentGraph,
   CareerMeta,

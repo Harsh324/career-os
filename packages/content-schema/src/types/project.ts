@@ -13,6 +13,7 @@ export const ProjectStatusSchema = z.enum(["active", "archived", "experimental",
 export const ProjectSchema = z.object({
   title: z.string().min(1, "title is required"),
   description: z.string().min(1, "description is required"),
+  category: z.string().optional(),
   status: ProjectStatusSchema.default("active"),
   startDate: YearMonthSchema.optional(),
   endDate: z.union([YearMonthSchema, z.literal("present")]).optional(),

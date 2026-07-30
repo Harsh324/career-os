@@ -5,7 +5,7 @@ venue: IEEE Software Engineering
 date: "2026-05-10"
 url: https://example.com/paper
 authors:
-  - Harsh Vardhan
+  - Harsh Tripathi
   - DeepMind Team
 ---
 A technical research paper on combining strict Zod type boundaries with LLM orchestration engines.

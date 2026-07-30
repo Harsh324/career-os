@@ -1,4 +1,5 @@
 import type { CareerMeta } from "./types/meta.js";
+import type { Company } from "./types/company.js";
 import type { Experience } from "./types/experience.js";
 import type { Project } from "./types/project.js";
 import type { Education } from "./types/education.js";
@@ -22,6 +23,7 @@ import type { TimelineEvent } from "./types/timeline.js";
  */
 export interface ContentGraph {
   meta: CareerMeta;
+  companies: Company[];
   experience: Experience[];
   projects: Project[];
   education: Education[];

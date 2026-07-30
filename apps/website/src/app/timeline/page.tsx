@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { getCareerSDK } from "@/lib/get-career-os";
-import { History, Calendar, Rocket, Award as AwardIcon, Briefcase } from "lucide-react";
+import { History, Milestone, Briefcase, GraduationCap, FileCode2 } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Career Milestones & Timeline",
-  description: "Chronological narrative of key career chapters, milestones, and achievements.",
+  description: "Chronological history of major engineering achievements, publications, and pivotal career events.",
 };
 
 export default async function TimelinePage() {
@@ -12,55 +12,49 @@ export default async function TimelinePage() {
   const timeline = sdk.timeline();
 
   return (
-    <div className="mx-auto max-w-4xl px-4 sm:px-6 py-12 sm:py-16 space-y-10">
-      <div className="space-y-3 border-b border-zinc-800 pb-8">
-        <h1 className="flex items-center gap-3 text-3xl font-extrabold tracking-tight sm:text-4xl text-zinc-100">
-          <History className="h-8 w-8 text-emerald-400" />
-          <span>Career Milestones</span>
+    <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 py-10 sm:py-14 space-y-8">
+      <div className="space-y-3 border-b border-[#d0d7de] dark:border-[#30363d] pb-6 sm:pb-8">
+        <h1 className="flex items-center gap-3 text-3xl font-extrabold tracking-tight sm:text-4xl text-[#24292f] dark:text-[#f0f6fc]">
+          <History className="h-8 w-8 text-[#0969da] dark:text-[#58a6ff]" />
+          <span>Career Milestones & Timeline</span>
         </h1>
-        <p className="text-base text-zinc-400">
-          Chronological narrative of major career chapters, achievements, and milestones.
+        <p className="text-sm sm:text-base text-[#57606a] dark:text-[#8b949e]">
+          Chronological timeline of pivotal engineering achievements, honors, leadership milestones, and publications.
         </p>
       </div>
 
-      <div className="space-y-8 relative pl-6 border-l-2 border-zinc-800">
-        {timeline.map((event, idx) => (
-          <div key={idx} className="relative space-y-2">
-            <div className="absolute -left-[31px] top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-zinc-900 text-emerald-400 ring-2 ring-emerald-500/40">
-              {event.type === "milestone" ? (
-                <Rocket className="h-3 w-3" />
-              ) : event.type === "career" ? (
-                <Briefcase className="h-3 w-3" />
+      <div className="relative border-l-2 border-[#d0d7de] dark:border-[#30363d] ml-4 sm:ml-6 pl-6 sm:pl-8 space-y-8">
+        {timeline.map((item, idx) => (
+          <div key={idx} className="relative group">
+            {/* Timeline Node Icon */}
+            <div className="absolute -left-[31px] sm:-left-[39px] top-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] text-[#0969da] dark:text-[#58a6ff] shadow-sm group-hover:border-[#0969da] transition-colors">
+              {item.type === "milestone" ? (
+                <Milestone className="h-3.5 w-3.5" />
+              ) : item.type === "education" ? (
+                <GraduationCap className="h-3.5 w-3.5" />
+              ) : item.type === "publication" ? (
+                <FileCode2 className="h-3.5 w-3.5" />
               ) : (
-                <AwardIcon className="h-3 w-3" />
+                <Briefcase className="h-3.5 w-3.5" />
               )}
             </div>
 
-            <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1 text-xs font-mono text-emerald-400 font-semibold">
-                <Calendar className="h-3.5 w-3.5" />
-                {event.date}
-              </span>
-              <span className="rounded bg-zinc-900 px-2 py-0.5 text-[10px] font-mono text-zinc-400 ring-1 ring-zinc-800 uppercase">
-                {event.type}
-              </span>
-            </div>
-
-            <h2 className="text-xl font-bold text-zinc-100">{event.title}</h2>
-
-            {event.description && (
-              <p className="text-sm text-zinc-300 leading-relaxed max-w-2xl">{event.description}</p>
-            )}
-
-            {event.tags && event.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                {event.tags.map((tag, tIdx) => (
-                  <span key={tIdx} className="text-[11px] font-mono text-zinc-500">
-                    #{tag}
-                  </span>
-                ))}
+            <div className="rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] p-5 sm:p-6 space-y-2 shadow-sm transition-all hover:border-[#0969da]/50 dark:hover:border-[#58a6ff]/50">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                <h2 className="text-base sm:text-lg font-bold text-[#24292f] dark:text-[#f0f6fc] group-hover:text-[#0969da] dark:group-hover:text-[#58a6ff] transition-colors">
+                  {item.title}
+                </h2>
+                <span className="text-xs font-mono font-semibold text-[#0969da] dark:text-[#58a6ff] rounded-full bg-[#f6f8fa] dark:bg-[#21262d] px-2.5 py-1 border border-[#d0d7de] dark:border-[#30363d] self-start sm:self-auto">
+                  {item.date}
+                </span>
               </div>
-            )}
+
+              {item.description && (
+                <p className="text-xs sm:text-sm text-[#57606a] dark:text-[#8b949e] leading-relaxed pt-1">
+                  {item.description}
+                </p>
+              )}
+            </div>
           </div>
         ))}
       </div>

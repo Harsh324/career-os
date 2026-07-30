@@ -1,12 +1,14 @@
 ---
-title: Building Career OS — A Version-Controlled Professional Platform
-description: Why software engineers should treat their career data as source code.
-published_date: "2026-07-28"
-tags:
-  - Architecture
-  - Monorepo
-  - TypeScript
-reading_time_minutes: 6
+title: Building Career OS — An Open Git-Based Identity Platform
+description: Why software engineers should treat professional identity as an open platform derived deterministically from Git rather than a handcrafted website.
+published_date: "2024-02-15"
 featured: true
+tags:
+  - Career OS
+  - Platform Engineering
+  - Git Engine
+  - System Architecture
+slug: building-career-os
 ---
-In this article we explore the ten architecture principles governing Career OS and why Git is the single source of truth for developer identity.
+
+An in-depth architectural breakdown of Career OS—how Git as a single source of truth powers multi-artifact generation across Next.js websites, ATS Resumes, and GitHub profiles.

@@ -3,6 +3,7 @@ import path from "node:path";
 import matter from "gray-matter";
 import {
   CareerMetaSchema,
+  CompanySchema,
   ExperienceSchema,
   ProjectSchema,
   EducationSchema,
@@ -14,6 +15,7 @@ import {
   TimelineEventSchema,
   type ContentGraph,
   type CareerMeta,
+  type Company,
   type Experience,
   type Project,
   type Education,
@@ -148,6 +150,11 @@ export async function parseContent(contentDir: string): Promise<ContentGraph> {
   }
 
   // 2. Domain items parsing
+  const companyFiles = readMarkdownFiles(path.join(rawRoot, "companies"));
+  const companies: Company[] = companyFiles.map((f) =>
+    validateItem<Company>(CompanySchema, f.data, f.filePath)
+  );
+
   const experienceFiles = readMarkdownFiles(path.join(rawRoot, "experience"));
   const experience: Experience[] = experienceFiles
     .map((f) => validateItem<Experience>(ExperienceSchema, f.data, f.filePath))
@@ -195,6 +202,7 @@ export async function parseContent(contentDir: string): Promise<ContentGraph> {
 
   return Object.freeze({
     meta,
+    companies: Object.freeze(companies),
     experience: Object.freeze(experience),
     projects: Object.freeze(projects),
     education: Object.freeze(education),
