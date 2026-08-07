@@ -1,40 +1,41 @@
-# ── Node.js ───────────────────────────────────────────────────────────────────
-node_modules/
-.pnpm-store/
+# ── Frontend (Next.js & Node) ──────────────────────────────────────────────────
+frontend/node_modules/
+frontend/.next/
+frontend/.next-dev/
+frontend/*.tsbuildinfo
+frontend/dist/
 
-# ── Build artifacts ───────────────────────────────────────────────────────────
-dist/
-.next/
-.next-dev/
-*.tsbuildinfo
+# ── Backend (Django & Python / uv) ────────────────────────────────────────────
+backend/.venv/
+backend/__pycache__/
+backend/*/__pycache__/
+backend/*/*/__pycache__/
+backend/*/*/*/__pycache__/
+backend/*.sqlite3
+backend/media/
+backend/staticfiles/
+*.pyc
+*.pyo
+*.pyd
 
-# ── Turborepo cache ───────────────────────────────────────────────────────────
-.turbo/
+# ── Docker & Local Storage ───────────────────────────────────────────────────
+postgres_data/
+media_data/
 
-# ── Generated output (P3 — everything else is generated, never committed) ─────
-output/json/
-output/resume/
-output/github-profile/
-output/website/
-output/recruiter-package/
-output/ai-drafts/
-
-# ── Environment / secrets ─────────────────────────────────────────────────────
+# ── Environment & Secrets ─────────────────────────────────────────────────────
 .env
+.env.local
 .env.*
-!.env.example
+infra/.env
+infra/.env.local
+infra/.env.*
+!infra/.env.example
 
-# ── Test coverage ─────────────────────────────────────────────────────────────
-coverage/
-.nyc_output/
-
-# ── Editor and OS ─────────────────────────────────────────────────────────────
+# ── Editor & OS ───────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
 *.log
 *.swp
 *.swo
+.vscode/
 .idea/
-
-# ── pnpm debug ────────────────────────────────────────────────────────────────
-pnpm-debug.log*

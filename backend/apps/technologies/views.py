@@ -1,0 +1,9 @@
+from rest_framework import viewsets, permissions
+from apps.technologies.models import Technology
+from apps.technologies.serializers import TechnologySerializer
+
+class TechnologyViewSet(viewsets.ModelViewSet):
+    queryset = Technology.objects.all()
+    serializer_class = TechnologySerializer
+    lookup_field = "slug"
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]

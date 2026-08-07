@@ -1,0 +1,15 @@
+services:
+  frontend:
+    build:
+      context: ..
+      dockerfile: infra/docker/frontend.Dockerfile
+    container_name: career_os_frontend
+    restart: always
+    ports:
+      - "${FRONTEND_PORT:-3002}:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8002/api/v1}
+      - INTERNAL_API_URL=http://backend:8000/api/v1
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules

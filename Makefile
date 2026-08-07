@@ -1,109 +1,64 @@
-# Career OS — Developer Command Interface
-#
-# All commands run inside the Docker development container.
-# Prerequisites: Docker 24+ and Docker Compose v2.
-#
-# Quick start:
-#   make install   → Install all dependencies
-#   make dev       → Start the development server at http://localhost:3000
-#   make help      → List all available commands
+.PHONY: help up up-backend up-frontend down restart logs build migrate seed lint format test clean
 
-.DEFAULT_GOAL := help
-DOCKER_COMPOSE := docker compose -f infra/docker-compose.yml
-EXEC := $(DOCKER_COMPOSE) exec dev
-RUN  := $(DOCKER_COMPOSE) run --rm dev
+COMPOSE_FULL = infra/docker-compose.yml
+COMPOSE_BACKEND = infra/docker-compose.backend.yml
+COMPOSE_FRONTEND = infra/docker-compose.frontend.yml
 
-# ── Development ──────────────────────────────────────────────────────────────
+DOCKER_COMPOSE = docker compose
 
-.PHONY: dev
-dev: ## Start the full development environment (website + all packages)
-	$(DOCKER_COMPOSE) up dev
+help:
+	@echo "Career OS v2 Modular Infrastructure Commands:"
+	@echo "  make up          - Start full stack (db + backend + frontend)"
+	@echo "  make up-backend  - Start isolated backend stack (db + Django REST API)"
+	@echo "  make up-frontend - Start isolated frontend stack (Next.js UI)"
+	@echo "  make down        - Stop all containers"
+	@echo "  make restart     - Restart all containers"
+	@echo "  make logs        - View full stack logs"
+	@echo "  make build       - Rebuild all Docker images"
+	@echo "  make migrate     - Run Django database migrations inside container"
+	@echo "  make seed        - Seed initial database data inside container"
+	@echo "  make lint        - Run Ruff and ESLint checkers"
+	@echo "  make format      - Run Ruff formatter"
+	@echo "  make test        - Run unit tests"
 
-.PHONY: shell
-shell: ## Open an interactive shell inside the dev container
-	$(RUN) sh
+up:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FULL) up -d
 
-.PHONY: install
-install: ## Install all workspace dependencies (runs inside container)
-	$(RUN) pnpm install
+up-backend:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_BACKEND) up -d
 
-# ── Code Quality ─────────────────────────────────────────────────────────────
+up-frontend:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FRONTEND) up -d
 
-.PHONY: build
-build: ## Build all packages and apps via Turborepo
-	$(RUN) pnpm build
+down:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FULL) down
 
-.PHONY: type-check
-type-check: ## Run TypeScript type checking across all workspaces
-	$(RUN) pnpm type-check
+restart:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FULL) restart
 
-.PHONY: lint
-lint: ## Run ESLint across all workspaces
-	$(RUN) pnpm lint
+logs:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FULL) logs -f
 
-.PHONY: format
-format: ## Format all files with Prettier
-	$(RUN) pnpm format
+build:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FULL) build
 
-.PHONY: test
-test: ## Run all test suites via Turborepo
-	$(RUN) pnpm test
+migrate:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FULL) exec backend uv run python manage.py makemigrations
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FULL) exec backend uv run python manage.py migrate
 
-# ── Content Pipeline ─────────────────────────────────────────────────────────
+seed:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FULL) exec backend uv run python manage.py seed_initial_data
 
-.PHONY: validate content\:validate
-validate: ## Validate all content in content/raw/ against Zod schemas
-	$(RUN) pnpm content:validate
+lint:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FULL) exec backend uv run ruff check .
+	cd frontend && npm run lint
 
-content\:validate: ## Alias for validate target
-	$(RUN) pnpm content:validate
+format:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FULL) exec backend uv run ruff format .
 
-.PHONY: generate
-generate: ## Run the full generation pipeline (resume, github, website)
-	$(RUN) pnpm generate
+test:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FULL) exec backend uv run python manage.py test
+	cd frontend && npm run type-check
 
-# ── Infrastructure ────────────────────────────────────────────────────────────
-
-.PHONY: up
-up: ## Start all Docker services in the background
-	$(DOCKER_COMPOSE) up -d
-
-.PHONY: down
-down: ## Stop all Docker services
-	$(DOCKER_COMPOSE) down
-
-.PHONY: logs
-logs: ## Tail the dev container logs
-	$(DOCKER_COMPOSE) logs -f dev
-
-.PHONY: rebuild
-rebuild: ## Rebuild the Docker image from scratch (use after Dockerfile changes)
-	$(DOCKER_COMPOSE) build --no-cache dev
-
-# ── Cleanup ───────────────────────────────────────────────────────────────────
-
-.PHONY: clean
-clean: ## Remove containers, named volumes, and all generated output
-	$(DOCKER_COMPOSE) down -v
-	rm -rf output/json output/resume output/github-profile output/website output/recruiter-package
-	find . -name ".next" -type d -not -path "./.git/*" -prune -exec rm -rf {} + 2>/dev/null || true
-	find . -name "dist"  -type d -not -path "./.git/*" -prune -exec rm -rf {} + 2>/dev/null || true
-	find . -name ".turbo" -type d -not -path "./.git/*" -prune -exec rm -rf {} + 2>/dev/null || true
-	@echo "✓ Cleaned generated output and Docker volumes"
-
-.PHONY: clean-deps
-clean-deps: ## Remove all node_modules (re-run make install afterwards)
-	find . -name "node_modules" -type d -not -path "./.git/*" -prune -exec rm -rf {} + 2>/dev/null || true
-	@echo "✓ Removed node_modules — run 'make install' to reinstall"
-
-# ── Help ──────────────────────────────────────────────────────────────────────
-
-.PHONY: help
-help: ## Display this help message
-	@echo ""
-	@echo "  Career OS — Development Commands"
-	@echo "  All commands run inside the Docker container."
-	@echo ""
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
-		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
-	@echo ""
+clean:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FULL) down -v

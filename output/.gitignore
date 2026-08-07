@@ -1,6 +1,0 @@
-# All generated artifacts in this directory are gitignored.
-# The .gitignore files and subdirectory structure are tracked to preserve
-# the intended layout in Git. Never commit generated content here.
-*
-!.gitignore
-!*/
