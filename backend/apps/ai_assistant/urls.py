@@ -1,4 +1,5 @@
 from django.urls import path
+
 from apps.ai_assistant.views import ChatAssistantView
 
 urlpatterns = [

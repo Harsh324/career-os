@@ -2,7 +2,9 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 from apps.accounts.serializers import UserSerializer
+
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     """Obtain JWT access and refresh token pair."""

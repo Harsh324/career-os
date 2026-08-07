@@ -1,13 +1,15 @@
-from rest_framework import status, permissions
+from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from apps.site_settings.models import SiteSettings
-from apps.site_settings.serializers import SiteSettingsSerializer
-from apps.experiences.models import Experience
-from apps.skills.models import Skill
+
 from apps.certifications.models import Certification
 from apps.education.models import Education
+from apps.experiences.models import Experience
 from apps.projects.models import Project
+from apps.site_settings.models import SiteSettings
+from apps.site_settings.serializers import SiteSettingsSerializer
+from apps.skills.models import Skill
+
 
 class SiteSettingsView(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]

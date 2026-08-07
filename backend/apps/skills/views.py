@@ -1,6 +1,8 @@
-from rest_framework import viewsets, permissions
+from rest_framework import permissions, viewsets
+
 from apps.skills.models import Skill
 from apps.skills.serializers import SkillSerializer
+
 
 class SkillViewSet(viewsets.ModelViewSet):
     queryset = Skill.objects.all().prefetch_related("technologies")

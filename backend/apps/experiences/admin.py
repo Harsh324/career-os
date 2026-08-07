@@ -1,5 +1,7 @@
 from django.contrib import admin
+
 from apps.experiences.models import Experience
+
 
 @admin.register(Experience)
 class ExperienceAdmin(admin.ModelAdmin):

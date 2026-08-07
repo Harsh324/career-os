@@ -1,16 +1,17 @@
-from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
-from apps.site_settings.models import SiteSettings
-from apps.companies.models import Company
-from apps.technologies.models import Technology
-from apps.skills.models import Skill
-from apps.projects.models import Project
-from apps.experiences.models import Experience
-from apps.blog.models import BlogPost
-from apps.timeline.models import TimelineEvent
-from apps.education.models import Education
+from django.core.management.base import BaseCommand
+
 from apps.certifications.models import Certification
+from apps.companies.models import Company
+from apps.education.models import Education
+from apps.experiences.models import Experience
+from apps.projects.models import Project
 from apps.seo.models import SEOMetadata
+from apps.site_settings.models import SiteSettings
+from apps.skills.models import Skill
+from apps.technologies.models import Technology
+from apps.timeline.models import TimelineEvent
+
 
 class Command(BaseCommand):
     help = "Seed & update data in Career OS PostgreSQL/SQLite database based on latest resume."

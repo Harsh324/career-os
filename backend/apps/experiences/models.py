@@ -1,7 +1,9 @@
 from django.db import models
+
 from apps.companies.models import Company
 from apps.projects.models import Project
 from apps.technologies.models import Technology
+
 
 class Experience(models.Model):
     title = models.CharField(max_length=255)

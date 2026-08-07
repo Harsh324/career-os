@@ -1,5 +1,7 @@
 from django.contrib import admin
+
 from apps.media_assets.models import MediaAsset
+
 
 @admin.register(MediaAsset)
 class MediaAssetAdmin(admin.ModelAdmin):

@@ -1,6 +1,8 @@
-from rest_framework import viewsets, permissions
+from rest_framework import permissions, viewsets
+
 from apps.blog.models import BlogPost
 from apps.blog.serializers import BlogPostSerializer
+
 
 class BlogPostViewSet(viewsets.ModelViewSet):
     queryset = BlogPost.objects.all().prefetch_related("related_projects", "related_experiences")

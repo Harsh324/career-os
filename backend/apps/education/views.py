@@ -1,6 +1,8 @@
-from rest_framework import viewsets, permissions
+from rest_framework import permissions, viewsets
+
 from apps.education.models import Education
 from apps.education.serializers import EducationSerializer
+
 
 class EducationViewSet(viewsets.ModelViewSet):
     queryset = Education.objects.all()

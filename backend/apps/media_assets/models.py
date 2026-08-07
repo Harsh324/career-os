@@ -1,6 +1,8 @@
-import uuid
 import os
+import uuid
+
 from django.db import models
+
 
 def get_upload_path(instance, filename):
     ext = filename.split(".")[-1]

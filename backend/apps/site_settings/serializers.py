@@ -1,5 +1,7 @@
 from rest_framework import serializers
+
 from apps.site_settings.models import SiteSettings
+
 
 class SiteSettingsSerializer(serializers.ModelSerializer):
     class Meta:

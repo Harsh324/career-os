@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Education(models.Model):
     institution = models.CharField(max_length=255)
     degree = models.CharField(max_length=255)

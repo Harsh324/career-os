@@ -1,6 +1,8 @@
-from rest_framework import viewsets, permissions
+from rest_framework import permissions, viewsets
+
 from apps.media_assets.models import MediaAsset
 from apps.media_assets.serializers import MediaAssetSerializer
+
 
 class MediaAssetViewSet(viewsets.ModelViewSet):
     queryset = MediaAsset.objects.all()

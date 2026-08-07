@@ -1,5 +1,7 @@
 from django.contrib import admin
+
 from apps.technologies.models import Technology
+
 
 @admin.register(Technology)
 class TechnologyAdmin(admin.ModelAdmin):

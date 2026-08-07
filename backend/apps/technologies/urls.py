@@ -1,4 +1,5 @@
 from rest_framework.routers import DefaultRouter
+
 from apps.technologies.views import TechnologyViewSet
 
 router = DefaultRouter()

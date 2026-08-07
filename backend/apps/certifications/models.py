@@ -1,5 +1,7 @@
 from django.db import models
+
 from apps.skills.models import Skill
+
 
 class Certification(models.Model):
     name = models.CharField(max_length=255)

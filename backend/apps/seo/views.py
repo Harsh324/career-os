@@ -1,6 +1,8 @@
-from rest_framework import viewsets, permissions
+from rest_framework import permissions, viewsets
+
 from apps.seo.models import SEOMetadata
 from apps.seo.serializers import SEOMetadataSerializer
+
 
 class SEOMetadataViewSet(viewsets.ModelViewSet):
     queryset = SEOMetadata.objects.all()

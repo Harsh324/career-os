@@ -1,6 +1,8 @@
-from rest_framework import viewsets, permissions
+from rest_framework import permissions, viewsets
+
 from apps.timeline.models import TimelineEvent
 from apps.timeline.serializers import TimelineEventSerializer
+
 
 class TimelineEventViewSet(viewsets.ModelViewSet):
     queryset = TimelineEvent.objects.all()

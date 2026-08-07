@@ -1,6 +1,8 @@
 from django.db import models
+
 from apps.experiences.models import Experience
 from apps.projects.models import Project
+
 
 class BlogPost(models.Model):
     STATUS_CHOICES = (

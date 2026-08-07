@@ -1,5 +1,7 @@
 from django.contrib import admin
+
 from apps.education.models import Education
+
 
 @admin.register(Education)
 class EducationAdmin(admin.ModelAdmin):

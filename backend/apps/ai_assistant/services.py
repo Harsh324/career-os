@@ -1,12 +1,13 @@
-import os
 import logging
-from typing import Dict, Any
-from apps.site_settings.models import SiteSettings
-from apps.experiences.models import Experience
-from apps.skills.models import Skill
+import os
+from typing import Any
+
 from apps.certifications.models import Certification
 from apps.education.models import Education
+from apps.experiences.models import Experience
 from apps.projects.models import Project
+from apps.site_settings.models import SiteSettings
+from apps.skills.models import Skill
 
 logger = logging.getLogger(__name__)
 
@@ -67,7 +68,7 @@ def build_resume_context() -> str:
     return "\n".join(context_lines)
 
 
-def get_ai_assistant_reply(user_message: str) -> Dict[str, Any]:
+def get_ai_assistant_reply(user_message: str) -> dict[str, Any]:
     """
     Processes user query using LLM API if key is present,
     or intelligent structured RAG fallback engine.
@@ -101,7 +102,8 @@ def get_ai_assistant_reply(user_message: str) -> Dict[str, Any]:
 
     if openai_key:
         try:
-            import urllib.request, json
+            import json
+            import urllib.request
             payload = {
                 "model": "gpt-4o-mini",
                 "messages": [
@@ -213,9 +215,9 @@ def get_ai_assistant_reply(user_message: str) -> Dict[str, Any]:
     # Default General Response
     return {
         "reply": (
-            f"Harsh Tripathi is a **Software Engineer (Backend and Cloud)** based in Tokyo, Japan. "
-            f"He specializes in Python, Django, Celery asynchronous processing, Docker containerization, and AWS cloud infrastructure. "
-            f"He holds AWS Certified Solutions Architect and AWS Certified CloudOps Engineer credentials."
+            "Harsh Tripathi is a **Software Engineer (Backend and Cloud)** based in Tokyo, Japan. "
+            "He specializes in Python, Django, Celery asynchronous processing, Docker containerization, and AWS cloud infrastructure. "
+            "He holds AWS Certified Solutions Architect and AWS Certified CloudOps Engineer credentials."
         ),
         "mode": "rag-default",
         "sources": ["SiteSettings Model", "ContentGraph Database"],

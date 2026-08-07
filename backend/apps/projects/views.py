@@ -1,6 +1,8 @@
-from rest_framework import viewsets, permissions
+from rest_framework import permissions, viewsets
+
 from apps.projects.models import Project
 from apps.projects.serializers import ProjectSerializer
+
 
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all().prefetch_related("tech_stack")

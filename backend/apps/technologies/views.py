@@ -1,6 +1,8 @@
-from rest_framework import viewsets, permissions
+from rest_framework import permissions, viewsets
+
 from apps.technologies.models import Technology
 from apps.technologies.serializers import TechnologySerializer
+
 
 class TechnologyViewSet(viewsets.ModelViewSet):
     queryset = Technology.objects.all()

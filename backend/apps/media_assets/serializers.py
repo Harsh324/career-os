@@ -1,5 +1,7 @@
 from rest_framework import serializers
+
 from apps.media_assets.models import MediaAsset
+
 
 class MediaAssetSerializer(serializers.ModelSerializer):
     file_url = serializers.SerializerMethodField()

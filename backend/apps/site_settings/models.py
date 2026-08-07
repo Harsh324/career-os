@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class SiteSettings(models.Model):
     name = models.CharField(max_length=255, default="Harsh Tripathi")
     title = models.CharField(max_length=255, default="Backend & Cloud Engineer")
