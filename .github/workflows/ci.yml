@@ -18,35 +18,69 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ci:
-    name: CI
+  frontend-ci:
+    name: Frontend CI (Next.js)
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.15.0
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "pnpm"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Install Frontend Dependencies
+        run: npm ci
+        working-directory: frontend
 
-      - name: Type check
-        run: pnpm type-check
+      - name: Type Check
+        run: npm run type-check
+        working-directory: frontend
 
       - name: Lint
-        run: pnpm lint
+        run: npm run lint
+        working-directory: frontend
 
-      - name: Build
-        run: pnpm build
+      - name: Build Next.js
+        run: npm run build
+        working-directory: frontend
         env:
-          TURBO_TELEMETRY_DISABLED: 1
+          NEXT_PUBLIC_API_URL: "http://localhost:8002/api/v1"
+
+  backend-ci:
+    name: Backend CI (Django & DRF)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+
+      - name: Install Backend Dependencies
+        run: uv sync
+        working-directory: backend
+
+      - name: Lint Backend Code
+        run: uv run ruff check .
+        working-directory: backend
+
+      - name: Check Django Settings & System
+        run: uv run python manage.py check
+        working-directory: backend
+        env:
+          DJANGO_SETTINGS_MODULE: "config.settings"
+          SECRET_KEY: "ci-secret-key-for-testing"
+          ALLOWED_HOSTS: "localhost,127.0.0.1"
