@@ -11,15 +11,13 @@ import {
   Building2,
   MapPin,
   Mail,
-  Link as LinkIcon,
   Pin,
   Award,
 } from "lucide-react";
-import { GithubIcon, LinkedinIcon, TwitterIcon } from "@/components/icons/SocialIcons";
+import { GithubIcon, LinkedinIcon } from "@/components/icons/SocialIcons";
 import { ExperienceCard } from "@/components/experience/ExperienceCard";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { CertificationCard } from "@/components/certifications/CertificationCard";
-import { CopyPitchButton } from "@/components/ui/CopyPitchButton";
 import { DEFAULT_SITE_SETTINGS } from "@/lib/constants/site";
 import type { Experience, Project, SiteSettings, Certification } from "@/lib/api/types";
 
@@ -76,18 +74,15 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Enhancement 4: Live Status Badge */}
+          {/* Status Badge */}
           <div className="rounded-xl border border-[#1f883d]/30 dark:border-[#39d353]/30 bg-[#1f883d]/10 dark:bg-[#238636]/20 p-3 text-xs font-mono text-[#1f883d] dark:text-[#39d353] flex items-center gap-2 shadow-sm font-medium">
             <span className="relative flex h-2 w-2 flex-shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#39d353] opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[#1f883d] dark:bg-[#39d353]"></span>
             </span>
             <Sparkles className="h-3.5 w-3.5 text-[#1f883d] dark:text-[#39d353] flex-shrink-0" />
-            <span className="truncate">Tokyo, JP &bull; AWS Certified &bull; Open for Senior Roles</span>
+            <span className="truncate">Available for Senior Roles</span>
           </div>
-
-          {/* Enhancement 4: 1-Click Copy Recruiter Pitch Button */}
-          <CopyPitchButton />
 
           {/* Bio Description */}
           <p className="text-xs sm:text-sm text-[#57606a] dark:text-[#c9d1d9] leading-relaxed font-sans">
