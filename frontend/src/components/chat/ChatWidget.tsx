@@ -176,10 +176,10 @@ export function ChatWidget() {
       {/* Main Theme-Adaptive Chat Window */}
       {isOpen && (
         <div
-          className={`flex flex-col rounded-2xl border border-[#d0d7de] dark:border-[#30363d] bg-white/95 dark:bg-[#0d1117]/95 backdrop-blur-2xl shadow-2xl overflow-hidden transition-all duration-300 animate-in fade-in slide-in-from-bottom-4 ${
+          className={`flex flex-col rounded-2xl border border-[#d0d7de] dark:border-[#30363d] bg-white/95 dark:bg-[#0d1117]/95 backdrop-blur-2xl shadow-2xl overflow-hidden transition-[width,height] duration-300 ease-in-out ${
             isExpanded
-              ? "h-[650px] w-[90vw] max-w-[680px]"
-              : "h-[560px] w-[375px] sm:w-[440px]"
+              ? "h-[640px] w-[calc(100vw-3rem)] sm:w-[640px]"
+              : "h-[540px] w-[340px] sm:w-[420px]"
           }`}
         >
           {/* Header Bar */}
