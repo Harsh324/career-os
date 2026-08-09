@@ -23,6 +23,7 @@ api_v1_patterns = [
     path("seo/", include("apps.seo.urls")),
     path("settings/", include("apps.site_settings.urls")),
     path("assistant/", include("apps.ai_assistant.urls")),
+    path("analytics/", include("apps.analytics.urls")),
 ]
 
 urlpatterns = [

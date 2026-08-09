@@ -25,6 +25,7 @@ import {
   Bot,
 } from "lucide-react";
 import { fetchJsonResume } from "@/lib/api/services";
+import { sendTelemetryEvent } from "@/lib/analytics";
 
 interface ResumeViewSwitcherProps {
   meta: {
@@ -345,11 +346,13 @@ export function ResumeViewSwitcher({
   };
 
   const handlePrint = () => {
+    sendTelemetryEvent("print_resume", "/resume");
     window.print();
   };
 
   const handleExportJson = async () => {
     try {
+      sendTelemetryEvent("export_json", "/resume");
       setExportingJson(true);
       const data = await fetchJsonResume();
       const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(

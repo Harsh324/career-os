@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { ChatWidget } from "@/components/chat/ChatWidget";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { QueryProvider } from "@/providers/QueryProvider";
+import { AnalyticsProvider } from "@/providers/AnalyticsProvider";
 import { DEFAULT_SITE_SETTINGS } from "@/lib/constants/site";
 import "./globals.css";
 
@@ -58,27 +59,13 @@ export async function generateMetadata(): Promise<Metadata> {
     ],
     authors: [{ name: meta.name }],
     creator: meta.name,
-    metadataBase: new URL("https://career-os.dev"),
-    alternates: {
-      canonical: "https://career-os.dev",
-    },
     openGraph: {
       type: "website",
       locale: "en_US",
       url: "https://career-os.dev",
+      siteName: `${meta.name} Portfolio`,
       title: `${meta.name} — ${meta.title}`,
       description: meta.summary || meta.tagline,
-      siteName: "Career OS Platform",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${meta.name} — ${meta.title}`,
-      description: meta.summary || meta.tagline,
-      creator: "@harsh324",
-    },
-    robots: {
-      index: true,
-      follow: true,
     },
   };
 }
@@ -131,12 +118,14 @@ export default async function RootLayout({
       <body className="min-h-screen w-full overflow-x-hidden bg-[#f6f8fa] dark:bg-[#0d1117] text-[#24292f] dark:text-[#f0f6fc] antialiased selection:bg-[#2ea043]/30 selection:text-[#2ea043] transition-colors">
         <QueryProvider>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-            <div className="flex min-h-screen w-full flex-col items-center">
-              <Navbar name={meta.name} />
-              <main className="flex-1 w-full">{children}</main>
-              <Footer />
-              <ChatWidget />
-            </div>
+            <AnalyticsProvider>
+              <div className="flex min-h-screen w-full flex-col items-center">
+                <Navbar name={meta.name} />
+                <main className="flex-1 w-full">{children}</main>
+                <Footer />
+                <ChatWidget />
+              </div>
+            </AnalyticsProvider>
           </ThemeProvider>
         </QueryProvider>
       </body>

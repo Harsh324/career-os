@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "apps.seo",
     "apps.site_settings",
     "apps.ai_assistant",
+    "apps.analytics",
 ]
 
 MIDDLEWARE = [
