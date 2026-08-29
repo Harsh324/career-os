@@ -23,12 +23,21 @@ class Command(BaseCommand):
         User = get_user_model()
         if not User.objects.filter(username="admin").exists():
             import os
+
             admin_password = os.getenv("DJANGO_SUPERUSER_PASSWORD")
             if admin_password:
                 User.objects.create_superuser("admin", "admin@career-os.dev", admin_password)
-                self.stdout.write(self.style.SUCCESS("Created admin superuser (username: admin, password from environment)"))
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        "Created admin superuser (username: admin, password from environment)"
+                    )
+                )
             else:
-                self.stdout.write(self.style.WARNING("Skipped admin superuser creation: DJANGO_SUPERUSER_PASSWORD environment variable not set."))
+                self.stdout.write(
+                    self.style.WARNING(
+                        "Skipped admin superuser creation: DJANGO_SUPERUSER_PASSWORD environment variable not set."
+                    )
+                )
 
         # 1. Site Settings (Forced update)
         settings_obj, created = SiteSettings.objects.update_or_create(
@@ -58,27 +67,122 @@ class Command(BaseCommand):
 
         # 2. Technologies
         tech_data = [
-            {"name": "Python", "slug": "python", "category": "Languages", "website": "https://www.python.org"},
-            {"name": "JavaScript", "slug": "javascript", "category": "Languages", "website": "https://developer.mozilla.org"},
+            {
+                "name": "Python",
+                "slug": "python",
+                "category": "Languages",
+                "website": "https://www.python.org",
+            },
+            {
+                "name": "JavaScript",
+                "slug": "javascript",
+                "category": "Languages",
+                "website": "https://developer.mozilla.org",
+            },
             {"name": "SQL", "slug": "sql", "category": "Languages", "website": ""},
-            {"name": "Django", "slug": "django", "category": "Backend", "website": "https://www.djangoproject.com"},
-            {"name": "Django REST Framework", "slug": "drf", "category": "Backend", "website": "https://www.django-rest-framework.org"},
-            {"name": "Celery", "slug": "celery", "category": "Backend", "website": "https://docs.celeryq.dev"},
-            {"name": "AWS", "slug": "aws", "category": "Cloud & Infra", "website": "https://aws.amazon.com"},
-            {"name": "AWS ECS / Fargate", "slug": "ecs-fargate", "category": "Cloud & Infra", "website": ""},
-            {"name": "CloudFormation", "slug": "cloudformation", "category": "Cloud & Infra", "website": ""},
-            {"name": "Docker", "slug": "docker", "category": "DevOps", "website": "https://www.docker.com"},
-            {"name": "GitHub Actions", "slug": "github-actions", "category": "DevOps", "website": "https://github.com/features/actions"},
+            {
+                "name": "Django",
+                "slug": "django",
+                "category": "Backend",
+                "website": "https://www.djangoproject.com",
+            },
+            {
+                "name": "Django REST Framework",
+                "slug": "drf",
+                "category": "Backend",
+                "website": "https://www.django-rest-framework.org",
+            },
+            {
+                "name": "Celery",
+                "slug": "celery",
+                "category": "Backend",
+                "website": "https://docs.celeryq.dev",
+            },
+            {
+                "name": "AWS",
+                "slug": "aws",
+                "category": "Cloud & Infra",
+                "website": "https://aws.amazon.com",
+            },
+            {
+                "name": "AWS ECS / Fargate",
+                "slug": "ecs-fargate",
+                "category": "Cloud & Infra",
+                "website": "",
+            },
+            {
+                "name": "CloudFormation",
+                "slug": "cloudformation",
+                "category": "Cloud & Infra",
+                "website": "",
+            },
+            {
+                "name": "Docker",
+                "slug": "docker",
+                "category": "DevOps",
+                "website": "https://www.docker.com",
+            },
+            {
+                "name": "GitHub Actions",
+                "slug": "github-actions",
+                "category": "DevOps",
+                "website": "https://github.com/features/actions",
+            },
             {"name": "Git", "slug": "git", "category": "DevOps", "website": "https://git-scm.com"},
-            {"name": "MySQL", "slug": "mysql", "category": "Databases", "website": "https://www.mysql.com"},
-            {"name": "MongoDB", "slug": "mongodb", "category": "Databases", "website": "https://www.mongodb.com"},
-            {"name": "PostgreSQL", "slug": "postgresql", "category": "Databases", "website": "https://www.postgresql.org"},
-            {"name": "Redis", "slug": "redis", "category": "Databases", "website": "https://redis.io"},
-            {"name": "TypeScript", "slug": "typescript", "category": "Languages", "website": "https://www.typescriptlang.org"},
-            {"name": "Next.js", "slug": "nextjs", "category": "Frameworks", "website": "https://nextjs.org"},
-            {"name": "Traefik", "slug": "traefik", "category": "Cloud & Infra", "website": "https://traefik.io"},
-            {"name": "Cloudflare", "slug": "cloudflare", "category": "Cloud & Infra", "website": "https://www.cloudflare.com"},
-            {"name": "Ubuntu Linux", "slug": "ubuntu-linux", "category": "Cloud & Infra", "website": "https://ubuntu.com"},
+            {
+                "name": "MySQL",
+                "slug": "mysql",
+                "category": "Databases",
+                "website": "https://www.mysql.com",
+            },
+            {
+                "name": "MongoDB",
+                "slug": "mongodb",
+                "category": "Databases",
+                "website": "https://www.mongodb.com",
+            },
+            {
+                "name": "PostgreSQL",
+                "slug": "postgresql",
+                "category": "Databases",
+                "website": "https://www.postgresql.org",
+            },
+            {
+                "name": "Redis",
+                "slug": "redis",
+                "category": "Databases",
+                "website": "https://redis.io",
+            },
+            {
+                "name": "TypeScript",
+                "slug": "typescript",
+                "category": "Languages",
+                "website": "https://www.typescriptlang.org",
+            },
+            {
+                "name": "Next.js",
+                "slug": "nextjs",
+                "category": "Frameworks",
+                "website": "https://nextjs.org",
+            },
+            {
+                "name": "Traefik",
+                "slug": "traefik",
+                "category": "Cloud & Infra",
+                "website": "https://traefik.io",
+            },
+            {
+                "name": "Cloudflare",
+                "slug": "cloudflare",
+                "category": "Cloud & Infra",
+                "website": "https://www.cloudflare.com",
+            },
+            {
+                "name": "Ubuntu Linux",
+                "slug": "ubuntu-linux",
+                "category": "Cloud & Infra",
+                "website": "https://ubuntu.com",
+            },
         ]
         tech_map = {}
         for item in tech_data:
@@ -103,7 +207,7 @@ class Command(BaseCommand):
                 "founded": "2001",
                 "description": "SMS DataTech is an independent IT solutions company in Japan specializing in system development, cybersecurity, and AI/cloud engineering.",
                 "short_description": "Enterprise cloud infrastructure, cybersecurity, and AI engineering provider.",
-            }
+            },
         )
         self.stdout.write("Processed SMS DataTech Company record.")
 
@@ -127,7 +231,14 @@ class Command(BaseCommand):
         p1.timeline = "2026 – Present"
         p1.order = 3
         p1.save()
-        p1.tech_stack.add(tech_map["python"], tech_map["django"], tech_map["postgresql"], tech_map["docker"], tech_map["nextjs"], tech_map["typescript"])
+        p1.tech_stack.add(
+            tech_map["python"],
+            tech_map["django"],
+            tech_map["postgresql"],
+            tech_map["docker"],
+            tech_map["nextjs"],
+            tech_map["typescript"],
+        )
 
         p2, _ = Project.objects.update_or_create(
             slug="fintrack-ai",
@@ -148,7 +259,9 @@ class Command(BaseCommand):
         p2.timeline = "2026 – Present"
         p2.order = 1
         p2.save()
-        p2.tech_stack.add(tech_map["python"], tech_map["django"], tech_map["postgresql"], tech_map["redis"])
+        p2.tech_stack.add(
+            tech_map["python"], tech_map["django"], tech_map["postgresql"], tech_map["redis"]
+        )
 
         p3, _ = Project.objects.update_or_create(
             slug="constellation",
@@ -176,7 +289,15 @@ class Command(BaseCommand):
         p3.timeline = "2026 – Present"
         p3.order = 2
         p3.save()
-        p3.tech_stack.set([tech_map["docker"], tech_map["traefik"], tech_map["postgresql"], tech_map["cloudflare"], tech_map["ubuntu-linux"]])
+        p3.tech_stack.set(
+            [
+                tech_map["docker"],
+                tech_map["traefik"],
+                tech_map["postgresql"],
+                tech_map["cloudflare"],
+                tech_map["ubuntu-linux"],
+            ]
+        )
 
         self.stdout.write("Processed Projects (Career OS, FinTrack AI, Constellation).")
 
@@ -204,34 +325,43 @@ class Command(BaseCommand):
                     "Containerized services using Docker and automated deployments to AWS ECS/Fargate via CloudFormation",
                     "Handled 1000+ daily internal requests across backend services",
                     "Managed AWS resources including EC2, ECS, S3, CloudWatch, Auto Scaling, and Load Balancing",
-                    "Owned task execution, feature delivery, and provided technical mentorship"
+                    "Owned task execution, feature delivery, and provided technical mentorship",
                 ],
                 "challenges": [
                     {
                         "problem": "Dynamic websites required reliable asynchronous extraction without blocking synchronous API requests.",
                         "solution": "Implemented queue-based Celery processing with distributed worker pools.",
-                        "impact": "Enabled complex extraction workflows to execute asynchronously while improving API responsiveness."
+                        "impact": "Enabled complex extraction workflows to execute asynchronously while improving API responsiveness.",
                     },
                     {
                         "problem": "Manual cloud service deployments caused environment mismatch delays.",
                         "solution": "Containerized services using Docker and automated AWS ECS/Fargate deployments via CloudFormation.",
-                        "impact": "Achieved predictable deployments, auto scaling, and reliable execution under high internal request volume."
-                    }
+                        "impact": "Achieved predictable deployments, auto scaling, and reliable execution under high internal request volume.",
+                    },
                 ],
                 "metrics": [
                     {"label": "API Performance Improvement", "value": "20–30%"},
                     {"label": "Daily Internal Requests", "value": "1000+"},
-                    {"label": "Cloud Deployment", "value": "AWS ECS/Fargate"}
+                    {"label": "Cloud Deployment", "value": "AWS ECS/Fargate"},
                 ],
                 "team": "SMS DataTech Backend & Cloud Engineering Team",
                 "ownership": "Ownership of AI scraping platform backend, Celery async task queue architecture, and AWS CloudFormation templates.",
                 "lessons_learned": [
                     "Queue-based asynchronous task processing with Celery decouples long-running LLM extraction from synchronous API response cycles.",
-                    "Standardized Docker containerization ensures identical execution environments across local development and AWS ECS/Fargate."
+                    "Standardized Docker containerization ensures identical execution environments across local development and AWS ECS/Fargate.",
                 ],
             },
         )
-        exp1.technologies.add(tech_map["python"], tech_map["django"], tech_map["celery"], tech_map["aws"], tech_map["docker"], tech_map["ecs-fargate"], tech_map["cloudformation"], tech_map["sql"])
+        exp1.technologies.add(
+            tech_map["python"],
+            tech_map["django"],
+            tech_map["celery"],
+            tech_map["aws"],
+            tech_map["docker"],
+            tech_map["ecs-fargate"],
+            tech_map["cloudformation"],
+            tech_map["sql"],
+        )
         exp1.related_projects.add(p1, p2)
 
         exp2, _ = Experience.objects.update_or_create(
@@ -253,7 +383,7 @@ class Command(BaseCommand):
                     "Developed backend services using Django REST Framework for the POGO internal dashboard",
                     "Designed and implemented REST APIs and relational database schemas using MySQL",
                     "Built multiple backend features from scratch, improving internal workflow visibility",
-                    "Collaborated with cross-functional teams to deliver functional internal tools"
+                    "Collaborated with cross-functional teams to deliver functional internal tools",
                 ],
                 "challenges": [],
                 "metrics": [],
@@ -264,59 +394,200 @@ class Command(BaseCommand):
                 ],
             },
         )
-        exp2.technologies.add(tech_map["python"], tech_map["django"], tech_map["drf"], tech_map["mysql"], tech_map["sql"], tech_map["git"])
+        exp2.technologies.add(
+            tech_map["python"],
+            tech_map["django"],
+            tech_map["drf"],
+            tech_map["mysql"],
+            tech_map["sql"],
+            tech_map["git"],
+        )
         exp2.related_projects.add(p2)
 
-        self.stdout.write("Processed Experience records (SMS DataTech Oct 2024–Present & Jul 2023–May 2024).")
+        self.stdout.write(
+            "Processed Experience records (SMS DataTech Oct 2024–Present & Jul 2023–May 2024)."
+        )
 
         # 6. Skills (Clean Categorized Competencies without pseudo-precision or duplication)
         Skill.objects.all().delete()
         skills_data = [
             # 1. Backend Engineering
-            {"name": "Python", "slug": "python-skill", "category": "Backend Engineering", "order": 1, "is_core": True},
-            {"name": "Django", "slug": "django-skill", "category": "Backend Engineering", "order": 2, "is_core": True},
-            {"name": "Django REST Framework", "slug": "drf-skill", "category": "Backend Engineering", "order": 3, "is_core": True},
-            {"name": "Celery", "slug": "celery-skill", "category": "Backend Engineering", "order": 4, "is_core": True},
-            {"name": "REST API Design", "slug": "rest-api-design-skill", "category": "Backend Engineering", "order": 5},
-            {"name": "API Performance Optimization", "slug": "api-performance-skill", "category": "Backend Engineering", "order": 6},
-
+            {
+                "name": "Python",
+                "slug": "python-skill",
+                "category": "Backend Engineering",
+                "order": 1,
+                "is_core": True,
+            },
+            {
+                "name": "Django",
+                "slug": "django-skill",
+                "category": "Backend Engineering",
+                "order": 2,
+                "is_core": True,
+            },
+            {
+                "name": "Django REST Framework",
+                "slug": "drf-skill",
+                "category": "Backend Engineering",
+                "order": 3,
+                "is_core": True,
+            },
+            {
+                "name": "Celery",
+                "slug": "celery-skill",
+                "category": "Backend Engineering",
+                "order": 4,
+                "is_core": True,
+            },
+            {
+                "name": "REST API Design",
+                "slug": "rest-api-design-skill",
+                "category": "Backend Engineering",
+                "order": 5,
+            },
+            {
+                "name": "API Performance Optimization",
+                "slug": "api-performance-skill",
+                "category": "Backend Engineering",
+                "order": 6,
+            },
             # 2. Cloud & Infrastructure
-            {"name": "AWS", "slug": "aws-skill", "category": "Cloud & Infrastructure", "order": 1, "is_core": True},
-            {"name": "ECS / Fargate", "slug": "ecs-fargate-skill", "category": "Cloud & Infrastructure", "order": 2, "is_core": True},
-            {"name": "AWS Cloud Architecture", "slug": "aws-cloud-arch-skill", "category": "Cloud & Infrastructure", "order": 3},
+            {
+                "name": "AWS",
+                "slug": "aws-skill",
+                "category": "Cloud & Infrastructure",
+                "order": 1,
+                "is_core": True,
+            },
+            {
+                "name": "ECS / Fargate",
+                "slug": "ecs-fargate-skill",
+                "category": "Cloud & Infrastructure",
+                "order": 2,
+                "is_core": True,
+            },
+            {
+                "name": "AWS Cloud Architecture",
+                "slug": "aws-cloud-arch-skill",
+                "category": "Cloud & Infrastructure",
+                "order": 3,
+            },
             {"name": "EC2", "slug": "ec2-skill", "category": "Cloud & Infrastructure", "order": 4},
             {"name": "S3", "slug": "s3-skill", "category": "Cloud & Infrastructure", "order": 5},
-            {"name": "CloudFormation", "slug": "cloudformation-skill", "category": "Cloud & Infrastructure", "order": 6},
-            {"name": "CloudWatch", "slug": "cloudwatch-skill", "category": "Cloud & Infrastructure", "order": 7},
-
+            {
+                "name": "CloudFormation",
+                "slug": "cloudformation-skill",
+                "category": "Cloud & Infrastructure",
+                "order": 6,
+            },
+            {
+                "name": "CloudWatch",
+                "slug": "cloudwatch-skill",
+                "category": "Cloud & Infrastructure",
+                "order": 7,
+            },
             # 3. Architecture & Distributed Systems
-            {"name": "Distributed Systems", "slug": "distributed-systems-skill", "category": "Architecture & Distributed Systems", "order": 1},
-            {"name": "Asynchronous Architecture", "slug": "async-architecture-skill", "category": "Architecture & Distributed Systems", "order": 2},
-            {"name": "Caching & Performance", "slug": "caching-performance-skill", "category": "Architecture & Distributed Systems", "order": 3},
-            {"name": "System & API Design", "slug": "system-api-design-skill", "category": "Architecture & Distributed Systems", "order": 4},
-
+            {
+                "name": "Distributed Systems",
+                "slug": "distributed-systems-skill",
+                "category": "Architecture & Distributed Systems",
+                "order": 1,
+            },
+            {
+                "name": "Asynchronous Architecture",
+                "slug": "async-architecture-skill",
+                "category": "Architecture & Distributed Systems",
+                "order": 2,
+            },
+            {
+                "name": "Caching & Performance",
+                "slug": "caching-performance-skill",
+                "category": "Architecture & Distributed Systems",
+                "order": 3,
+            },
+            {
+                "name": "System & API Design",
+                "slug": "system-api-design-skill",
+                "category": "Architecture & Distributed Systems",
+                "order": 4,
+            },
             # 4. Databases & Caching
-            {"name": "PostgreSQL", "slug": "postgresql-skill", "category": "Databases & Caching", "order": 1, "is_core": True},
+            {
+                "name": "PostgreSQL",
+                "slug": "postgresql-skill",
+                "category": "Databases & Caching",
+                "order": 1,
+                "is_core": True,
+            },
             {"name": "MySQL", "slug": "mysql-skill", "category": "Databases & Caching", "order": 2},
             {"name": "Redis", "slug": "redis-skill", "category": "Databases & Caching", "order": 3},
-            {"name": "Database Optimization", "slug": "database-optimization-skill", "category": "Databases & Caching", "order": 4},
-            {"name": "Query Performance / Indexing", "slug": "query-performance-skill", "category": "Databases & Caching", "order": 5},
-
+            {
+                "name": "Database Optimization",
+                "slug": "database-optimization-skill",
+                "category": "Databases & Caching",
+                "order": 4,
+            },
+            {
+                "name": "Query Performance / Indexing",
+                "slug": "query-performance-skill",
+                "category": "Databases & Caching",
+                "order": 5,
+            },
             # 5. AI & Data
             {"name": "LLM Integrations", "slug": "llm-skill", "category": "AI & Data", "order": 1},
-            {"name": "AI/Data Extraction", "slug": "ai-extraction-skill", "category": "AI & Data", "order": 2},
-            {"name": "Data Processing Pipelines", "slug": "data-pipelines-skill", "category": "AI & Data", "order": 3},
-
+            {
+                "name": "AI/Data Extraction",
+                "slug": "ai-extraction-skill",
+                "category": "AI & Data",
+                "order": 2,
+            },
+            {
+                "name": "Data Processing Pipelines",
+                "slug": "data-pipelines-skill",
+                "category": "AI & Data",
+                "order": 3,
+            },
             # 6. DevOps & CI/CD
-            {"name": "Docker", "slug": "docker-skill", "category": "DevOps & CI/CD", "order": 1, "is_core": True},
+            {
+                "name": "Docker",
+                "slug": "docker-skill",
+                "category": "DevOps & CI/CD",
+                "order": 1,
+                "is_core": True,
+            },
             {"name": "Git & GitHub", "slug": "git-skill", "category": "DevOps & CI/CD", "order": 2},
-            {"name": "GitHub Actions", "slug": "github-actions-skill", "category": "DevOps & CI/CD", "order": 3},
-            {"name": "CI/CD Pipelines", "slug": "cicd-skill", "category": "DevOps & CI/CD", "order": 4},
-            {"name": "Containerization", "slug": "containerization-skill", "category": "DevOps & CI/CD", "order": 5},
-
+            {
+                "name": "GitHub Actions",
+                "slug": "github-actions-skill",
+                "category": "DevOps & CI/CD",
+                "order": 3,
+            },
+            {
+                "name": "CI/CD Pipelines",
+                "slug": "cicd-skill",
+                "category": "DevOps & CI/CD",
+                "order": 4,
+            },
+            {
+                "name": "Containerization",
+                "slug": "containerization-skill",
+                "category": "DevOps & CI/CD",
+                "order": 5,
+            },
             # 7. Supporting Technologies
-            {"name": "TypeScript", "slug": "typescript-skill", "category": "Supporting Technologies", "order": 1},
-            {"name": "Next.js", "slug": "nextjs-skill", "category": "Supporting Technologies", "order": 2},
+            {
+                "name": "TypeScript",
+                "slug": "typescript-skill",
+                "category": "Supporting Technologies",
+                "order": 1,
+            },
+            {
+                "name": "Next.js",
+                "slug": "nextjs-skill",
+                "category": "Supporting Technologies",
+                "order": 2,
+            },
         ]
         for s in skills_data:
             Skill.objects.update_or_create(slug=s["slug"], defaults=s)
@@ -335,10 +606,14 @@ class Command(BaseCommand):
                 "grade": "First Class",
                 "achievements": [
                     "Graduated with B.Tech in Computer Science and Engineering.",
-                    "Studied Core Computer Science, Distributed Systems, Relational Databases, and System Design."
+                    "Studied Core Computer Science, Distributed Systems, Relational Databases, and System Design.",
                 ],
                 "relevant_courses": [
-                    "Data Structures & Algorithms", "Operating Systems", "Database Management Systems", "Computer Networks", "System Design"
+                    "Data Structures & Algorithms",
+                    "Operating Systems",
+                    "Database Management Systems",
+                    "Computer Networks",
+                    "System Design",
                 ],
             },
         )
@@ -438,11 +713,31 @@ class Command(BaseCommand):
 
         # 10. SEO Metadata
         seo_data = [
-            {"page_identifier": "home", "title": "Harsh Tripathi | Software Engineer (Backend & Cloud)", "description": "Backend-focused Software Engineer in Tokyo specializing in Python, Django, Celery, Docker, and AWS."},
-            {"page_identifier": "experience", "title": "Work Experience | Harsh Tripathi", "description": "Backend architecture, Celery async pipelines, Docker containerization, and AWS cloud infrastructure."},
-            {"page_identifier": "projects", "title": "Engineering Projects | Harsh Tripathi", "description": "Portfolio of production backend systems, personal CMS platforms, and financial pipelines."},
-            {"page_identifier": "skills", "title": "Technical Skills | Harsh Tripathi", "description": "Core competencies in Python, Django, Celery, MySQL, PostgreSQL, Docker, and AWS."},
-            {"page_identifier": "timeline", "title": "Career Timeline | Harsh Tripathi", "description": "Chronological history of achievements, education at IIIT Nagpur, and software engineering roles at SMS DataTech."},
+            {
+                "page_identifier": "home",
+                "title": "Harsh Tripathi | Software Engineer (Backend & Cloud)",
+                "description": "Backend-focused Software Engineer in Tokyo specializing in Python, Django, Celery, Docker, and AWS.",
+            },
+            {
+                "page_identifier": "experience",
+                "title": "Work Experience | Harsh Tripathi",
+                "description": "Backend architecture, Celery async pipelines, Docker containerization, and AWS cloud infrastructure.",
+            },
+            {
+                "page_identifier": "projects",
+                "title": "Engineering Projects | Harsh Tripathi",
+                "description": "Portfolio of production backend systems, personal CMS platforms, and financial pipelines.",
+            },
+            {
+                "page_identifier": "skills",
+                "title": "Technical Skills | Harsh Tripathi",
+                "description": "Core competencies in Python, Django, Celery, MySQL, PostgreSQL, Docker, and AWS.",
+            },
+            {
+                "page_identifier": "timeline",
+                "title": "Career Timeline | Harsh Tripathi",
+                "description": "Chronological history of achievements, education at IIIT Nagpur, and software engineering roles at SMS DataTech.",
+            },
         ]
         for s in seo_data:
             SEOMetadata.objects.update_or_create(page_identifier=s["page_identifier"], defaults=s)

@@ -32,6 +32,7 @@ class ChatAssistantView(APIView):
     Public API endpoint allowing visitors to query Harsh's AI portfolio assistant.
     Supports both standard JSON and real-time Server-Sent Events (SSE) streaming.
     """
+
     permission_classes = [AllowAny]
     renderer_classes = [JSONRenderer, EventStreamRenderer, BrowsableAPIRenderer]
     throttle_classes = [AIChatRateThrottle]
@@ -77,4 +78,3 @@ class ChatAssistantView(APIView):
                 {"error": "Failed to process chat query.", "details": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-

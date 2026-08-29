@@ -27,7 +27,9 @@ class SiteSettingsView(APIView):
         settings_obj = SiteSettings.objects.first()
         if not settings_obj:
             settings_obj = SiteSettings.objects.create()
-        serializer = SiteSettingsSerializer(settings_obj, data=request.data, partial=True, context={"request": request})
+        serializer = SiteSettingsSerializer(
+            settings_obj, data=request.data, partial=True, context={"request": request}
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -39,11 +41,14 @@ class JsonResumeView(APIView):
     GET /api/v1/settings/json-resume/
     Exposes canonical portfolio data following the open JSON Resume Standard (https://jsonresume.org/).
     """
+
     permission_classes = [permissions.AllowAny]
 
     def get(self, request):
         settings = SiteSettings.objects.first()
-        experiences = Experience.objects.select_related("company").prefetch_related("technologies").all()
+        experiences = (
+            Experience.objects.select_related("company").prefetch_related("technologies").all()
+        )
         skills = Skill.objects.all()
         certs = Certification.objects.all()
         education = Education.objects.all()
@@ -53,10 +58,14 @@ class JsonResumeView(APIView):
         if settings:
             if settings.github_url:
                 github_user = settings.github_url.rstrip("/").split("/")[-1]
-                profiles.append({"network": "GitHub", "username": github_user, "url": settings.github_url})
+                profiles.append(
+                    {"network": "GitHub", "username": github_user, "url": settings.github_url}
+                )
             if settings.linkedin_url:
                 linkedin_user = settings.linkedin_url.rstrip("/").split("/")[-1]
-                profiles.append({"network": "LinkedIn", "username": linkedin_user, "url": settings.linkedin_url})
+                profiles.append(
+                    {"network": "LinkedIn", "username": linkedin_user, "url": settings.linkedin_url}
+                )
 
         name = settings.name if settings else ""
         label = settings.title if settings else ""

@@ -2,7 +2,8 @@ import json
 import logging
 import os
 import time
-from typing import Any, Generator
+from collections.abc import Generator
+from typing import Any
 
 from django.conf import settings as django_settings
 from django.core.cache import cache
@@ -70,9 +71,7 @@ def build_resume_context() -> str:
     context_lines.append("AWS CERTIFICATIONS:")
     for c in certs:
         context_lines.append(f"- {c.name} (Issuer: {c.issuer})")
-        context_lines.append(
-            f"  Active Since: {c.issue_date} | Expires: {c.expiry_date or 'N/A'}"
-        )
+        context_lines.append(f"  Active Since: {c.issue_date} | Expires: {c.expiry_date or 'N/A'}")
         if c.credential_url:
             context_lines.append(f"  Credential Link: {c.credential_url}")
         context_lines.append("")
@@ -87,9 +86,7 @@ def build_resume_context() -> str:
         context_lines.append(
             f"- {edu.degree} in {edu.field_of_study} at {edu.institution} ({edu.location})"
         )
-        context_lines.append(
-            f"  Dates: {edu.start_date} - {edu.end_date} | Grade: {edu.grade}"
-        )
+        context_lines.append(f"  Dates: {edu.start_date} - {edu.end_date} | Grade: {edu.grade}")
 
     context_lines.append("")
     context_lines.append("PORTFOLIO PROJECTS:")
@@ -130,72 +127,109 @@ def extract_action_cards(reply_text: str, settings: Any = None) -> list[dict[str
     text_lower = reply_text.lower()
     cards = []
 
-    if any(k in text_lower for k in ["contact", "email", "reach", "hire", "interview", "get in touch", "connect"]):
-        cards.append({
-            "type": "email",
-            "label": "Email Harsh Directly",
-            "url": f"mailto:{email}?subject=Discussion%20re%3A%20Backend%20%26%20Cloud%20Engineering%20Role",
-            "icon": "Mail",
-            "variant": "primary",
-        })
+    if any(
+        k in text_lower
+        for k in ["contact", "email", "reach", "hire", "interview", "get in touch", "connect"]
+    ):
+        cards.append(
+            {
+                "type": "email",
+                "label": "Email Harsh Directly",
+                "url": f"mailto:{email}?subject=Discussion%20re%3A%20Backend%20%26%20Cloud%20Engineering%20Role",
+                "icon": "Mail",
+                "variant": "primary",
+            }
+        )
         if settings and getattr(settings, "linkedin_url", None):
-            cards.append({
-                "type": "linkedin",
-                "label": "Connect on LinkedIn",
-                "url": settings.linkedin_url,
-                "icon": "ArrowUpRight",
+            cards.append(
+                {
+                    "type": "linkedin",
+                    "label": "Connect on LinkedIn",
+                    "url": settings.linkedin_url,
+                    "icon": "ArrowUpRight",
+                    "variant": "default",
+                }
+            )
+
+    if (
+        any(k in text_lower for k in ["resume", "cv", "profile", "open to", "role"])
+        and len(cards) < 2
+    ):
+        cards.append(
+            {
+                "type": "resume",
+                "label": "View / Download Resume PDF",
+                "url": "/resume",
+                "icon": "FileText",
+                "variant": "primary" if not cards else "default",
+            }
+        )
+
+    if (
+        any(k in text_lower for k in ["fintrack", "financial", "fintech", "market data"])
+        and len(cards) < 2
+    ):
+        cards.append(
+            {
+                "type": "project",
+                "label": "FinTrack AI Deep-Dive",
+                "url": "/projects/fintrack-ai",
+                "icon": "TrendingUp",
                 "variant": "default",
-            })
-
-    if any(k in text_lower for k in ["resume", "cv", "profile", "open to", "role"]) and len(cards) < 2:
-        cards.append({
-            "type": "resume",
-            "label": "View / Download Resume PDF",
-            "url": "/resume",
-            "icon": "FileText",
-            "variant": "primary" if not cards else "default",
-        })
-
-    if any(k in text_lower for k in ["fintrack", "financial", "fintech", "market data"]) and len(cards) < 2:
-        cards.append({
-            "type": "project",
-            "label": "FinTrack AI Deep-Dive",
-            "url": "/projects/fintrack-ai",
-            "icon": "TrendingUp",
-            "variant": "default",
-        })
-    elif any(k in text_lower for k in ["constellation", "homelab", "traefik", "tunnel", "self-hosted"]) and len(cards) < 2:
-        cards.append({
-            "type": "project",
-            "label": "Constellation Homelab Architecture",
-            "url": "/projects/constellation",
-            "icon": "Layers",
-            "variant": "default",
-        })
+            }
+        )
+    elif (
+        any(
+            k in text_lower
+            for k in ["constellation", "homelab", "traefik", "tunnel", "self-hosted"]
+        )
+        and len(cards) < 2
+    ):
+        cards.append(
+            {
+                "type": "project",
+                "label": "Constellation Homelab Architecture",
+                "url": "/projects/constellation",
+                "icon": "Layers",
+                "variant": "default",
+            }
+        )
     elif any(k in text_lower for k in ["career os", "career-os", "portfolio"]) and len(cards) < 2:
-        cards.append({
-            "type": "project",
-            "label": "Career OS Architecture",
-            "url": "/projects/career-os",
-            "icon": "Layers",
-            "variant": "default",
-        })
-    elif any(k in text_lower for k in ["sms datatech", "japan", "tokyo", "scraping", "scrap"]) and len(cards) < 2:
-        cards.append({
-            "type": "experience",
-            "label": "SMS DataTech Role Details",
-            "url": "/experience",
-            "icon": "Briefcase",
-            "variant": "default",
-        })
-    elif any(k in text_lower for k in ["aws", "certification", "solutions architect", "cloudops"]) and len(cards) < 2:
-        cards.append({
-            "type": "skills",
-            "label": "Verify AWS Certifications",
-            "url": "/skills",
-            "icon": "Award",
-            "variant": "default",
-        })
+        cards.append(
+            {
+                "type": "project",
+                "label": "Career OS Architecture",
+                "url": "/projects/career-os",
+                "icon": "Layers",
+                "variant": "default",
+            }
+        )
+    elif (
+        any(k in text_lower for k in ["sms datatech", "japan", "tokyo", "scraping", "scrap"])
+        and len(cards) < 2
+    ):
+        cards.append(
+            {
+                "type": "experience",
+                "label": "SMS DataTech Role Details",
+                "url": "/experience",
+                "icon": "Briefcase",
+                "variant": "default",
+            }
+        )
+    elif (
+        any(k in text_lower for k in ["aws", "certification", "solutions architect", "cloudops"])
+        and len(cards) < 2
+    ):
+        cards.append(
+            {
+                "type": "skills",
+                "label": "Verify AWS Certifications",
+                "url": "/skills",
+                "icon": "Award",
+                "variant": "default",
+            }
+        )
 
     return cards[:2]
 
@@ -273,15 +307,27 @@ def _fallback_rag_response(last_user_query: str, settings: Any = None) -> dict[s
         sources = ["SiteSettings Schema"]
     elif any(k in query_lower for k in ["certif", "aws", "solutions architect", "cloudops"]):
         certs = Certification.objects.all()
-        cert_lines = "\n".join([f"- **{c.name}** (Active: {c.issue_date} – {c.expiry_date or 'Active'})" for c in certs])
+        cert_lines = "\n".join(
+            [
+                f"- **{c.name}** (Active: {c.issue_date} – {c.expiry_date or 'Active'})"
+                for c in certs
+            ]
+        )
         reply = (
             f"{first_name} holds the following verified certifications:\n\n{cert_lines}\n\n"
             "You can inspect verified credentials on the [Skills & Stack](/skills) page."
         )
         sources = ["AWS Certifications Model"]
-    elif any(k in query_lower for k in ["work", "job", "experience", "sms datatech", "scraping", "japan", "tokyo"]):
+    elif any(
+        k in query_lower
+        for k in ["work", "job", "experience", "sms datatech", "scraping", "japan", "tokyo"]
+    ):
         exp = Experience.objects.filter(current_position=True).first()
-        current_role = f"**{exp.title}** at **{exp.company.name}** in Tokyo, Japan" if exp else "a Backend & Cloud Engineer"
+        current_role = (
+            f"**{exp.title}** at **{exp.company.name}** in Tokyo, Japan"
+            if exp
+            else "a Backend & Cloud Engineer"
+        )
         reply = (
             f"{first_name} works as {current_role}.\n\n"
             f"**Key Engineering Focus**:\n"
@@ -291,7 +337,10 @@ def _fallback_rag_response(last_user_query: str, settings: Any = None) -> dict[s
             f"Read full role details on the [Work Experience](/experience) page."
         )
         sources = ["Work Experience Model", "PostgreSQL ContentGraph"]
-    elif any(k in query_lower for k in ["skill", "stack", "python", "django", "celery", "docker", "tech", "database"]):
+    elif any(
+        k in query_lower
+        for k in ["skill", "stack", "python", "django", "celery", "docker", "tech", "database"]
+    ):
         reply = (
             f"{first_name}'s core engineering stack is centered on:\n\n"
             f"- **Backend**: Python, Django REST Framework, Celery, FastAPI, Node.js\n"
@@ -303,7 +352,11 @@ def _fallback_rag_response(last_user_query: str, settings: Any = None) -> dict[s
         sources = ["Technical Skills Model"]
     elif any(k in query_lower for k in ["education", "college", "degree", "university", "iiit"]):
         edu = Education.objects.first()
-        edu_text = f"a **{edu.degree}** in **{edu.field_of_study}** from **{edu.institution}**" if edu else "a degree in Computer Science"
+        edu_text = (
+            f"a **{edu.degree}** in **{edu.field_of_study}** from **{edu.institution}**"
+            if edu
+            else "a degree in Computer Science"
+        )
         reply = (
             f"{first_name} graduated with {edu_text}.\n\n"
             "View educational background and coursework on the [Resume](/resume) page."
@@ -317,7 +370,10 @@ def _fallback_rag_response(last_user_query: str, settings: Any = None) -> dict[s
             "Check out full architecture diagrams on the [Projects Showcase](/projects) page."
         )
         sources = ["Projects ContentGraph"]
-    elif any(k in query_lower for k in ["contact", "email", "github", "linkedin", "hire", "reach", "open"]):
+    elif any(
+        k in query_lower
+        for k in ["contact", "email", "github", "linkedin", "hire", "reach", "open"]
+    ):
         github = settings.github_url if settings else "https://github.com/Harsh324"
         linkedin = settings.linkedin_url if settings else "https://linkedin.com"
         location = settings.location if settings else "Tokyo, Japan / Worldwide"
@@ -363,13 +419,24 @@ def stream_ai_assistant_reply(messages_input: Any) -> Generator[str, None, None]
     if gemini_key:
         try:
             import google.generativeai as genai
+
             genai.configure(api_key=gemini_key)
             model = genai.GenerativeModel("gemini-1.5-flash")
 
             # Format strictly alternating multi-turn history for Gemini
             contents = [
-                {"role": "user", "parts": [f"{SYSTEM_GUARDRAILS}\n\nBACKGROUND CONTEXT:\n{context}\n\nPlease acknowledge your role."]},
-                {"role": "model", "parts": ["Understood. I will answer strictly based on Harsh's Career OS context."]},
+                {
+                    "role": "user",
+                    "parts": [
+                        f"{SYSTEM_GUARDRAILS}\n\nBACKGROUND CONTEXT:\n{context}\n\nPlease acknowledge your role."
+                    ],
+                },
+                {
+                    "role": "model",
+                    "parts": [
+                        "Understood. I will answer strictly based on Harsh's Career OS context."
+                    ],
+                },
             ]
             last_role = "model"
             for m in messages[:-1]:
@@ -379,7 +446,7 @@ def stream_ai_assistant_reply(messages_input: Any) -> Generator[str, None, None]
                     last_role = curr_role
                 else:
                     contents[-1]["parts"].append(m["content"])
-            
+
             if last_role == "user":
                 contents[-1]["parts"].append(last_user_query)
             else:
@@ -405,8 +472,12 @@ def stream_ai_assistant_reply(messages_input: Any) -> Generator[str, None, None]
     if openai_key:
         try:
             import urllib.request
+
             openai_messages = [
-                {"role": "system", "content": f"{SYSTEM_GUARDRAILS}\n\nBACKGROUND CONTEXT:\n{context}"},
+                {
+                    "role": "system",
+                    "content": f"{SYSTEM_GUARDRAILS}\n\nBACKGROUND CONTEXT:\n{context}",
+                },
             ]
             for m in messages[-6:]:
                 role = "user" if m["role"] == "user" else "assistant"
@@ -435,7 +506,9 @@ def stream_ai_assistant_reply(messages_input: Any) -> Generator[str, None, None]
                     line_str = line.decode("utf-8").strip()
                     if line_str.startswith("data: ") and line_str != "data: [DONE]":
                         chunk_data = json.loads(line_str[6:])
-                        delta = chunk_data.get("choices", [{}])[0].get("delta", {}).get("content", "")
+                        delta = (
+                            chunk_data.get("choices", [{}])[0].get("delta", {}).get("content", "")
+                        )
                         if delta:
                             full_text += delta
                             yield f"data: {json.dumps({'type': 'chunk', 'chunk': delta})}\n\n"
@@ -480,11 +553,22 @@ def get_ai_assistant_reply(messages_input: Any) -> dict[str, Any]:
     if gemini_key:
         try:
             import google.generativeai as genai
+
             genai.configure(api_key=gemini_key)
             model = genai.GenerativeModel("gemini-1.5-flash")
             contents = [
-                {"role": "user", "parts": [f"{SYSTEM_GUARDRAILS}\n\nBACKGROUND CONTEXT:\n{context}\n\nPlease acknowledge your role."]},
-                {"role": "model", "parts": ["Understood. I will answer strictly based on Harsh's Career OS context."]},
+                {
+                    "role": "user",
+                    "parts": [
+                        f"{SYSTEM_GUARDRAILS}\n\nBACKGROUND CONTEXT:\n{context}\n\nPlease acknowledge your role."
+                    ],
+                },
+                {
+                    "role": "model",
+                    "parts": [
+                        "Understood. I will answer strictly based on Harsh's Career OS context."
+                    ],
+                },
             ]
             for m in messages[:-1]:
                 role = "user" if m["role"] == "user" else "model"
@@ -506,8 +590,12 @@ def get_ai_assistant_reply(messages_input: Any) -> dict[str, Any]:
     if openai_key:
         try:
             import urllib.request
+
             openai_messages = [
-                {"role": "system", "content": f"{SYSTEM_GUARDRAILS}\n\nBACKGROUND CONTEXT:\n{context}"},
+                {
+                    "role": "system",
+                    "content": f"{SYSTEM_GUARDRAILS}\n\nBACKGROUND CONTEXT:\n{context}",
+                },
             ]
             for m in messages[-6:]:
                 role = "user" if m["role"] == "user" else "assistant"
@@ -548,5 +636,3 @@ def get_ai_assistant_reply(messages_input: Any) -> dict[str, Any]:
         "actions": extract_action_cards(reply, settings),
         "suggestions": extract_suggestions(reply),
     }
-
-

@@ -2,7 +2,9 @@ from django.db import models
 
 
 class SEOMetadata(models.Model):
-    page_identifier = models.CharField(max_length=100, unique=True, help_text="e.g. 'home', 'experience', 'projects', 'skills'")
+    page_identifier = models.CharField(
+        max_length=100, unique=True, help_text="e.g. 'home', 'experience', 'projects', 'skills'"
+    )
     title = models.CharField(max_length=255)
     description = models.TextField()
     keywords = models.JSONField(default=list, blank=True)

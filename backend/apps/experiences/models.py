@@ -24,7 +24,7 @@ class Experience(models.Model):
     focus_areas = models.JSONField(default=list, blank=True)
     tech_groups = models.JSONField(default=dict, blank=True)
     challenges = models.JSONField(default=list, blank=True)  # List of {problem, solution, impact}
-    metrics = models.JSONField(default=list, blank=True)     # List of {label, value}
+    metrics = models.JSONField(default=list, blank=True)  # List of {label, value}
     team = models.CharField(max_length=255, blank=True)
     ownership = models.TextField(blank=True)
     lessons_learned = models.JSONField(default=list, blank=True)

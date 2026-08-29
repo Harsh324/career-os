@@ -9,6 +9,7 @@ def get_upload_path(instance, filename):
     filename = f"{uuid.uuid4().hex}.{ext}"
     return os.path.join("uploads", instance.media_type, filename)
 
+
 class MediaAsset(models.Model):
     MEDIA_TYPES = (
         ("company_logo", "Company Logo"),
