@@ -52,26 +52,35 @@ class JsonResumeView(APIView):
         profiles = []
         if settings:
             if settings.github_url:
-                profiles.append({"network": "GitHub", "username": "Harsh324", "url": settings.github_url})
+                github_user = settings.github_url.rstrip("/").split("/")[-1]
+                profiles.append({"network": "GitHub", "username": github_user, "url": settings.github_url})
             if settings.linkedin_url:
-                profiles.append({"network": "LinkedIn", "username": "harsh324", "url": settings.linkedin_url})
+                linkedin_user = settings.linkedin_url.rstrip("/").split("/")[-1]
+                profiles.append({"network": "LinkedIn", "username": linkedin_user, "url": settings.linkedin_url})
+
+        name = settings.name if settings else ""
+        label = settings.title if settings else ""
+        email = settings.email if settings else ""
+        summary = settings.summary if settings else ""
+        city = settings.location.split(",")[0].strip() if settings and settings.location else ""
+        country_code = "JP" if "Japan" in (settings.location if settings else "") else ""
 
         json_resume = {
             "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
             "basics": {
-                "name": settings.name if settings else "Harsh Tripathi",
-                "label": settings.title if settings else "Software Engineer (Backend and Cloud)",
-                "email": settings.email if settings else "tripathiharsh324@gmail.com",
-                "summary": settings.summary if settings else "",
+                "name": name,
+                "label": label,
+                "email": email,
+                "summary": summary,
                 "location": {
-                    "city": settings.location.split(",")[0].strip() if settings and settings.location else "Tokyo",
-                    "countryCode": "JP",
+                    "city": city,
+                    "countryCode": country_code,
                 },
                 "profiles": profiles,
             },
             "work": [
                 {
-                    "name": exp.company.name if exp.company else "SMS DataTech",
+                    "name": exp.company.name if exp.company else "",
                     "position": exp.title,
                     "location": exp.location,
                     "startDate": str(exp.start_date),

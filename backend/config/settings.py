@@ -10,11 +10,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 DEBUG = os.getenv("DEBUG", "True").lower() in ("true", "1", "t")
 
+from django.core.exceptions import ImproperlyConfigured
+
 # Security Settings
-SECRET_KEY = os.getenv(
-    "SECRET_KEY",
-    "django-insecure-career-os-v2-dev-secret-key-change-in-production-123456789",
-)
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = "django-insecure-career-os-v2-dev-secret-key-change-in-production-123456789"
+    else:
+        raise ImproperlyConfigured("SECRET_KEY environment variable is required in production.")
 
 if os.getenv("ALLOWED_HOSTS"):
     ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "").split(",") if h.strip()]
@@ -52,7 +56,6 @@ INSTALLED_APPS = [
     "apps.seo",
     "apps.site_settings",
     "apps.ai_assistant",
-    "apps.analytics",
 ]
 
 MIDDLEWARE = [
@@ -148,6 +151,13 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 50,
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "60/minute",
+        "ai_chat": "30/minute",
+    },
 }
 
 # Simple JWT Configuration
@@ -162,8 +172,10 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://localhost:3002",
+    "http://127.0.0.1:3002",
 ]
-CORS_ALLOW_ALL_ORIGINS = os.getenv("CORS_ALLOW_ALL", "True").lower() in ("true", "1")
+CORS_ALLOW_ALL_ORIGINS = DEBUG or os.getenv("CORS_ALLOW_ALL", "False").lower() in ("true", "1")
 CORS_ALLOW_CREDENTIALS = True
 
 # OpenAPI / Swagger Configuration (drf-spectacular)
@@ -173,3 +185,16 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "2.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
+
+# Caching Configuration
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "career-os-cache",
+    }
+}
+
+# AI Assistant API Keys
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+

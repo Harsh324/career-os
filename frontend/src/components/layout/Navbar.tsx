@@ -18,23 +18,21 @@ import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 interface NavbarProps {
   name?: string;
+  title?: string;
 }
 
-export function Navbar({ name = "Harsh Tripathi" }: NavbarProps) {
+export function Navbar({ name = "Harsh Tripathi", title = "Backend & Cloud Engineer" }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const pathname = usePathname();
-  const [prevPathname, setPrevPathname] = React.useState(pathname);
-
-  if (prevPathname !== pathname) {
-    setPrevPathname(pathname);
+  React.useEffect(() => {
     setMobileMenuOpen(false);
-  }
+  }, [pathname]);
 
-  const navItems = [
+  const navItems: { label: string; href: string; icon: React.ComponentType<{ className?: string }>; count?: number }[] = [
     { label: "Overview", href: "/", icon: BookOpen },
-    { label: "Experience", href: "/experience", icon: Briefcase, count: 2 },
-    { label: "Projects", href: "/projects", icon: FolderGit2, count: 3 },
-    { label: "Skills", href: "/skills", icon: Cpu, count: 8 },
+    { label: "Experience", href: "/experience", icon: Briefcase },
+    { label: "Projects", href: "/projects", icon: FolderGit2 },
+    { label: "Skills", href: "/skills", icon: Cpu },
     { label: "Timeline", href: "/timeline", icon: History },
     { label: "Resume", href: "/resume", icon: FileText },
   ];
@@ -46,16 +44,16 @@ export function Navbar({ name = "Harsh Tripathi" }: NavbarProps) {
         <Link
           href="/"
           className="flex items-center gap-2.5 font-sans text-sm font-semibold text-[#24292f] dark:text-[#f0f6fc] hover:text-[#0969da] dark:hover:text-[#58a6ff] transition-colors group"
-          aria-label={`Career OS | ${name}`}
+          aria-label={`${name} | ${title}`}
         >
           {/* Git Node Geometric Logo Badge */}
           <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-[#0969da]/10 dark:bg-[#388bfd]/15 text-[#0969da] dark:text-[#58a6ff] border border-[#0969da]/30 dark:border-[#58a6ff]/30 shadow-sm group-hover:scale-105 transition-transform">
             <GitNodeIcon className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
           </div>
           <span className="tracking-tight flex items-center gap-1.5">
-            <span className="font-semibold text-[#24292f] dark:text-[#f0f6fc]">Career OS</span>
-            <span className="text-[#57606a] dark:text-[#8b949e] font-normal">|</span>
-            <span className="text-[#0969da] dark:text-[#58a6ff] font-semibold">{name}</span>
+            <span className="font-semibold text-[#24292f] dark:text-[#f0f6fc]">{name}</span>
+            <span className="text-[#57606a] dark:text-[#8b949e] font-normal hidden sm:inline">&bull;</span>
+            <span className="text-[#0969da] dark:text-[#58a6ff] font-semibold text-xs hidden sm:inline">{title}</span>
           </span>
         </Link>
 
@@ -63,9 +61,12 @@ export function Navbar({ name = "Harsh Tripathi" }: NavbarProps) {
         <div className="flex items-center gap-3">
           <ThemeToggle />
           <button
+            type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="flex h-8 w-8 items-center justify-center rounded-md border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#21262d] text-[#24292f] dark:text-[#c9d1d9] hover:bg-[#f6f8fa] dark:hover:bg-[#30363d] md:hidden focus:outline-none"
             aria-label="Toggle mobile menu"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-nav"
           >
             {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
@@ -80,7 +81,7 @@ export function Navbar({ name = "Harsh Tripathi" }: NavbarProps) {
             const isActive =
               item.href === "/"
                 ? pathname === "/"
-                : pathname.startsWith(item.href);
+                : Boolean(pathname?.startsWith(item.href));
 
             return (
               <Link
@@ -107,13 +108,13 @@ export function Navbar({ name = "Harsh Tripathi" }: NavbarProps) {
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="w-full border-b border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#0d1117] px-4 py-3 md:hidden shadow-xl space-y-1">
+        <div id="mobile-nav" className="w-full border-b border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#0d1117] px-4 py-3 md:hidden shadow-xl space-y-1 animate-in slide-in-from-top-2 fade-in duration-150">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive =
               item.href === "/"
                 ? pathname === "/"
-                : pathname.startsWith(item.href);
+                : Boolean(pathname?.startsWith(item.href));
 
             return (
               <Link

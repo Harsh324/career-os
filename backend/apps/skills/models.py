@@ -12,6 +12,7 @@ class Skill(models.Model):
     experience_level = models.CharField(max_length=50, default="Advanced")
     technologies = models.ManyToManyField(Technology, related_name="skills", blank=True)
     order = models.IntegerField(default=0)
+    is_core = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

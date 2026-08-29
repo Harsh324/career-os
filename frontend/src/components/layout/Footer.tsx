@@ -20,7 +20,7 @@ export async function Footer() {
             <GitNodeIcon className="h-3.5 w-3.5" />
           </div>
           <span className="font-sans font-semibold text-[#24292f] dark:text-[#f0f6fc]">
-            Powered by <span className="font-bold text-[#0969da] dark:text-[#58a6ff]">Career OS v2</span>
+            {meta.name} <span className="font-medium text-[#0969da] dark:text-[#58a6ff]">&bull; {meta.title}</span>
           </span>
           <span>&bull;</span>
           <span>&copy; {new Date().getFullYear()}</span>
@@ -35,6 +35,9 @@ export async function Footer() {
           </Link>
           <Link href="/skills" className="hover:text-[#0969da] dark:hover:text-[#58a6ff] hover:underline">
             Skills
+          </Link>
+          <Link href="/resume" className="hover:text-[#0969da] dark:hover:text-[#58a6ff] hover:underline">
+            Resume
           </Link>
         </div>
 

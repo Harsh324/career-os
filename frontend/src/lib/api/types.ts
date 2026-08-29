@@ -36,6 +36,7 @@ export interface Skill {
   experience_level: string;
   technologies_detail?: Technology[];
   order: number;
+  is_core?: boolean;
 }
 
 export interface Project {
@@ -56,6 +57,7 @@ export interface Project {
   architecture_images?: string[];
   timeline?: string;
   featured: boolean;
+  order?: number;
 }
 
 export interface TechnicalChallenge {
@@ -124,6 +126,7 @@ export interface TimelineEvent {
   icon: string;
   link?: string;
   order: number;
+  is_milestone?: boolean;
 }
 
 export interface Education {

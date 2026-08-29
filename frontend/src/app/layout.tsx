@@ -38,9 +38,12 @@ export async function generateMetadata(): Promise<Metadata> {
     // Fallback to static meta if API is not running during build
   }
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://career-os.dev";
+
   return {
+    metadataBase: new URL(siteUrl),
     title: {
-      default: `${meta.name} — ${meta.title}`,
+      default: `${meta.name} | Backend & Cloud Engineer`,
       template: `%s | ${meta.name}`,
     },
     description: meta.summary || meta.tagline,
@@ -50,11 +53,10 @@ export async function generateMetadata(): Promise<Metadata> {
       "Cloud Architecture",
       "Platform Engineering",
       "AWS",
-      "Django",
+      "Django REST Framework",
       "PostgreSQL",
-      "Docker",
-      "Career OS",
-      "Developer Tooling",
+      "Celery",
+      "ECS Fargate",
       "Distributed Systems",
     ],
     authors: [{ name: meta.name }],
@@ -62,10 +64,25 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       type: "website",
       locale: "en_US",
-      url: "https://career-os.dev",
-      siteName: `${meta.name} Portfolio`,
-      title: `${meta.name} — ${meta.title}`,
+      url: siteUrl,
+      siteName: `${meta.name} | Backend & Cloud Engineer`,
+      title: `${meta.name} | Backend & Cloud Engineer`,
       description: meta.summary || meta.tagline,
+      images: [
+        {
+          url: meta.avatar_url || "/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: `${meta.name} — Backend & Cloud Engineer (Python, Django REST, AWS, Celery, PostgreSQL)`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${meta.name} | Backend & Cloud Engineer`,
+      description: meta.summary || meta.tagline,
+      creator: "@harsh324",
+      images: [meta.avatar_url || "/og-image.png"],
     },
   };
 }
@@ -109,18 +126,16 @@ export default async function RootLayout({
       className={`${inter.variable} ${outfit.variable} ${jetbrainsMono.variable} scroll-smooth`}
       suppressHydrationWarning
     >
-      <head>
+      <body className="min-h-screen w-full overflow-x-hidden bg-[#f6f8fa] dark:bg-[#0d1117] text-[#24292f] dark:text-[#f0f6fc] antialiased selection:bg-[#2ea043]/30 selection:text-[#2ea043] transition-colors">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-      </head>
-      <body className="min-h-screen w-full overflow-x-hidden bg-[#f6f8fa] dark:bg-[#0d1117] text-[#24292f] dark:text-[#f0f6fc] antialiased selection:bg-[#2ea043]/30 selection:text-[#2ea043] transition-colors">
         <QueryProvider>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
             <AnalyticsProvider>
               <div className="flex min-h-screen w-full flex-col items-center">
-                <Navbar name={meta.name} />
+                <Navbar name={meta.name} title={meta.title} />
                 <main className="flex-1 w-full">{children}</main>
                 <Footer />
                 <ChatWidget />

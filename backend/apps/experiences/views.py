@@ -4,7 +4,7 @@ from apps.experiences.models import Experience
 from apps.experiences.serializers import ExperienceSerializer
 
 
-class ExperienceViewSet(viewsets.ModelViewSet):
+class ExperienceViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = (
         Experience.objects.all()
         .select_related("company")

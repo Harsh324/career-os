@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { fetchExperiences, fetchSkills, fetchCertifications, fetchEducation, fetchSiteSettings } from "@/lib/api/services";
 import { DEFAULT_SITE_SETTINGS } from "@/lib/constants/site";
 import { ResumeViewSwitcher } from "@/components/resume/ResumeViewSwitcher";
+import type { Experience, Certification, Education } from "@/lib/api/types";
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Resume & Curriculum Vitae",
@@ -10,9 +13,9 @@ export const metadata: Metadata = {
 
 export default async function ResumePage() {
   let meta = DEFAULT_SITE_SETTINGS;
-  let experiences: any[] = [];
-  let certs: any[] = [];
-  let education: any[] = [];
+  let experiences: Experience[] = [];
+  let certs: Certification[] = [];
+  let education: Education[] = [];
 
   try {
     const [fetchedSettings, fetchedExp, fetchedSkills, fetchedCerts, fetchedEdu] =
@@ -31,7 +34,7 @@ export default async function ResumePage() {
   } catch (err) {}
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 py-8 sm:py-10">
+    <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 py-6 sm:py-8 space-y-6">
       <ResumeViewSwitcher
         meta={meta}
         experiences={experiences}

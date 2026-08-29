@@ -15,7 +15,7 @@ class BlogPost(models.Model):
     summary = models.TextField()
     content = models.TextField()
     featured_image = models.URLField(max_length=1024, blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="published")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="draft")
     published_at = models.DateTimeField(null=True, blank=True)
     tags = models.JSONField(default=list, blank=True)
     series = models.CharField(max_length=255, blank=True)

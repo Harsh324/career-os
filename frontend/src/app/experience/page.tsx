@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { fetchExperiences } from "@/lib/api/services";
 import { Briefcase } from "lucide-react";
 import { ExperienceCard } from "@/components/experience/ExperienceCard";
+import type { Experience } from "@/lib/api/types";
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Work Experience",
@@ -9,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ExperiencePage() {
-  let experiences: any[] = [];
+  let experiences: Experience[] = [];
   try {
     experiences = await fetchExperiences();
   } catch (err) {
@@ -19,20 +22,26 @@ export default async function ExperiencePage() {
   return (
     <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 py-8 sm:py-10 space-y-6">
       <div className="space-y-1.5 border-b border-[#d0d7de] dark:border-[#30363d] pb-4">
-        <h1 className="flex items-center gap-2.5 text-xl font-bold tracking-tight sm:text-2xl text-[#24292f] dark:text-[#f0f6fc]">
-          <Briefcase className="h-5 w-5 sm:h-6 sm:w-6 text-[#0969da] dark:text-[#58a6ff]" />
+        <h1 className="flex items-center gap-2.5 text-lg font-bold tracking-tight sm:text-xl text-[#24292f] dark:text-[#f0f6fc]">
+          <Briefcase className="h-4 w-4 sm:h-5 sm:w-5 text-[#0969da] dark:text-[#58a6ff]" />
           <span>Work Experience</span>
         </h1>
         <p className="text-xs sm:text-sm text-[#57606a] dark:text-[#8b949e]">
-          Software engineering leadership, backend platform architecture, cloud infrastructure, and technical ownership.
+          Backend and cloud engineering &mdash; building scalable asynchronous systems, Docker containerization, and AWS infrastructure.
         </p>
       </div>
 
-      <div className="space-y-4">
-        {experiences.map((exp, idx) => (
-          <ExperienceCard key={exp.slug || idx} experience={exp} />
-        ))}
-      </div>
+      {experiences.length === 0 ? (
+        <div className="rounded-xl border border-[#d0d7de] dark:border-[#30363d] p-8 text-center text-xs font-mono text-[#57606a] dark:text-[#8b949e]">
+          No work experience records found.
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {experiences.map((exp, idx) => (
+            <ExperienceCard key={exp.slug || idx} experience={exp} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

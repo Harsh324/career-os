@@ -4,7 +4,7 @@ from apps.skills.models import Skill
 from apps.skills.serializers import SkillSerializer
 
 
-class SkillViewSet(viewsets.ModelViewSet):
+class SkillViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Skill.objects.all().prefetch_related("technologies")
     serializer_class = SkillSerializer
     lookup_field = "slug"

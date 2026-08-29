@@ -4,7 +4,7 @@ from apps.projects.models import Project
 from apps.projects.serializers import ProjectSerializer
 
 
-class ProjectViewSet(viewsets.ModelViewSet):
+class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Project.objects.all().prefetch_related("tech_stack")
     serializer_class = ProjectSerializer
     lookup_field = "slug"

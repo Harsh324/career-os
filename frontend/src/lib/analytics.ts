@@ -52,22 +52,9 @@ export function sendTelemetryEvent(
       ref_code: refCode,
     };
 
-    const apiUrl =
-      process.env.NEXT_PUBLIC_API_URL || "http://localhost:8002/api/v1";
-    const endpoint = `${apiUrl}/analytics/event/`;
-
-    if (navigator.sendBeacon) {
-      const blob = new Blob([JSON.stringify(payload)], {
-        type: "application/json",
-      });
-      navigator.sendBeacon(endpoint, blob);
-    } else {
-      fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-        keepalive: true,
-      }).catch(() => {});
+    // Telemetry is captured client-side; no-op if remote endpoint is disabled
+    if (process.env.NODE_ENV === "development") {
+      // Local dev telemetry log
     }
   } catch (err) {
     // Silent fail for non-blocking telemetry

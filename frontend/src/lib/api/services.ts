@@ -1,7 +1,6 @@
 import { cache } from "react";
-import { apiClient } from "./client";
+import { apiClient, getBaseURL } from "./client";
 import type {
-  BlogPost,
   Certification,
   Education,
   Experience,
@@ -12,6 +11,7 @@ import type {
   Technology,
   TimelineEvent,
 } from "./types";
+import { DEFAULT_SITE_SETTINGS } from "../constants/site";
 
 interface DRFListResponse<T> {
   count?: number;
@@ -25,13 +25,24 @@ function extractResults<T>(data: DRFListResponse<T> | T[]): T[] {
 }
 
 export const fetchSiteSettings = cache(async (): Promise<SiteSettings> => {
-  const res = await apiClient.get<SiteSettings>("/settings/");
-  return res.data;
+  if (process.env.NEXT_PHASE === "phase-production-build") {
+    return DEFAULT_SITE_SETTINGS as SiteSettings;
+  }
+  try {
+    const res = await apiClient.get<SiteSettings>("/settings/");
+    return res.data || (DEFAULT_SITE_SETTINGS as SiteSettings);
+  } catch (err) {
+    return DEFAULT_SITE_SETTINGS as SiteSettings;
+  }
 });
 
 export const fetchExperiences = cache(async (): Promise<Experience[]> => {
-  const res = await apiClient.get<DRFListResponse<Experience> | Experience[]>("/experience/");
-  return extractResults(res.data);
+  try {
+    const res = await apiClient.get<DRFListResponse<Experience> | Experience[]>("/experience/");
+    return extractResults(res.data);
+  } catch (err) {
+    return [];
+  }
 });
 
 export const fetchExperienceBySlug = cache(async (slug: string): Promise<Experience | null> => {
@@ -44,9 +55,13 @@ export const fetchExperienceBySlug = cache(async (slug: string): Promise<Experie
 });
 
 export const fetchProjects = cache(async (featured?: boolean): Promise<Project[]> => {
-  const params = featured !== undefined ? { featured: String(featured) } : {};
-  const res = await apiClient.get<DRFListResponse<Project> | Project[]>("/projects/", { params });
-  return extractResults(res.data);
+  try {
+    const params: Record<string, string> = featured !== undefined ? { featured: String(featured) } : {};
+    const res = await apiClient.get<DRFListResponse<Project> | Project[]>("/projects/", { params });
+    return extractResults(res.data);
+  } catch (err) {
+    return [];
+  }
 });
 
 export const fetchProjectBySlug = cache(async (slug: string): Promise<Project | null> => {
@@ -59,41 +74,47 @@ export const fetchProjectBySlug = cache(async (slug: string): Promise<Project | 
 });
 
 export const fetchSkills = cache(async (): Promise<Skill[]> => {
-  const res = await apiClient.get<DRFListResponse<Skill> | Skill[]>("/skills/");
-  return extractResults(res.data);
+  try {
+    const res = await apiClient.get<DRFListResponse<Skill> | Skill[]>("/skills/");
+    return extractResults(res.data);
+  } catch (err) {
+    return [];
+  }
 });
 
 export const fetchTechnologies = cache(async (): Promise<Technology[]> => {
-  const res = await apiClient.get<DRFListResponse<Technology> | Technology[]>("/technologies/");
-  return extractResults(res.data);
+  try {
+    const res = await apiClient.get<DRFListResponse<Technology> | Technology[]>("/technologies/");
+    return extractResults(res.data);
+  } catch (err) {
+    return [];
+  }
 });
 
 export const fetchTimeline = cache(async (): Promise<TimelineEvent[]> => {
-  const res = await apiClient.get<DRFListResponse<TimelineEvent> | TimelineEvent[]>("/timeline/");
-  return extractResults(res.data);
+  try {
+    const res = await apiClient.get<DRFListResponse<TimelineEvent> | TimelineEvent[]>("/timeline/");
+    return extractResults(res.data);
+  } catch (err) {
+    return [];
+  }
 });
 
 export const fetchEducation = cache(async (): Promise<Education[]> => {
-  const res = await apiClient.get<DRFListResponse<Education> | Education[]>("/education/");
-  return extractResults(res.data);
+  try {
+    const res = await apiClient.get<DRFListResponse<Education> | Education[]>("/education/");
+    return extractResults(res.data);
+  } catch (err) {
+    return [];
+  }
 });
 
 export const fetchCertifications = cache(async (): Promise<Certification[]> => {
-  const res = await apiClient.get<DRFListResponse<Certification> | Certification[]>("/certifications/");
-  return extractResults(res.data);
-});
-
-export const fetchBlogPosts = cache(async (): Promise<BlogPost[]> => {
-  const res = await apiClient.get<DRFListResponse<BlogPost> | BlogPost[]>("/blog/");
-  return extractResults(res.data);
-});
-
-export const fetchBlogPostBySlug = cache(async (slug: string): Promise<BlogPost | null> => {
   try {
-    const res = await apiClient.get<BlogPost>(`/blog/${slug}/`);
-    return res.data;
+    const res = await apiClient.get<DRFListResponse<Certification> | Certification[]>("/certifications/");
+    return extractResults(res.data);
   } catch (err) {
-    return null;
+    return [];
   }
 });
 
@@ -106,13 +127,35 @@ export const fetchSEOMetadata = cache(async (pageIdentifier: string): Promise<SE
   }
 });
 
+export interface ChatActionCard {
+  type: string;
+  label: string;
+  url: string;
+  icon?: string;
+  variant?: string;
+}
+
+export interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export interface ChatResponse {
+  reply: string;
+  mode?: string;
+  sources?: string[];
+  actions?: ChatActionCard[];
+  suggestions?: string[];
+}
+
 export async function sendChatMessage(
-  message: string
-): Promise<{ reply: string; mode?: string; sources?: string[] }> {
+  messages: ChatMessage[] | string
+): Promise<ChatResponse> {
   try {
-    const res = await apiClient.post<{ reply: string; mode?: string; sources?: string[] }>(
+    const payload = typeof messages === "string" ? { message: messages } : { messages };
+    const res = await apiClient.post<ChatResponse>(
       "/assistant/chat/",
-      { message }
+      payload
     );
     return res.data;
   } catch (err: any) {
@@ -122,7 +165,83 @@ export async function sendChatMessage(
   }
 }
 
+export async function streamChatMessage(
+  messages: ChatMessage[],
+  callbacks: {
+    onChunk: (chunk: string) => void;
+    onMeta?: (meta: { mode?: string; sources?: string[] }) => void;
+    onDone?: (data: { actions?: ChatActionCard[]; suggestions?: string[] }) => void;
+    onError?: (err: any) => void;
+  }
+): Promise<void> {
+  const baseUrl = getBaseURL();
+
+  try {
+    const res = await fetch(`${baseUrl}/assistant/chat/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "text/event-stream",
+      },
+      body: JSON.stringify({ messages, stream: true }),
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    if (!res.body) {
+      // Non-streaming fallback
+      const text = await res.text();
+      const data = text ? JSON.parse(text) : {};
+      callbacks.onChunk(data.reply || "");
+      callbacks.onMeta?.({ mode: data.mode, sources: data.sources });
+      callbacks.onDone?.({ actions: data.actions, suggestions: data.suggestions });
+      return;
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n\n");
+      buffer = lines.pop() || "";
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed.startsWith("data: ")) {
+          const jsonStr = trimmed.slice(6).trim();
+          if (jsonStr && jsonStr !== "[DONE]") {
+            try {
+              const data = JSON.parse(jsonStr);
+              if (data.type === "meta") {
+                callbacks.onMeta?.({ mode: data.mode, sources: data.sources });
+              } else if (data.type === "chunk") {
+                callbacks.onChunk(data.chunk || "");
+              } else if (data.type === "done") {
+                callbacks.onDone?.({ actions: data.actions, suggestions: data.suggestions });
+              }
+            } catch (e) {
+              // Ignore parse errors on partial chunks
+            }
+          }
+        }
+      }
+    }
+  } catch (err) {
+    callbacks.onError?.(err);
+  }
+}
+
 export async function fetchJsonResume(): Promise<any> {
-  const res = await apiClient.get("/settings/json-resume/");
-  return res.data;
+  try {
+    const res = await apiClient.get("/settings/json-resume/");
+    return res.data;
+  } catch (err) {
+    return {};
+  }
 }

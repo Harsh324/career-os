@@ -4,7 +4,7 @@ from apps.timeline.models import TimelineEvent
 from apps.timeline.serializers import TimelineEventSerializer
 
 
-class TimelineEventViewSet(viewsets.ModelViewSet):
+class TimelineEventViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = TimelineEvent.objects.all()
     serializer_class = TimelineEventSerializer
     lookup_field = "slug"

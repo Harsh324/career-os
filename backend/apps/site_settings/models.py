@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 
 class SiteSettings(models.Model):
@@ -23,3 +24,12 @@ class SiteSettings(models.Model):
 
     def __str__(self):
         return f"Portfolio Config - {self.name}"
+
+    def clean(self):
+        if self.pk is None and SiteSettings.objects.exists():
+            raise ValidationError("Only one SiteSettings instance is allowed.")
+        super().clean()
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)

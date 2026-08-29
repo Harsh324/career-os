@@ -15,7 +15,7 @@ api_v1_patterns = [
     path("skills/", include("apps.skills.urls")),
     path("projects/", include("apps.projects.urls")),
     path("experience/", include("apps.experiences.urls")),
-    path("blog/", include("apps.blog.urls")),
+    # path("blog/", include("apps.blog.urls")),
     path("timeline/", include("apps.timeline.urls")),
     path("education/", include("apps.education.urls")),
     path("certifications/", include("apps.certifications.urls")),
@@ -23,7 +23,6 @@ api_v1_patterns = [
     path("seo/", include("apps.seo.urls")),
     path("settings/", include("apps.site_settings.urls")),
     path("assistant/", include("apps.ai_assistant.urls")),
-    path("analytics/", include("apps.analytics.urls")),
 ]
 
 urlpatterns = [

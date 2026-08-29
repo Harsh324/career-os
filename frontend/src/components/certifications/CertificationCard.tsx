@@ -1,14 +1,27 @@
 import React from "react";
-import { Award, ExternalLink, Calendar, CheckCircle2 } from "lucide-react";
+import { Award, ExternalLink, CheckCircle2 } from "lucide-react";
 import type { Certification } from "@/lib/api/types";
 
 interface CertificationCardProps {
   cert: Certification;
 }
 
+function formatExpiryDate(dateStr?: string) {
+  if (!dateStr) return "";
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  } catch {
+    return dateStr;
+  }
+}
+
 export function CertificationCard({ cert }: CertificationCardProps) {
+  const expiryLabel = formatExpiryDate(cert.expiry_date);
+
   return (
-    <div className="group flex flex-col justify-between rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] p-4 sm:p-5 space-y-3 shadow-xs hover:border-[#0969da]/50 dark:hover:border-[#58a6ff]/50 transition-all">
+    <div className="group flex flex-col justify-between rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] p-4 sm:p-5 space-y-3 shadow-xs hover:border-[#0969da]/50 dark:hover:border-[#58a6ff]/50 hover:shadow-md transition-all">
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -42,13 +55,12 @@ export function CertificationCard({ cert }: CertificationCardProps) {
         </p>
       </div>
 
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-mono text-[#57606a] dark:text-[#8b949e] pt-2 border-t border-[#d0d7de]/60 dark:border-[#30363d]/60">
-        <span className="flex items-center gap-1">
-          <Calendar className="h-3 w-3 text-[#1f883d] dark:text-[#39d353]" />
-          <span>Active: {cert.issue_date}</span>
-        </span>
-        {cert.expiry_date && <span>Expires: {cert.expiry_date}</span>}
+      <div className="flex items-center gap-2 text-xs font-mono text-[#57606a] dark:text-[#8b949e] pt-2 border-t border-[#d0d7de]/60 dark:border-[#30363d]/60">
+        <span className="text-[#1f883d] dark:text-[#39d353] font-semibold">Verified</span>
+        <span>&bull;</span>
+        <span>Expires {expiryLabel || cert.expiry_date}</span>
       </div>
     </div>
   );
 }
+

@@ -14,31 +14,35 @@ from apps.timeline.models import TimelineEvent
 
 
 class Command(BaseCommand):
-    help = "Seed & update data in Career OS PostgreSQL/SQLite database based on latest resume."
+    help = "Idempotent initial database seeder for Career OS."
 
     def handle(self, *args, **options):
-        self.stdout.write(self.style.SUCCESS("Starting database seeding & update process..."))
+        self.stdout.write(self.style.SUCCESS("Starting idempotent database seeding process..."))
 
         # 0. Admin Superuser Creation
         User = get_user_model()
         if not User.objects.filter(username="admin").exists():
-            User.objects.create_superuser("admin", "admin@career-os.dev", "adminpassword123")
-            self.stdout.write(self.style.SUCCESS("Created admin superuser (username: admin, password: adminpassword123)"))
+            import os
+            admin_password = os.getenv("DJANGO_SUPERUSER_PASSWORD")
+            if admin_password:
+                User.objects.create_superuser("admin", "admin@career-os.dev", admin_password)
+                self.stdout.write(self.style.SUCCESS("Created admin superuser (username: admin, password from environment)"))
+            else:
+                self.stdout.write(self.style.WARNING("Skipped admin superuser creation: DJANGO_SUPERUSER_PASSWORD environment variable not set."))
 
-        # 1. Site Settings
-        settings_obj, _ = SiteSettings.objects.update_or_create(
+        # 1. Site Settings (Forced update)
+        settings_obj, created = SiteSettings.objects.update_or_create(
             id=1,
             defaults={
                 "name": "Harsh Tripathi",
-                "title": "Software Engineer (Backend and Cloud)",
+                "title": "Backend & Cloud Engineer",
                 "email": "tripathiharsh324@gmail.com",
                 "location": "Tokyo, Japan",
-                "tagline": "Backend-focused Software Engineer building scalable systems using Python, Django, Celery & AWS.",
+                "tagline": "Backend & Cloud Software Engineer building scalable systems using Python, Django, Celery & AWS.",
                 "summary": (
-                    "Backend-focused Software Engineer building scalable systems using Python, Django, and AWS. "
-                    "Currently working on an AI-driven scraping platform with asynchronous processing (Celery) "
-                    "and cloud deployment on AWS. Experienced in improving system performance, designing backend "
-                    "architectures, and handling production workloads."
+                    "Backend & Cloud Software Engineer specializing in Python, Django, Celery asynchronous pipelines, "
+                    "Docker containerization, and AWS infrastructure. Currently building AI-driven data extraction platforms "
+                    "and scalable microservices at SMS DataTech in Tokyo."
                 ),
                 "avatar_url": "https://github.com/Harsh324.png",
                 "github_url": "https://github.com/Harsh324",
@@ -47,7 +51,10 @@ class Command(BaseCommand):
                 "resume_url": "https://career-os.dev/resume.pdf",
             },
         )
-        self.stdout.write("Updated Site Settings (Tokyo, Japan).")
+        if created:
+            self.stdout.write("Created initial Site Settings.")
+        else:
+            self.stdout.write("Site Settings already exists; skipping default overwrite.")
 
         # 2. Technologies
         tech_data = [
@@ -67,26 +74,26 @@ class Command(BaseCommand):
             {"name": "MongoDB", "slug": "mongodb", "category": "Databases", "website": "https://www.mongodb.com"},
             {"name": "PostgreSQL", "slug": "postgresql", "category": "Databases", "website": "https://www.postgresql.org"},
             {"name": "Redis", "slug": "redis", "category": "Databases", "website": "https://redis.io"},
-            {"name": "Distributed Systems", "slug": "distributed-systems", "category": "Architecture", "website": ""},
-            {"name": "API Design", "slug": "api-design", "category": "Architecture", "website": ""},
-            {"name": "System Design", "slug": "system-design", "category": "Architecture", "website": ""},
             {"name": "TypeScript", "slug": "typescript", "category": "Languages", "website": "https://www.typescriptlang.org"},
             {"name": "Next.js", "slug": "nextjs", "category": "Frameworks", "website": "https://nextjs.org"},
+            {"name": "Traefik", "slug": "traefik", "category": "Cloud & Infra", "website": "https://traefik.io"},
+            {"name": "Cloudflare", "slug": "cloudflare", "category": "Cloud & Infra", "website": "https://www.cloudflare.com"},
+            {"name": "Ubuntu Linux", "slug": "ubuntu-linux", "category": "Cloud & Infra", "website": "https://ubuntu.com"},
         ]
         tech_map = {}
         for item in tech_data:
-            tech, _ = Technology.objects.update_or_create(slug=item["slug"], defaults=item)
+            tech, _ = Technology.objects.get_or_create(slug=item["slug"], defaults=item)
             tech_map[item["slug"]] = tech
-        self.stdout.write(f"Updated {len(tech_map)} Technologies.")
+        self.stdout.write(f"Processed {len(tech_map)} Technologies.")
 
-        # 3. Company
+        # 3. Company Record (SMS DataTech)
         company_obj, _ = Company.objects.update_or_create(
             slug="sms-datatech",
             defaults={
                 "name": "SMS DataTech",
                 "legal_name": "SMS DataTech Corporation",
-                "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=120&auto=format&fit=crop&q=80",
-                "website": "https://www.sms-datatech.co.jp",
+                "logo": "/images/companies/sms-datatech-icon.png",
+                "website": "https://www.sms-datatech.co.jp/",
                 "careers": "https://www.sms-datatech.co.jp/careers",
                 "linkedin": "https://www.linkedin.com/company/sms-datatech",
                 "industry": "Enterprise Software & Cloud Services",
@@ -94,65 +101,86 @@ class Command(BaseCommand):
                 "headquarters": "Tokyo, Japan",
                 "location": "Tokyo, Japan",
                 "founded": "2001",
-                "description": "SMS DataTech is a premier enterprise IT infrastructure and cloud engineering solutions provider headquartered in Tokyo, Japan.",
-                "short_description": "Enterprise cloud infrastructure and backend engineering provider in Tokyo.",
-            },
+                "description": "SMS DataTech is an independent IT solutions company in Japan specializing in system development, cybersecurity, and AI/cloud engineering.",
+                "short_description": "Enterprise cloud infrastructure, cybersecurity, and AI engineering provider.",
+            }
         )
-        self.stdout.write("Updated SMS DataTech Company record.")
+        self.stdout.write("Processed SMS DataTech Company record.")
 
-        # 4. Keep Current Projects (as requested)
-        p1, _ = Project.objects.get_or_create(
+        # 4. Core Projects
+        p1, _ = Project.objects.update_or_create(
             slug="career-os",
             defaults={
                 "title": "Career OS",
-                "summary": "Backend-driven Personal Engineering CMS and Portfolio platform.",
-                "description": "Architected as a personal engineering CMS powering portfolio presentation, resume management, and project documentation.",
-                "problem": "Static portfolio generators fail to provide dynamic content editing, centralized backend APIs, and real-time updates.",
-                "solution": "Built a backend-driven CMS using Django REST Framework, PostgreSQL, Next.js, and Docker.",
+                "summary": "Backend-driven engineering portfolio platform built with Django REST Framework, PostgreSQL, Next.js, and Docker containerization.",
+                "description": "Architected as a backend-driven engineering portfolio platform with Django REST Framework as the centralized source of truth for portfolio content.",
+                "problem": "Static portfolio generators lack dynamic content editing, centralized backend APIs, and structured data management.",
+                "solution": "Built a Django REST backend that acts as the centralized source of truth for portfolio content, with a Next.js frontend consuming structured API data.",
                 "status": "Active",
                 "repository": "https://github.com/Harsh324/career-os",
                 "demo": "https://career-os.dev",
                 "featured": True,
-                "timeline": "2024 - Present",
+                "order": 3,
+                "timeline": "2026 – Present",
             },
         )
+        p1.timeline = "2026 – Present"
+        p1.order = 3
+        p1.save()
         p1.tech_stack.add(tech_map["python"], tech_map["django"], tech_map["postgresql"], tech_map["docker"], tech_map["nextjs"], tech_map["typescript"])
 
-        p2, _ = Project.objects.get_or_create(
+        p2, _ = Project.objects.update_or_create(
             slug="fintrack-ai",
             defaults={
                 "title": "FinTrack AI",
-                "summary": "AI-assisted automated financial transaction analysis backend platform.",
-                "description": "High-throughput financial backend analyzing raw transaction streams using Python and PostgreSQL.",
-                "problem": "Manual transaction classification failed under high volume.",
-                "solution": "Built automated AI rule pipeline decreasing processing latency.",
-                "status": "Active",
+                "summary": "Financial management platform for transaction tracking, automated transaction categorization, and shared expense management.",
+                "description": "Financial backend engine built with Python, Django, PostgreSQL, and Redis. Features include transaction tracking, automated categorization, and shared expense management, with OCR-based automated bill splitting currently in development.",
+                "problem": "Manual transaction tracking and shared expense management is prone to errors.",
+                "solution": "Built a centralized financial management platform leveraging automated categorization rules.",
+                "status": "Active Development",
                 "repository": "https://github.com/Harsh324/fintrack-ai",
+                "demo": "",
                 "featured": True,
-                "timeline": "2023 - 2024",
+                "order": 1,
+                "timeline": "2026 – Present",
             },
         )
+        p2.timeline = "2026 – Present"
+        p2.order = 1
+        p2.save()
         p2.tech_stack.add(tech_map["python"], tech_map["django"], tech_map["postgresql"], tech_map["redis"])
 
-        p3, _ = Project.objects.get_or_create(
+        p3, _ = Project.objects.update_or_create(
             slug="constellation",
             defaults={
                 "title": "Constellation",
-                "summary": "Containerized self-hosted homelab identity & infrastructure management engine.",
-                "description": "Self-hosted identity management and container orchestration platform for personal homelab cloud infrastructure.",
-                "problem": "Fragmented self-hosted services lacked unified identity access and container health monitoring.",
-                "solution": "Engineered Docker-native identity gateway with central dashboard metrics.",
-                "status": "Active",
+                "summary": "Self-hosted infrastructure platform for securely running and managing containerized services on a personal homelab.",
+                "description": "Built on Ubuntu Linux with Cloudflare Tunnels, Traefik reverse proxy, shared PostgreSQL/Redis storage, and automated encrypted daily S3 backups.",
+                "problem": "Exposing self-hosted services directly to the internet creates firewall attack surfaces, while unmanaged containers risk data loss without automated backups and health monitoring.",
+                "solution": "Built an automated infrastructure setup with zero open inbound ports using Cloudflare Tunnels, Traefik v3 dynamic routing, isolated internal container networks, and encrypted offsite backups.",
+                "status": "Active / v0.9.2 Baseline",
                 "repository": "https://github.com/Harsh324/constellation",
+                "demo": "https://portal.constellationhq.dev/",
                 "featured": True,
-                "timeline": "2024",
+                "order": 2,
+                "timeline": "2026 – Present",
             },
         )
-        p3.tech_stack.add(tech_map["docker"], tech_map["aws"], tech_map["python"], tech_map["postgresql"])
+        p3.summary = "Self-hosted infrastructure platform for securely running and managing containerized services on a personal homelab."
+        p3.description = "Built on Ubuntu Linux with Cloudflare Tunnels, Traefik reverse proxy, shared PostgreSQL/Redis storage, and automated encrypted daily S3 backups."
+        p3.problem = "Exposing self-hosted services directly to the internet creates firewall attack surfaces, while unmanaged containers risk data loss without automated backups and health monitoring."
+        p3.solution = "Built an automated infrastructure setup with zero open inbound ports using Cloudflare Tunnels, Traefik v3 dynamic routing, isolated internal container networks, and encrypted offsite backups."
+        p3.status = "Active / v0.9.2 Baseline"
+        p3.demo = "https://portal.constellationhq.dev/"
+        p3.repository = "https://github.com/Harsh324/constellation"
+        p3.timeline = "2026 – Present"
+        p3.order = 2
+        p3.save()
+        p3.tech_stack.set([tech_map["docker"], tech_map["traefik"], tech_map["postgresql"], tech_map["cloudflare"], tech_map["ubuntu-linux"]])
 
-        self.stdout.write("Preserved current Projects (Career OS, FinTrack AI, Constellation).")
+        self.stdout.write("Processed Projects (Career OS, FinTrack AI, Constellation).")
 
-        # 5. Experiences (Updated to match Resume)
+        # 5. Experience Records
         exp1, _ = Experience.objects.update_or_create(
             slug="software-engineer-sms",
             defaults={
@@ -169,37 +197,37 @@ class Command(BaseCommand):
                 "summary": "Building scalable asynchronous pipelines using Celery and queue-based task processing. Containerizing services using Docker and deploying to AWS ECS/Fargate via CloudFormation while managing AWS infrastructure and handling 1000+ daily internal requests.",
                 "executive_overview": "Leading backend architectural redesign, database optimization, Celery async pipelines, Docker containerization, and AWS ECS/Fargate cloud deployments.",
                 "highlights": [
-                    "Designed and developed an AI-driven scraping platform using LLM-based modules for automated data extraction workflows",
-                    "Built scalable asynchronous pipelines using Celery and queue-based task processing for complex workflows",
-                    "Improved API performance by 20–30% through backend redesign and database optimization",
+                    "Designed and developed an AI-driven data extraction platform using LLM-based modules",
+                    "Built scalable asynchronous processing pipelines using Celery and queue-based workflows",
+                    "Achieved an API performance improvement of 20–30% through backend and database optimization",
                     "Led backend system redesign including API structure, database schema, and backend architecture",
-                    "Containerized services using Docker and contributed to deployments on AWS ECS/Fargate using CloudFormation",
-                    "Managed AWS resources including EC2, ECS, S3, CloudWatch, and implemented Auto Scaling and Load Balancers",
-                    "Handled 1000+ daily internal requests, ensuring system reliability and performance for internal use cases",
-                    "Led backend task execution, feature prioritization, and technical mentorship for team members and interns"
+                    "Containerized services using Docker and automated deployments to AWS ECS/Fargate via CloudFormation",
+                    "Handled 1000+ daily internal requests across backend services",
+                    "Managed AWS resources including EC2, ECS, S3, CloudWatch, Auto Scaling, and Load Balancing",
+                    "Owned task execution, feature delivery, and provided technical mentorship"
                 ],
                 "challenges": [
                     {
-                        "problem": "Dynamic website extraction required low-latency asynchronous task queue execution.",
-                        "solution": "Engineered queue-based Celery pipelines with distributed worker pools.",
-                        "impact": "Seamlessly handled complex workflows and improved API performance by 20-30%."
+                        "problem": "Dynamic websites required reliable asynchronous extraction without blocking synchronous API requests.",
+                        "solution": "Implemented queue-based Celery processing with distributed worker pools.",
+                        "impact": "Enabled complex extraction workflows to execute asynchronously while improving API responsiveness."
                     },
                     {
-                        "problem": "Manual infrastructure provisioning created staging deployment delays.",
+                        "problem": "Manual cloud service deployments caused environment mismatch delays.",
                         "solution": "Containerized services using Docker and automated AWS ECS/Fargate deployments via CloudFormation.",
-                        "impact": "Achieved automated scaling, load balancing, and reliable 1000+ daily request handling."
+                        "impact": "Achieved predictable deployments, auto scaling, and reliable execution under high internal request volume."
                     }
                 ],
                 "metrics": [
-                    {"label": "API Performance Gain", "value": "+20–30%"},
+                    {"label": "API Performance Improvement", "value": "20–30%"},
                     {"label": "Daily Internal Requests", "value": "1000+"},
-                    {"label": "Cloud Platform", "value": "AWS ECS/Fargate"}
+                    {"label": "Cloud Deployment", "value": "AWS ECS/Fargate"}
                 ],
                 "team": "SMS DataTech Backend & Cloud Engineering Team",
-                "ownership": "Full ownership of AI scraping platform backend, Celery async queue architecture, and AWS CloudFormation infrastructure.",
+                "ownership": "Ownership of AI scraping platform backend, Celery async task queue architecture, and AWS CloudFormation templates.",
                 "lessons_learned": [
                     "Queue-based asynchronous task processing with Celery decouples long-running LLM extraction from synchronous API response cycles.",
-                    "AWS CloudFormation template standardization ensures reliable reproducible deployments across staging and production."
+                    "Standardized Docker containerization ensures identical execution environments across local development and AWS ECS/Fargate."
                 ],
             },
         )
@@ -218,50 +246,83 @@ class Command(BaseCommand):
                 "end_date": "May 2024",
                 "current_position": False,
                 "featured": True,
-                "mission": "Developed backend services using Django REST Framework for internal project dashboard (POGO).",
-                "summary": "Designed and implemented REST APIs and relational database schemas using MySQL. Built multiple features from scratch to improve internal workflow visibility and collaborated with cross-functional teams.",
-                "executive_overview": "Designed REST API endpoints, MySQL database schemas, and production-ready workflow tools for internal project dashboards.",
+                "mission": "Developed backend services using Django REST Framework for the POGO internal dashboard, resulting in a transition to a full-time role.",
+                "summary": "Designed and implemented REST APIs and MySQL schemas to improve internal workflow visibility. Successfully transitioned from Intern to full-time Software Engineer (Backend and Cloud) upon graduation.",
+                "executive_overview": "Designed REST API endpoints and MySQL database schemas for internal project tools.",
                 "highlights": [
-                    "Developed backend services using Django REST Framework for internal project dashboard (POGO)",
-                    "Designed and implemented REST APIs and database schemas using MySQL",
-                    "Built multiple features from scratch, improving internal workflow visibility",
-                    "Collaborated with cross-functional teams to deliver production-ready features"
+                    "Developed backend services using Django REST Framework for the POGO internal dashboard",
+                    "Designed and implemented REST APIs and relational database schemas using MySQL",
+                    "Built multiple backend features from scratch, improving internal workflow visibility",
+                    "Collaborated with cross-functional teams to deliver functional internal tools"
                 ],
-                "challenges": [
-                    {
-                        "problem": "Internal workflows lacked centralized visibility across active project tasks.",
-                        "solution": "Designed REST APIs and MySQL relational schemas powering the internal POGO dashboard.",
-                        "impact": "Delivered production-ready internal workflow visibility."
-                    }
-                ],
-                "metrics": [
-                    {"label": "Internal Dashboard", "value": "POGO"},
-                    {"label": "Database Engine", "value": "MySQL"}
-                ],
+                "challenges": [],
+                "metrics": [],
+                "team": "SMS DataTech Engineering Team",
+                "ownership": "Development of REST API endpoints and database models for internal project visibility.",
                 "lessons_learned": [
-                    "Designing clean REST API contracts and structured relational database schemas early simplifies frontend-backend integration."
+                    "Designing clear REST API contracts and normalized relational schemas early simplifies frontend integration and long-term maintenance."
                 ],
             },
         )
         exp2.technologies.add(tech_map["python"], tech_map["django"], tech_map["drf"], tech_map["mysql"], tech_map["sql"], tech_map["git"])
         exp2.related_projects.add(p2)
 
-        self.stdout.write("Updated Experience records (SMS DataTech Oct 2024–Present & Jul 2023–May 2024).")
+        self.stdout.write("Processed Experience records (SMS DataTech Oct 2024–Present & Jul 2023–May 2024).")
 
-        # 6. Skills (Updated to match Resume)
+        # 6. Skills (Clean Categorized Competencies without pseudo-precision or duplication)
+        Skill.objects.all().delete()
         skills_data = [
-            {"name": "Python & Django Engineering", "slug": "python-django", "category": "Backend", "years": 3, "experience_level": "Expert", "order": 1},
-            {"name": "Celery & Async Processing", "slug": "celery-async", "category": "Backend", "years": 2, "experience_level": "Expert", "order": 2},
-            {"name": "AWS Cloud Architecture", "slug": "aws-cloud", "category": "Cloud & Infra", "years": 2, "experience_level": "Advanced", "order": 3},
-            {"name": "Docker & Containerization", "slug": "docker-devops", "category": "DevOps", "years": 2, "experience_level": "Advanced", "order": 4},
-            {"name": "MySQL & Database Optimization", "slug": "mysql-databases", "category": "Databases", "years": 2, "experience_level": "Advanced", "order": 5},
-            {"name": "Distributed Systems & API Design", "slug": "distributed-api-design", "category": "Architecture", "years": 3, "experience_level": "Expert", "order": 6},
+            # 1. Backend Engineering
+            {"name": "Python", "slug": "python-skill", "category": "Backend Engineering", "order": 1, "is_core": True},
+            {"name": "Django", "slug": "django-skill", "category": "Backend Engineering", "order": 2, "is_core": True},
+            {"name": "Django REST Framework", "slug": "drf-skill", "category": "Backend Engineering", "order": 3, "is_core": True},
+            {"name": "Celery", "slug": "celery-skill", "category": "Backend Engineering", "order": 4, "is_core": True},
+            {"name": "REST API Design", "slug": "rest-api-design-skill", "category": "Backend Engineering", "order": 5},
+            {"name": "API Performance Optimization", "slug": "api-performance-skill", "category": "Backend Engineering", "order": 6},
+
+            # 2. Cloud & Infrastructure
+            {"name": "AWS", "slug": "aws-skill", "category": "Cloud & Infrastructure", "order": 1, "is_core": True},
+            {"name": "ECS / Fargate", "slug": "ecs-fargate-skill", "category": "Cloud & Infrastructure", "order": 2, "is_core": True},
+            {"name": "AWS Cloud Architecture", "slug": "aws-cloud-arch-skill", "category": "Cloud & Infrastructure", "order": 3},
+            {"name": "EC2", "slug": "ec2-skill", "category": "Cloud & Infrastructure", "order": 4},
+            {"name": "S3", "slug": "s3-skill", "category": "Cloud & Infrastructure", "order": 5},
+            {"name": "CloudFormation", "slug": "cloudformation-skill", "category": "Cloud & Infrastructure", "order": 6},
+            {"name": "CloudWatch", "slug": "cloudwatch-skill", "category": "Cloud & Infrastructure", "order": 7},
+
+            # 3. Architecture & Distributed Systems
+            {"name": "Distributed Systems", "slug": "distributed-systems-skill", "category": "Architecture & Distributed Systems", "order": 1},
+            {"name": "Asynchronous Architecture", "slug": "async-architecture-skill", "category": "Architecture & Distributed Systems", "order": 2},
+            {"name": "Caching & Performance", "slug": "caching-performance-skill", "category": "Architecture & Distributed Systems", "order": 3},
+            {"name": "System & API Design", "slug": "system-api-design-skill", "category": "Architecture & Distributed Systems", "order": 4},
+
+            # 4. Databases & Caching
+            {"name": "PostgreSQL", "slug": "postgresql-skill", "category": "Databases & Caching", "order": 1, "is_core": True},
+            {"name": "MySQL", "slug": "mysql-skill", "category": "Databases & Caching", "order": 2},
+            {"name": "Redis", "slug": "redis-skill", "category": "Databases & Caching", "order": 3},
+            {"name": "Database Optimization", "slug": "database-optimization-skill", "category": "Databases & Caching", "order": 4},
+            {"name": "Query Performance / Indexing", "slug": "query-performance-skill", "category": "Databases & Caching", "order": 5},
+
+            # 5. AI & Data
+            {"name": "LLM Integrations", "slug": "llm-skill", "category": "AI & Data", "order": 1},
+            {"name": "AI/Data Extraction", "slug": "ai-extraction-skill", "category": "AI & Data", "order": 2},
+            {"name": "Data Processing Pipelines", "slug": "data-pipelines-skill", "category": "AI & Data", "order": 3},
+
+            # 6. DevOps & CI/CD
+            {"name": "Docker", "slug": "docker-skill", "category": "DevOps & CI/CD", "order": 1, "is_core": True},
+            {"name": "Git & GitHub", "slug": "git-skill", "category": "DevOps & CI/CD", "order": 2},
+            {"name": "GitHub Actions", "slug": "github-actions-skill", "category": "DevOps & CI/CD", "order": 3},
+            {"name": "CI/CD Pipelines", "slug": "cicd-skill", "category": "DevOps & CI/CD", "order": 4},
+            {"name": "Containerization", "slug": "containerization-skill", "category": "DevOps & CI/CD", "order": 5},
+
+            # 7. Supporting Technologies
+            {"name": "TypeScript", "slug": "typescript-skill", "category": "Supporting Technologies", "order": 1},
+            {"name": "Next.js", "slug": "nextjs-skill", "category": "Supporting Technologies", "order": 2},
         ]
         for s in skills_data:
-            sk, _ = Skill.objects.update_or_create(slug=s["slug"], defaults=s)
-        self.stdout.write("Updated Skills.")
+            Skill.objects.update_or_create(slug=s["slug"], defaults=s)
+        self.stdout.write("Processed Skills.")
 
-        # 7. Education (IIIT Nagpur Dec 2020 – Jun 2024, CGPA: 7.8)
+        # 7. Education (IIIT Nagpur Dec 2020 – Jun 2024)
         Education.objects.update_or_create(
             slug="iiit-nagpur",
             defaults={
@@ -271,9 +332,9 @@ class Command(BaseCommand):
                 "location": "Nagpur, India",
                 "start_date": "Dec 2020",
                 "end_date": "Jun 2024",
-                "grade": "CGPA: 7.8",
+                "grade": "First Class",
                 "achievements": [
-                    "Completed B.Tech in Computer Science and Engineering with a CGPA of 7.8.",
+                    "Graduated with B.Tech in Computer Science and Engineering.",
                     "Studied Core Computer Science, Distributed Systems, Relational Databases, and System Design."
                 ],
                 "relevant_courses": [
@@ -281,36 +342,32 @@ class Command(BaseCommand):
                 ],
             },
         )
-        self.stdout.write("Updated Education (IIIT Nagpur, Dec 2020 – Jun 2024, CGPA 7.8).")
+        self.stdout.write("Processed Education (IIIT Nagpur).")
 
-        # 8. Certifications (Exact AWS CertMetrics credentials)
-        Certification.objects.filter(slug__in=["aws-architect", "aws-sysops-administrator"]).delete()
-
-        Certification.objects.update_or_create(
+        # 8. Certifications
+        Certification.objects.get_or_create(
             slug="aws-solutions-architect",
             defaults={
-                "name": "AWS Certified Solutions Architect - Associate",
+                "name": "AWS Certified Solutions Architect – Associate",
                 "issuer": "Amazon Web Services",
                 "credential_url": "https://cp.certmetrics.com/amazon/en/public/verify/credential/9c0287d7cbf04661a24c19a061a02e76",
                 "issue_date": "2025-08-19",
                 "expiry_date": "2028-08-19",
             },
         )
-        Certification.objects.update_or_create(
+        Certification.objects.get_or_create(
             slug="aws-cloudops-engineer",
             defaults={
-                "name": "AWS Certified CloudOps Engineer - Associate",
+                "name": "AWS Certified CloudOps Engineer – Associate",
                 "issuer": "Amazon Web Services",
                 "credential_url": "https://cp.certmetrics.com/amazon/en/public/verify/credential/6a4511dc5dc84e709d958785ad74ba96",
                 "issue_date": "2026-04-01",
                 "expiry_date": "2029-04-01",
             },
         )
-        self.stdout.write("Updated Certifications (AWS Solutions Architect & AWS CloudOps Engineer).")
+        self.stdout.write("Processed Certifications.")
 
-        # 9. Timeline Events (Clean chronologically ordered sequence matching official resume)
-        TimelineEvent.objects.all().delete()
-
+        # 9. Timeline Events
         timeline_events = [
             {
                 "title": "B.Tech Computer Science Enrollment",
@@ -326,7 +383,7 @@ class Command(BaseCommand):
                 "title": "Software Engineer Intern",
                 "slug": "2-sms-internship",
                 "subtitle": "SMS DataTech (Tokyo, Japan)",
-                "description": "Developed backend services using Django REST Framework and MySQL for internal project dashboards (POGO).",
+                "description": "Developed backend services using Django REST Framework and MySQL for the POGO internal dashboard.",
                 "date": "Jul 2023 – May 2024",
                 "category": "Career",
                 "icon": "Briefcase",
@@ -335,15 +392,15 @@ class Command(BaseCommand):
             {
                 "title": "B.Tech Computer Science Graduation",
                 "slug": "3-iiit-nagpur-graduation",
-                "subtitle": "IIIT Nagpur (CGPA: 7.8)",
-                "description": "Graduated with B.Tech in Computer Science and Engineering from IIIT Nagpur with CGPA 7.8.",
+                "subtitle": "IIIT Nagpur",
+                "description": "Graduated with B.Tech in Computer Science and Engineering from IIIT Nagpur.",
                 "date": "Jun 2024",
                 "category": "Education",
                 "icon": "GraduationCap",
                 "order": 3,
             },
             {
-                "title": "Software Engineer (Backend and Cloud)",
+                "title": "Backend & Cloud Engineer",
                 "slug": "4-sms-fulltime",
                 "subtitle": "SMS DataTech (Tokyo, Japan)",
                 "description": "Building AI-driven scraping platforms, Celery async pipelines, Docker containers, and AWS ECS/Fargate cloud infrastructure.",
@@ -355,8 +412,8 @@ class Command(BaseCommand):
             {
                 "title": "AWS Certified Solutions Architect – Associate",
                 "slug": "5-aws-solutions-architect",
-                "subtitle": "Amazon Web Services (Verified Credential)",
-                "description": "Earned official AWS Certified Solutions Architect – Associate credential (Validation ID: 9c0287d7cbf04661a24c19a061a02e76).",
+                "subtitle": "Amazon Web Services",
+                "description": "Earned official AWS Certified Solutions Architect – Associate credential.",
                 "date": "Aug 2025",
                 "category": "Certification",
                 "icon": "Award",
@@ -366,8 +423,8 @@ class Command(BaseCommand):
             {
                 "title": "AWS Certified CloudOps Engineer – Associate",
                 "slug": "6-aws-cloudops-engineer",
-                "subtitle": "Amazon Web Services (Verified Credential)",
-                "description": "Earned official AWS Certified CloudOps Engineer – Associate credential (Validation ID: 6a4511dc5dc84e709d958785ad74ba96).",
+                "subtitle": "Amazon Web Services",
+                "description": "Earned official AWS Certified CloudOps Engineer – Associate credential.",
                 "date": "Apr 2026",
                 "category": "Certification",
                 "icon": "Award",
@@ -376,19 +433,19 @@ class Command(BaseCommand):
             },
         ]
         for te in timeline_events:
-            TimelineEvent.objects.create(**te)
-        self.stdout.write("Seeded 6 clean, accurate Timeline Events.")
+            TimelineEvent.objects.update_or_create(slug=te["slug"], defaults=te)
+        self.stdout.write("Processed Timeline Events.")
 
         # 10. SEO Metadata
         seo_data = [
             {"page_identifier": "home", "title": "Harsh Tripathi | Software Engineer (Backend & Cloud)", "description": "Backend-focused Software Engineer in Tokyo specializing in Python, Django, Celery, Docker, and AWS."},
-            {"page_identifier": "experience", "title": "Work Experience | Harsh Tripathi", "description": "Backend platform architecture, Celery async pipelines, Docker containerization, and AWS ECS/Fargate infrastructure."},
+            {"page_identifier": "experience", "title": "Work Experience | Harsh Tripathi", "description": "Backend architecture, Celery async pipelines, Docker containerization, and AWS cloud infrastructure."},
             {"page_identifier": "projects", "title": "Engineering Projects | Harsh Tripathi", "description": "Portfolio of production backend systems, personal CMS platforms, and financial pipelines."},
-            {"page_identifier": "skills", "title": "Technical Skills | Harsh Tripathi", "description": "Core competencies in Python, Django, Celery, MySQL, MongoDB, Docker, and AWS."},
-            {"page_identifier": "timeline", "title": "Milestones & Timeline | Harsh Tripathi", "description": "Chronological history of achievements, education at IIIT Nagpur, and software engineering roles at SMS DataTech."},
+            {"page_identifier": "skills", "title": "Technical Skills | Harsh Tripathi", "description": "Core competencies in Python, Django, Celery, MySQL, PostgreSQL, Docker, and AWS."},
+            {"page_identifier": "timeline", "title": "Career Timeline | Harsh Tripathi", "description": "Chronological history of achievements, education at IIIT Nagpur, and software engineering roles at SMS DataTech."},
         ]
         for s in seo_data:
             SEOMetadata.objects.update_or_create(page_identifier=s["page_identifier"], defaults=s)
-        self.stdout.write("Updated SEO Metadata.")
+        self.stdout.write("Processed SEO Metadata.")
 
-        self.stdout.write(self.style.SUCCESS("Database seeding & update completed successfully!"))
+        self.stdout.write(self.style.SUCCESS("Database seeding completed successfully!"))

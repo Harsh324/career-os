@@ -20,12 +20,13 @@ class Project(models.Model):
     architecture_images = models.JSONField(default=list, blank=True)
     timeline = models.CharField(max_length=100, blank=True)
     roadmap = models.JSONField(default=list, blank=True)
-    featured = models.BooleanField(default=False)
+    featured = models.BooleanField(default=False, db_index=True)
+    order = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["-featured", "-created_at"]
+        ordering = ["order", "-featured", "-created_at"]
 
     def __str__(self):
         return self.title
