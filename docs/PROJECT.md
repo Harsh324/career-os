@@ -1,158 +1,143 @@
-# Career OS — Project Definition
+# Career OS — Project Definition & Evolution
 
-> This document captures the authoritative vision, scope, goals, and guiding principles of Career OS. It is the canonical reference for contributors and maintainers making architectural and product decisions.
-
----
-
-## Table of Contents
-
-- [Problem Statement](#problem-statement)
-- [Vision](#vision)
-- [Target Audience](#target-audience)
-- [Goals](#goals)
-- [Non-Goals](#non-goals)
-- [Guiding Principles](#guiding-principles)
-- [Success Metrics](#success-metrics)
-- [Project Governance](#project-governance)
+> This document captures the authoritative definition, current state, historical journey, and core engineering principles of Career OS.
 
 ---
 
-## Problem Statement
+## 1. Project Purpose & Current State
 
-Software engineers have a fragmented professional presence. A developer's work history exists simultaneously in:
+### Career OS V1 — Public Engineering Portfolio
 
-- A résumé PDF edited in Word or Overleaf, saved locally and rarely updated.
-- A LinkedIn profile maintained separately with different wording.
-- A GitHub profile README that may be years out of date.
-- A portfolio website — if it exists at all — built as a separate project with its own maintenance burden.
-- A handful of blog posts scattered across Medium, DEV.to, or a long-forgotten Jekyll site.
-- Recruiter emails answered with ad-hoc, inconsistently written bios.
+Today, Career OS is implemented as a high-performance, backend-driven engineering portfolio platform designed to showcase verified engineering capability, distributed systems experience, and technical depth.
 
-Each of these surfaces describes the same underlying career, yet none of them share data. When a developer changes jobs, learns a new skill, or ships an impactful project, they must manually propagate that change across every surface. Most do not. The result is a professional identity that is perpetually stale, inconsistent, and misaligned with the developer's actual experience.
+```
+┌─────────────────────────────────────────┐
+│           Next.js 15 Frontend           │
+│   (Server & Client Components, React    │
+│    Query, Tailwind CSS, Dark Theme)     │
+└────────────────────┬────────────────────┘
+                     │  HTTP / REST JSON
+                     ▼
+┌─────────────────────────────────────────┐
+│     Django REST Framework API Engine     │
+│   (Modular Django Apps, OpenAPI Schema,  │
+│    JWT Auth, CORS, Data Serializers)    │
+└────────────────────┬────────────────────┘
+                     │  SQL Queries (psycopg3)
+                     ▼
+┌─────────────────────────────────────────┐
+│          PostgreSQL Database            │
+│   (Relational Schema, Migrations,       │
+│    Relational Constraints, Indexes)     │
+└─────────────────────────────────────────┘
+```
 
-**Career OS is the engineering solution to this human problem.**
+### Current Public Capabilities
 
----
+The public portfolio delivers a technical representation of career experience across the following surfaces:
 
-## Vision
+- **Professional Profile:** Canonical bio, headline, contact channels, and verified public profiles (GitHub, LinkedIn).
+- **Work Experience & Architecture:** In-depth breakdown of employment history, including system architecture descriptions, technical challenges, problem-solution-impact frameworks, and quantifiable business/engineering metrics.
+- **Featured Projects:** Deep technical reviews of production and showcase projects including architectural diagrams, design decisions, trade-offs, and repository links.
+- **Curated Skills Taxonomy:** Grouped skills categorized by domain (Backend, Cloud/DevOps, Databases, Languages, AI/Data) with context-specific proficiency.
+- **Certifications & Licensure:** Verified professional certifications (e.g., AWS Certified Solutions Architect, AWS Certified Developer) with issuer details, verification URLs, and credential IDs.
+- **Education:** Academic background and relevant coursework.
+- **Career Timeline:** Interactive chronological milestones mapping key transitions, accomplishments, and professional growth.
+- **Resume Presentation:** ATS-aligned digital resume view and downloadable formats.
+- **Public Professional Links:** Direct access to code repositories, live systems, and external publications.
 
-Career OS envisions a future where a developer's professional identity is treated with the same discipline as their code:
+### Featured Engineering Projects
 
-- **Version-controlled.** Every change is tracked, attributed, and reversible.
-- **Composable.** Each output (resume, portfolio, GitHub profile) is a derived artifact, not a standalone document.
-- **AI-augmented.** Language models fill the gaps that humans inevitably leave: tailored summaries, contextual bios, gap analysis, and cover letter drafts — all generated from structured, human-curated data.
-- **Open and portable.** No vendor lock-in. No proprietary format. A developer can take their `content/` directory and move it to any compatible platform, or build their own generator on top of the schema.
+1. **FinTrack AI:** Autonomous Financial Intelligence Platform (Multi-agent financial analysis, Celery task pipelines, market data aggregation, LLM reasoning).
+2. **Constellation:** Distributed Telemetry & System Observability Engine (High-throughput metric ingestion, asynchronous processing, Redis buffering, time-series analysis).
+3. **Career OS:** Personal Engineering Career Operating System (Backend-driven career data platform, DRF REST API, dynamic presentation layer).
 
-The long-term vision is for Career OS to become a community standard — a shared schema and toolchain that the developer community can build upon, the way OpenAPI standardized API description or CHANGELOG.md standardized release notes.
+### Professional Positioning & Technical Identity
 
----
-
-## Target Audience
-
-Career OS is built for three distinct audiences:
-
-### Primary: Software Engineers
-
-Developers who want a disciplined, low-friction way to maintain a complete and accurate professional presence without context-switching between tools. They are comfortable with Git, Markdown, and command-line tooling.
-
-### Secondary: Open-Source Contributors
-
-Engineers interested in contributing to a platform that is itself about engineering craft. Career OS is an opportunity to build AI-powered content pipelines, static site generators, structured data schemas, and developer tooling.
-
-### Tertiary: Recruiters and Hiring Managers
-
-Recruiters who interact with Career OS outputs — the generated portfolio website, PDF resume, GitHub profile README, and recruiter package. They do not use the tool directly but are an important consumer of its artifacts.
-
----
-
-## Goals
-
-The following goals define the scope of work for Career OS:
-
-### G1 — Single Source of Truth
-
-All professional data must live in `content/` as structured Markdown files with YAML front matter. No data should need to be entered into multiple places to appear in multiple outputs.
-
-### G2 — Comprehensive Output Coverage
-
-Career OS must generate outputs for every major professional surface: portfolio website, PDF resume, GitHub profile README, career timeline, blog, and a recruiter-ready downloadable package.
-
-### G3 — AI-Augmented Generation
-
-LLM integration must be first-class. AI-generated content — summaries, bios, tailored cover letters — must be generated from structured data, stored in the repository for human review, and never published without explicit approval.
-
-### G4 — Zero SaaS Dependency for Core Function
-
-The core content parsing and generation pipeline must work entirely locally without any mandatory cloud service. LLM integration is opt-in, not a hard dependency.
-
-### G5 — Extensible Package Architecture
-
-Career OS must be built as a collection of independently usable packages (`packages/`). A developer should be able to use just the resume generator, or just the content parser, without adopting the entire platform.
-
-### G6 — Open-Source by Design
-
-All logic — including AI prompts, generation scripts, and schema definitions — must be open and auditable. Nothing that affects a user's professional representation should be a black box.
-
-### G7 — Minimal Maintenance Burden
-
-Once set up, Career OS should require minimal ongoing effort. Pushing a commit with updated content should be sufficient to trigger re-generation and re-deployment of all outputs.
+- **Primary Professional Role:** **Backend & Cloud Engineer**
+- **Core Technical Stack:**
+  - *Languages & Frameworks:* Python, Django, Django REST Framework, TypeScript, Next.js
+  - *Data & Storage:* PostgreSQL, Redis, Celery (asynchronous task execution)
+  - *Cloud & Infrastructure:* AWS (ECS/Fargate, RDS, S3, CloudFormation), Docker, Docker Compose, Linux, Nginx
+  - *Architectural Focus:* Asynchronous processing, distributed backend systems, RESTful API design, database modeling, queue architectures, data scraping/extraction pipelines
+- **Role of AI:** AI is utilized as a **supporting engineering capability** (e.g., automated parsing, retrieval, synthesis), **NOT** the primary professional identity.
 
 ---
 
-## Non-Goals
+## 2. Project Evolution & Journey
 
-The following are explicitly outside the scope of Career OS:
+The development of Career OS progressed through distinct evolutionary phases:
 
-| Non-Goal | Rationale |
-|----------|-----------|
-| **A SaaS platform or hosted service** | Career OS is a self-hosted developer tool, not a product with user accounts and a database. |
-| **A no-code visual editor** | The primary interface is structured Markdown and Git. A GUI layer may come later as a community contribution. |
-| **A job board or application tracker** | Career OS manages professional presence, not the job search workflow itself. |
-| **Multi-user or team features** | Career OS manages one developer's professional identity. Team/organization use cases are out of scope. |
-| **Real-time data sync with LinkedIn or external platforms** | Career OS is the source; it publishes to external surfaces but does not consume from them. |
-| **A résumé builder with drag-and-drop UI** | The resume is a generated artifact, not a design canvas. |
+```
+┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
+│     PHASE 0     │  ──►  │     PHASE 1     │  ──►  │     PHASE 2     │  ──►  │     PHASE 3     │
+│   The Problem   │       │ Structured Data │       │ Backend Platform│       │ Engineering V1  │
+└─────────────────┘       └─────────────────┘       └─────────────────┘       └─────────────────┘
+```
 
----
+### Phase 0 — The Problem: Fragmented Professional Presence
+Career information was fragmented across multiple disconnected silos:
+- A resume PDF manually updated in Overleaf / Word and rarely kept in sync.
+- A LinkedIn profile with summarized, inconsistently worded bullet points.
+- A GitHub profile with outdated README files.
+- Project notes, certifications, and architectural learnings scattered across Notion, local text files, and repositories.
 
-## Guiding Principles
+Updating one surface required tedious manual synchronization across all others. Inevitably, information became stale, inconsistent, and under-represented. The initial hypothesis was clear: **centralize career data into a single source of truth.**
 
-These principles govern decisions made by maintainers and contributors:
+### Phase 1 — Structured Career Data: Moving to Schemas
+To eliminate hardcoded frontend strings and layout-coupled text, career records were structured into formalized schemas. 
+- Introduced the concept of the **Single Source of Truth**.
+- Defined strict schemas for experiences, projects, skills, education, and credentials.
+- Separated raw data from visual presentation logic.
 
-1. **Explicit over Implicit.** Content schemas should be verbose and explicit. Inference and "magic" are bugs waiting to happen when applied to professional data.
+### Phase 2 — Backend-Driven Portfolio: Relational Persistence & REST API
+Career OS evolved from static flat files into an extensible, backend-driven architecture.
+- Adopted **PostgreSQL** for relational integrity, indexable queries, and foreign-key consistency (e.g., linking technologies to specific experiences and projects).
+- Implemented **Django REST Framework** as a robust, secure API layer providing OpenAPI documentation and modular domain apps.
+- Decoupled the **Next.js** frontend into a pure presentation layer consuming versioned `/api/v1/` endpoints.
 
-2. **Separation of Data and Presentation.** The `content/` directory is pure data. Presentation concerns — templates, themes, styling — live in apps and packages, never in content files.
+### Phase 3 — Engineering Portfolio: Evidence Over Buzzwords
+The public portfolio was refined into an evidence-based engineering showcase:
+- Shifted focus from simple feature lists to **system architecture, engineering challenges, problem-solution-impact narratives, and measurable metrics**.
+- Embedded technical diagrams, infrastructure layouts, and decision rationales.
+- Integrated a comprehensive career timeline and verified AWS certification credentials.
 
-3. **Human in the Loop for AI.** AI generation always produces a draft. The developer reviews and approves before any AI-generated content is committed or published. This is non-negotiable.
-
-4. **Backwards Compatibility.** Content schema changes must be additive. A content file that was valid in v0.1 must remain valid in v1.0 with graceful degradation.
-
-5. **Fail Loudly on Invalid Content.** The content parser must validate all front matter strictly and produce actionable error messages. Silent failures that produce malformed output are unacceptable.
-
-6. **Performance as a Feature.** All generated sites and assets must be static. Page weight, load time, and Lighthouse scores matter.
-
----
-
-## Success Metrics
-
-Career OS will be considered successful when:
-
-- A developer can go from a fresh clone to a fully generated portfolio and PDF resume in under 30 minutes.
-- The generated portfolio site scores ≥ 95 on Google Lighthouse across all four categories.
-- The content schema supports all standard professional data without requiring workarounds.
-- The AI generation pipeline produces first-draft quality summaries that require only minor editing by the developer.
-- The project has an active open-source community: regular contributors, reproducible issues, and documented RFC processes.
+### Current State — Career OS V1
+The current public portfolio represents **V1** of Career OS. It remains concise, high-signal, technical, and recruiter-friendly. The public portfolio is not the entire product—it is the first public window into the Career OS data layer.
 
 ---
 
-## Project Governance
+## 3. Core Architectural Principle
 
-Career OS follows a **Benevolent Dictator For Life (BDFL)** model in its early stages. In practice this means a single maintainer has final say on architectural and product decisions while the project is pre-v1.0. The expectation is a gradual transition to a consensus-based, multi-maintainer model as the contributor community grows.
+> **THE DASHBOARD IS THE CONTROL PLANE. THE PORTFOLIO IS A PRESENTATION LAYER.**
 
-- **Maintainer:** [Harsh324](https://github.com/Harsh324)
-- **Decision Process:** Major decisions are documented as Architecture Decision Records (ADRs) in `docs/adr/`.
-- **RFC Process:** Significant feature proposals must be submitted as GitHub Issues with the `RFC` label and allow a 14-day comment period before any implementation begins.
-- **Breaking Changes:** Any change to the `content/` schema that breaks existing content files requires a major version bump and a documented migration guide.
+```
+                        CAREER OS
+                            │
+                  ┌─────────┴─────────┐
+                  │                   │
+              DASHBOARD           PORTFOLIO
+              (Private)           (Public)
+                  │                   │
+                  └─────────┬─────────┘
+                            │
+                            ▼
+                       CAREER DATA
+                            │
+                            ▼
+                       PostgreSQL
+```
+
+- **The Private Dashboard (Control Plane):** The administrative interface where the engineer creates, edits, previews, and publishes career records without modifying source code.
+- **The Public Portfolio (Presentation Layer):** A read-only consumer of published backend data, optimized for speed, aesthetics, SEO, and recruiter engagement.
+- **The Backend & Database (Authoritative Authority):** The central repository for all career history, project metadata, resume variants, and future intelligence logs.
 
 ---
 
-*Last updated: July 2026*
+## 4. Engineering & Product Principles
+
+1. **Career Data is the Source of Truth:** Never hardcode career records in frontend components or duplicate constants when the database owns them.
+2. **Separation of Concerns:** Keep the public portfolio focused and recruiter-friendly; confine operational complexity to the private dashboard.
+3. **Evidence Over Marketing:** Communicate technical realities, trade-offs, and metrics accurately without hyperbole.
+4. **Zero Fabrication:** Never invent metrics, user figures, technologies, or employment dates.
+5. **Simplicity Over Speculation:** Avoid unnecessary infrastructure (e.g., Kubernetes, event buses, microservices) until real traffic or functional requirements demand it.
