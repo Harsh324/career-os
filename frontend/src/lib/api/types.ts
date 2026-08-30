@@ -156,17 +156,23 @@ export interface Certification {
 }
 
 export interface SiteSettings {
+  id?: number;
   name: string;
   title: string;
   email: string;
   location: string;
   tagline: string;
   summary: string;
+  engineering_focus: string[];
+  open_to_work: boolean;
+  target_roles?: string[];
   avatar_url: string;
   resume_url: string;
   github_url: string;
   linkedin_url: string;
   twitter_url: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface SEOMetadata {

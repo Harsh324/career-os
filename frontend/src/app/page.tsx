@@ -1,5 +1,6 @@
 export const revalidate = 3600;
 
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -83,14 +84,21 @@ export default async function HomePage() {
           </div>
 
           {/* Status Badge */}
-          <div className="rounded-xl border border-[#1f883d]/30 dark:border-[#39d353]/30 bg-[#1f883d]/10 dark:bg-[#238636]/20 px-2.5 py-2 text-[11px] font-mono text-[#1f883d] dark:text-[#39d353] flex items-center gap-1.5 shadow-sm font-medium leading-tight">
-            <span className="relative flex h-2 w-2 flex-shrink-0">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#39d353] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#1f883d] dark:bg-[#39d353]"></span>
-            </span>
-            <Sparkles className="h-3.5 w-3.5 text-[#1f883d] dark:text-[#39d353] flex-shrink-0" />
-            <span className="whitespace-normal">Open to Backend & Cloud Roles</span>
-          </div>
+          {meta.open_to_work ? (
+            <div className="rounded-xl border border-[#1f883d]/30 dark:border-[#39d353]/30 bg-[#1f883d]/10 dark:bg-[#238636]/20 px-2.5 py-2 text-[11px] font-mono text-[#1f883d] dark:text-[#39d353] flex items-center gap-1.5 shadow-sm font-medium leading-tight">
+              <span className="relative flex h-2 w-2 flex-shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#39d353] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#1f883d] dark:bg-[#39d353]"></span>
+              </span>
+              <Sparkles className="h-3.5 w-3.5 text-[#1f883d] dark:text-[#39d353] flex-shrink-0" />
+              <span className="whitespace-normal">Open to Backend & Cloud Roles</span>
+            </div>
+          ) : (
+            <div className="rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#21262d] px-2.5 py-2 text-[11px] font-mono text-[#57606a] dark:text-[#8b949e] flex items-center gap-1.5 shadow-2xs font-medium leading-tight">
+              <span className="h-2 w-2 rounded-full bg-[#57606a] dark:bg-[#8b949e] flex-shrink-0"></span>
+              <span className="whitespace-normal">Not Actively Looking</span>
+            </div>
+          )}
 
           {/* Core Tech Pills */}
           <div className="flex flex-wrap gap-1.5 font-mono text-[11px]">
@@ -184,17 +192,18 @@ export default async function HomePage() {
               {meta.summary}
             </p>
 
-            {/* Optional Compact Engineering Focus Row */}
-            <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-[#d0d7de]/60 dark:border-[#30363d]/60 text-xs font-mono text-[#57606a] dark:text-[#8b949e]">
-              <span className="font-bold text-[#24292f] dark:text-[#f0f6fc]">Engineering Focus:</span>
-              <span className="text-[#0969da] dark:text-[#58a6ff] font-semibold">Backend APIs</span>
-              <span>&bull;</span>
-              <span className="text-[#0969da] dark:text-[#58a6ff] font-semibold">Distributed Systems</span>
-              <span>&bull;</span>
-              <span className="text-[#0969da] dark:text-[#58a6ff] font-semibold">AWS Cloud</span>
-              <span>&bull;</span>
-              <span className="text-[#0969da] dark:text-[#58a6ff] font-semibold">AI Data Platforms</span>
-            </div>
+            {/* Dynamic Engineering Focus Row */}
+            {meta.engineering_focus && meta.engineering_focus.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-[#d0d7de]/60 dark:border-[#30363d]/60 text-xs font-mono text-[#57606a] dark:text-[#8b949e]">
+                <span className="font-bold text-[#24292f] dark:text-[#f0f6fc]">Engineering Focus:</span>
+                {meta.engineering_focus.map((focus, idx) => (
+                  <React.Fragment key={idx}>
+                    {idx > 0 && <span>&bull;</span>}
+                    <span className="text-[#0969da] dark:text-[#58a6ff] font-semibold">{focus}</span>
+                  </React.Fragment>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Pinned / Primary Work Experience Section */}
