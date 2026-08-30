@@ -1,264 +1,211 @@
-# Career OS — Roadmap
+# Career OS — Product Roadmap & Milestone Execution
 
-> This document describes the planned milestones, features, and timeline for Career OS. It is a living document updated at the start of each milestone cycle. Community input is welcome via GitHub Issues with the `roadmap` label.
-
----
-
-## Table of Contents
-
-- [Roadmap Philosophy](#roadmap-philosophy)
-- [Milestone Overview](#milestone-overview)
-- [v0.1 — Foundation](#v01--foundation)
-- [v0.2 — Resume Generator](#v02--resume-generator)
-- [v0.3 — Portfolio Website](#v03--portfolio-website)
-- [v0.4 — AI Synthesis Layer](#v04--ai-synthesis-layer)
-- [v0.5 — Publishing Automation](#v05--publishing-automation)
-- [v1.0 — Public Release](#v10--public-release)
-- [Post-1.0 Vision](#post-10-vision)
-- [Dropped & Deferred Features](#dropped--deferred-features)
+> This document defines the versioned, staged roadmap for Career OS.
+> Milestones are categorized by readiness: **CURRENT**, **PLANNED**, **FUTURE**, and **EXPLORATORY**.
+> **Future features must NOT be pre-implemented.** Each phase must be built in vertical, usable increments.
 
 ---
 
-## Roadmap Philosophy
+## Roadmap Overview
 
-Career OS follows a milestone-based development model. Each milestone is:
-
-- **Self-contained.** Each version delivers standalone, usable functionality. You should be able to stop at any milestone and have a working tool.
-- **Incrementally valuable.** Later milestones build on earlier ones but do not require rework of prior deliverables.
-- **Community-transparent.** Milestone scope is defined publicly, and scope changes are documented.
-
-Milestones do not have fixed release dates in the early alpha phase. Dates will be added once a stable development cadence is established.
-
----
-
-## Milestone Overview
-
-| Milestone | Status | Focus Area |
-|-----------|--------|-----------|
-| [v0.1 — Foundation](#v01--foundation) | 🔄 **In Progress** | Repository structure, content schema, validation |
-| [v0.2 — Resume Generator](#v02--resume-generator) | 📋 Planned | PDF/LaTeX resume from content |
-| [v0.3 — Portfolio Website](#v03--portfolio-website) | 📋 Planned | Static portfolio site generation |
-| [v0.4 — AI Synthesis Layer](#v04--ai-synthesis-layer) | 📋 Planned | LLM-powered content generation |
-| [v0.5 — Publishing Automation](#v05--publishing-automation) | 📋 Planned | CI/CD pipelines, GitHub profile publishing |
-| [v1.0 — Public Release](#v10--public-release) | 📋 Planned | Stable API, full docs, community launch |
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│ [CURRENT]     V1: Public Engineering Portfolio                                   │
+├──────────────────────────────────────────────────────────────────────────────────┤
+│ [PLANNED]     V2: Private Career Dashboard (NEXT MILESTONE)                      │
+│ [PLANNED]     V3: Resume Studio (LaTeX Editor & Compiler)                        │
+│ [PLANNED]     V3.x: Career Data / Resume Integration (Variable-driven LaTeX)     │
+├──────────────────────────────────────────────────────────────────────────────────┤
+│ [FUTURE]      V4: Job & Application Pipeline Management                          │
+│ [FUTURE]      V5: Job Description Intelligence & Gap Analysis                    │
+│ [FUTURE]      V6: Interview Management & Question Bank                           │
+│ [FUTURE]      V7: Grounded AI Career Copilot                                     │
+│ [FUTURE]      V8: Longitudinal Career Intelligence                               │
+├──────────────────────────────────────────────────────────────────────────────────┤
+│ [EXPLORATORY] Multi-Tenant SaaS Platform & External Integrations                 │
+└──────────────────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## v0.1 — Foundation
-
-**Status:** 🔄 In Progress  
-**Goal:** Establish the repository structure, content schema, and parsing pipeline that all future milestones depend on.
-
-### Deliverables
-
-#### Repository Structure
-- [x] Define top-level directory layout (`content/`, `apps/`, `packages/`, `agents/`, etc.)
-- [x] Initialize Git repository with `.gitignore`, `LICENSE`, and placeholder files
-- [ ] Create `.github/` workflow stubs for CI/CD
-- [ ] Create Issue and Pull Request templates
-
-#### Documentation
-- [x] `README.md` — Project overview and getting started guide
-- [x] `docs/PROJECT.md` — Vision, goals, and non-goals
-- [x] `ARCHITECTURE.md` — System design and data flow
-- [x] `docs/ROADMAP.md` — This document
-- [x] `CONTRIBUTING.md` — Contribution guide
-- [x] `docs/adr/template.md` — ADR template for contributors
-- [x] `docs/adr/0001-turborepo-monorepo.md` — First ADR documenting Turborepo monorepo build setup
-
-#### Content Schema
-- [ ] Define YAML front matter specification for `experience/`
-- [ ] Define YAML front matter specification for `projects/`
-- [ ] Define YAML front matter specification for `education/`
-- [ ] Define YAML front matter specification for `skills/`
-- [ ] Define YAML front matter specification for `certifications/`, `awards/`, `timeline/`
-- [ ] Define YAML front matter specification for `publications/`
-- [ ] Write JSON Schema validators for all content types (stored in `docs/schemas/`)
-- [ ] Create example content files in each `content/` subdirectory
-
-#### Content Parser Package (`packages/content-parser`)
-- [ ] Initialize package with TypeScript and build tooling
-- [ ] Implement Markdown + YAML front matter parsing
-- [ ] Implement schema validation with actionable error messages
-- [ ] Implement content type inference and normalization
-- [ ] Write unit tests for all parser functions
-- [ ] Write integration tests against example content
-
-#### Developer Experience
-- [ ] `npm run content:validate` — Validates all content against schemas
-- [ ] `npm run content:lint` — Lints Markdown style and front matter consistency
-- [ ] Define `career-os.config.ts` platform configuration schema (outputs, LLM provider, deployment target)
+## 1. Milestone Specifications
 
 ---
 
-## v0.2 — Resume Generator
+### [CURRENT] Career OS V1 — Public Engineering Portfolio
 
-**Status:** 📋 Planned  
-**Goal:** Generate a professional, print-ready PDF resume from content directory data.
+**Status:** ✅ **Implemented & Operating**  
+**Focus:** Public-facing, high-signal engineering portfolio backed by a relational database and REST API.
 
-### Deliverables
-
-#### Resume Generator Package (`packages/resume-generator`)
-- [ ] Define the `Generator` interface in `packages/content-parser/src/types/generator.ts` (shared contract for all generators)
-- [ ] Define resume layout engine (likely LaTeX-based for typographic quality)
-- [ ] Implement template system with at least two named templates
-- [ ] Implement role-based content filtering (include/exclude sections by target role)
-- [ ] Generate LaTeX source from structured content
-- [ ] Compile LaTeX to PDF in CI environment
-- [ ] Generate JSON Resume format output (for interoperability)
-- [ ] Write tests for template rendering and PDF compilation
-
-#### Resume Templates
-- [ ] **Classic** — Clean single-column layout, ATS-optimized
-- [ ] **Technical** — Two-column layout with skills sidebar
-
-#### CLI Script
-- [ ] `npm run generate:resume` — Build all resume formats into `assets/resume/`
-- [ ] Support `--template`, `--role`, and `--output` flags
-
-#### Content Schema Additions
-- [ ] Add `featured: true/false` field to experience and project entries for resume inclusion
-- [ ] Add `resume_summary` field to skills entries
+#### Core Deliverables
+- [x] **Relational Schema:** PostgreSQL models for experiences, projects, skills, technologies, certifications, education, timeline, and profile metadata.
+- [x] **Backend API:** Django REST Framework API versioned under `/api/v1/` with OpenAPI / Swagger documentation (`drf-spectacular`).
+- [x] **Frontend Presentation:** Next.js 15 App Router interface using Tailwind CSS and React Query for client state management.
+- [x] **Engineering Experience Pages:** Detailed architecture breakdowns, technical challenges, problem-solution-impact narratives, and metrics.
+- [x] **Featured Projects Showcase:** Architecture diagrams, engineering decisions, and technical deep-dives for FinTrack AI, Constellation, and Career OS.
+- [x] **Skills & Credentials:** Domain-grouped technical skills, verified AWS certifications with verification URLs, and education.
+- [x] **Career Timeline:** Interactive chronological milestones.
+- [x] **Docker Infrastructure:** Modular compose configuration (`infra/docker-compose.yml`) for database, backend, and frontend.
 
 ---
 
-## v0.3 — Portfolio Website
+### [PLANNED] Career OS V2 — Private Career Dashboard
 
-**Status:** 📋 Planned  
-**Goal:** Generate a statically deployable, high-performance portfolio website from content directory data.
+**Status:** 🎯 **NEXT IMPLEMENTATION MILESTONE**  
+**Focus:** Administrative control plane allowing the owner to manage, preview, and publish career records without touching source code or re-running database seed scripts.
 
-### Deliverables
-
-#### Website Application (`apps/website`)
-- [ ] Choose and initialize static site generator (Next.js with static export)
-- [ ] Implement data layer that reads from `packages/content-parser`
-- [ ] Build core pages: Home, About, Experience, Projects, Blog, Contact
-- [ ] Build project detail pages (auto-generated from `content/projects/`)
-- [ ] Build experience detail pages (auto-generated from `content/experience/`)
-- [ ] Build blog post pages (auto-generated from `content/blog/`)
-- [ ] Implement career timeline visualization
-- [ ] Implement a responsive, accessible design system
-- [ ] Target Lighthouse score ≥ 95 across Performance, Accessibility, Best Practices, SEO
-
-#### SEO and Metadata
-- [ ] Implement Open Graph and Twitter card meta tags
-- [ ] Generate `sitemap.xml` and `robots.txt`
-- [ ] Add JSON-LD structured data for Person and Article schemas
-
-#### Deployment
-- [ ] GitHub Actions workflow for building and deploying to GitHub Pages
-- [ ] Document alternative deployment targets (Vercel, Netlify, Cloudflare Pages)
-
----
-
-## v0.4 — AI Synthesis Layer
-
-**Status:** 📋 Planned  
-**Goal:** Integrate LLM-based content generation for bios, summaries, tailored cover letters, and gap analysis.
-
-### Deliverables
-
-#### AI Engine Package (`packages/ai-engine`)
-- [ ] Implement LLM provider abstraction (support OpenAI, Anthropic, and local Ollama)
-- [ ] Implement prompt template system with versioning
-- [ ] Implement output persistence — all AI drafts written to `output/ai-drafts/` for human review
-- [ ] Implement diff-based review workflow (compare AI draft vs. current content)
-
-#### Prompt Library (`packages/ai-engine/prompts/`)
-- [ ] `professional-bio.md` — Generate a professional bio from experience + skills data
-- [ ] `project-summary.md` — Generate a one-paragraph project summary from front matter
-- [ ] `role-tailored-summary.md` — Tailor resume summary for a specific job description
-- [ ] `cover-letter-draft.md` — Generate a cover letter draft given a job description input
-- [ ] `gap-analysis.md` — Identify skills gaps between content and a target role
-
-#### Agents (`.agents/ai/`)
-- [ ] `career-synthesizer` agent — Orchestrates bio, summary, and profile generation
-- [ ] `resume-tailor` agent — Takes a job description URL and produces a tailored resume variant
-
-#### Human Review Flow
-- [ ] AI outputs are staged in `output/ai-drafts/` (gitignored)
-- [ ] `npm run ai:review` — Opens a diff interface to review and approve AI outputs
-- [ ] Approved outputs are promoted to the appropriate `content/` path
+#### Target Scope
+- **Secure Admin Authentication:** JWT-based authenticated session for the private control plane.
+- **Profile Management:**
+  - Name, headline, bio summary, location, contact channels, public links.
+- **Experience Management:**
+  - Company association, role title, employment type, start/end dates, location.
+  - Responsibilities, key contributions, associated technologies.
+  - Architecture description, technical challenges, solution approaches, quantified impact metrics.
+  - Display ordering and visibility toggles.
+- **Project Management:**
+  - Name, slug, description, project status, repository and live URLs.
+  - Architectural breakdown, key features, technical decisions, trade-offs, and challenges.
+  - Featured status toggle, display ordering, and visibility control.
+- **Skills Taxonomy Management:**
+  - Category grouping (Languages, Backend, Cloud, Databases, etc.), technology links, descriptions, proficiency levels, ordering, and visibility.
+- **Certifications & Education Management:**
+  - Name, issuer, issue date, expiration date, credential URL, credential ID, visibility.
+  - Educational institution, degree, field of study, relevant coursework.
+- **Timeline Milestone Management:**
+  - Date, event title, category, full description, importance weight, ordering.
+- **Publish & Preview Workflow:**
+  ```
+  Edit Record  ──►  Save Draft  ──►  Preview Changes  ──►  Publish  ──►  Public Portfolio Updates
+  ```
 
 ---
 
-## v0.5 — Publishing Automation
+### [PLANNED] Career OS V3 — Resume Studio
 
-**Status:** 📋 Planned  
-**Goal:** Automate the propagation of Career OS outputs to external surfaces via CI/CD.
+**Status:** 📋 **Planned (High Priority)**  
+**Focus:** Integrated private LaTeX resume editing, compilation, versioning, and export workspace (eliminating dependency on external tools like Overleaf).
 
-### Deliverables
+```
+┌────────────────────────────────────────────────────────┐
+│                   Private Dashboard                     │
+│  ┌───────────────────────┐   ┌──────────────────────┐  │
+│  │ Monaco / CodeMirror   │   │ Live PDF Viewer /    │  │
+│  │ LaTeX Source Editor   │──►│ Preview Panel        │  │
+│  └───────────┬───────────┘   └──────────────────────┘  │
+└──────────────┼──────────────────────────────────────────┘
+               │ Compile Request
+               ▼
+┌────────────────────────────────────────────────────────┐
+│        Isolated LaTeX Compilation Service              │
+│  (Dockerized TinyTeX / tectonic environment)            │
+│  LaTeX Source ──► Compilation ──► PDF Artifact         │
+└────────────────────────────────────────────────────────┘
+```
 
-#### Publisher Package (`packages/publisher`)
-- [ ] Implement GitHub Profile README generator
-- [ ] Implement per-repository README generator from `content/projects/` data
-- [ ] Implement GitHub Actions workflow for automated publishing on `main` push
+#### Target Scope
+- **Monaco / CodeMirror LaTeX Editor:** In-browser code editing with LaTeX syntax highlighting, line numbers, and error annotations.
+- **Isolated Compilation Service:** Fast, containerized engine producing standard PDF outputs.
+- **Side-by-Side PDF Preview:** Instant preview pane with zoom and page navigation.
+- **Resume Version Control:** Save named versions (e.g., `Backend-Cloud-2026-v1.tex`), compare historical diffs, and set the active published resume.
+- **One-Click Export:** Download PDF artifacts or raw LaTeX source files.
 
-#### CI/CD Pipelines (`.github/workflows/`)
-- [ ] `validate.yml` — Validate all content on every push and PR
-- [ ] `generate-resume.yml` — Generate resume artifacts on tag push
-- [ ] `deploy-website.yml` — Build and deploy portfolio website on `main` push
-- [ ] `publish-github-profile.yml` — Update GitHub profile README on content changes
-
-#### Recruiter Package
-- [ ] `npm run generate:recruiter-package` — Bundle PDF resume + bio + cover letter into a single ZIP in `output/recruiter-package/`
-- [ ] Support per-role recruiter packages with tailored content
-
----
-
-## v1.0 — Public Release
-
-**Status:** 📋 Planned  
-**Goal:** Stable API, complete documentation, and a community-ready public launch.
-
-### Deliverables
-
-#### Stability
-- [ ] Freeze content schema v1 (commit to backwards compatibility)
-- [ ] Comprehensive test coverage across all packages (target ≥ 80%)
-- [ ] Full TypeScript types exported from all packages
-- [ ] Zero critical or high-severity open issues
-
-#### Documentation
-- [ ] Full content schema reference documentation
-- [ ] Getting started guide (< 30 minutes to first generated portfolio)
-- [ ] Package API reference documentation
-- [ ] Video walkthrough / demo
-
-#### Community
-- [ ] CHANGELOG.md with all changes since v0.1
-- [ ] `SECURITY.md` with responsible disclosure policy
-- [ ] Community discussion forum setup (GitHub Discussions)
-- [ ] `GOVERNANCE.md` with community maintainer onboarding process
-- [ ] Curated list of example Career OS repositories from community members
+> [!IMPORTANT]
+> Career OS V3 is **NOT** a full Overleaf clone. Its initial scope is strictly: **Edit → Compile → Preview → Save Version → Download**.
 
 ---
 
-## Post-1.0 Vision
+### [PLANNED] Career OS V3.x — Career Data / Resume Integration
 
-The following features are on the long-term horizon but are not yet scoped to a specific milestone:
+**Status:** 📋 **Planned**  
+**Focus:** Unifying structured career database records with LaTeX resume generation via template variables.
 
-- **Plugin System** — A formal plugin API for community-contributed output generators (e.g., Notion exporter, DEV.to cross-poster, DocSend package).
-- **Content Analytics** — Optional analytics integration for portfolio website (privacy-respecting, self-hosted).
-- **Version-Tagged Career Snapshots** — Git-tag your content at a point in time to generate a "career as of date X" artifact.
-- **Job Application Tracker Integration** — Optional integration with open-source ATS tools.
-- **Multi-Language / Internationalization** — Generate outputs in multiple languages from a single content source.
-- **Community Schema Registry** — A shared registry of content schema extensions contributed by the community.
-- **VS Code Extension** — A first-party extension providing schema validation, front matter autocomplete, and generation commands within the editor.
+```
+Career Database (PostgreSQL)  ──►  Resume Template Engine  ──►  LaTeX Rendering  ──►  Compiled PDF
+```
 
----
-
-## Dropped & Deferred Features
-
-Features that were considered and explicitly excluded from the current roadmap:
-
-| Feature | Decision | Reason |
-|---------|----------|--------|
-| Real-time LinkedIn sync | ❌ Dropped | LinkedIn API restrictions make this unmaintainable |
-| Hosted SaaS version | ⏸️ Deferred | Out of scope for v1.0; may be a community fork |
-| WYSIWYG content editor | ⏸️ Deferred | Adds significant scope; Markdown editors handle this well |
-| Mobile application | ❌ Dropped | Not aligned with the developer-first, Git-native philosophy |
+#### Target Scope
+- Dynamic template tags linking directly to canonical database records (`{{ experience.sms_datatech.metrics }}`, `{{ skills.backend }}`).
+- Guarantees that updating a metric or project in the dashboard automatically updates resume generation targets.
+- Preserves manual typographic overrides while eliminating data drift across portfolio and resume.
 
 ---
 
-*Last updated: July 2026*
+### [FUTURE] Career OS V4 — Job & Application Pipeline Management
+
+**Status:** ⏳ **Future Milestone**  
+**Focus:** Private CRM for job applications, recruiters, requirements, and resume version attribution.
+
+#### Target Scope
+- **Job Opportunity Schema:**
+  - Company name, role title, job description (raw text & URL), location, salary band.
+  - Specific filters: Japanese language proficiency requirement, visa sponsorship status.
+  - Recruiter contact info, source channel, application date, custom notes.
+- **Application Pipeline Stages:**
+  ```
+  Saved  ──►  Considering  ──►  Applied  ──►  Recruiter Screen  ──►  Interview Rounds  ──►  Offer / Closed
+  ```
+- **Resume Attribution:** Explicitly record which Resume Studio version was submitted for each application.
+
+---
+
+### [FUTURE] Career OS V5 — Job Description Intelligence & Gap Analysis
+
+**Status:** ⏳ **Future Milestone**  
+**Focus:** Grounded comparison between target job descriptions and structured career data.
+
+#### Target Scope
+- **JD Parser & Evaluator:** Ingest pasted job descriptions and cross-reference required skills, years of experience, and technologies against the Career OS database.
+- **Match Matrix:**
+  - *Strong Matches (✓):* Direct evidence in projects/experience (e.g., Python, Django, AWS ECS).
+  - *Moderate / Adjacent (△):* Related tools (e.g., Terraform mapped from CloudFormation).
+  - *Skill Gaps (✗):* Missing technologies or requirements (e.g., Kubernetes).
+- **Grounded Recommendations:** Suggestions for which real experiences/projects to emphasize without fabricating credentials.
+
+---
+
+### [FUTURE] Career OS V6 — Interview Management & Question Bank
+
+**Status:** ⏳ **Future Milestone**  
+**Focus:** Tracking interview pipelines, technical discussions, system design questions, and personal performance.
+
+#### Target Scope
+- **Round Documentation:** Round number, date, interviewers, focus area (System Design, DSA, Cultural, Architecture).
+- **Question Repository:** Centralized log of questions asked, answers provided, architectural diagrams sketched, and interviewer feedback.
+- **Personal Question Bank:** Tagged database of recurring technical questions and refined personal answers.
+
+---
+
+### [FUTURE] Career OS V7 — Grounded AI Career Copilot
+
+**Status:** ⏳ **Future Milestone**  
+**Focus:** Natural language conversational assistant grounded exclusively in verified Career OS records.
+
+#### Target Scope
+- Dynamic context ingestion from PostgreSQL ORM into system prompts.
+- Answers complex queries accurately (e.g., *"What AWS projects demonstrate high availability?"*, *"Explain the Celery worker architecture used at SMS DataTech"*).
+- Prepares role-specific interview summaries and answers without hallucinating facts.
+
+---
+
+### [FUTURE] Career OS V8 — Longitudinal Career Intelligence
+
+**Status:** ⏳ **Future Milestone**  
+**Focus:** High-level pattern analysis across applications, market requirements, skills, and career trajectory.
+
+#### Target Scope
+- **Conversion Analytics:** Analyze interview conversion rates across different resume versions, target company types, and technical stacks.
+- **Skill Demand Trends:** Identify which missing skills appear most frequently across rejected or target positions to guide future learning.
+- Completes the loop: **Store → Present → Manage → Analyze → Act → Optimize**.
+
+---
+
+### [EXPLORATORY] Multi-Tenant SaaS Platform & Integrations
+
+**Status:** 🔬 **Exploratory (Do NOT Build Now)**  
+**Focus:** Evaluating Career OS as a generalizable platform for other engineers.
+
+- Multi-tenant data isolation and user authentication.
+- Automated portfolio subdomain provisioning.
+- External import/export connectors (GitHub repositories, LinkedIn profile data where legally/technically feasible).
+- **Rule:** Career OS must first be completely validated as a high-utility personal system for the owner before any SaaS abstraction is introduced.

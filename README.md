@@ -1,245 +1,187 @@
 <div align="center">
 
-<h1>⚡ Career OS</h1>
+# ⚡ Career OS
 
-<p><strong>Your entire professional identity, version-controlled.</strong></p>
+**A Personal Career Operating System & High-Signal Engineering Showcase**
 
-<p>Career OS is an AI-powered engineering platform that manages a developer's complete professional presence from a single Git repository. Write your career data once — in structured Markdown — and generate everything else automatically: portfolio website, resume, GitHub profile, project documentation, career timeline, blog, and recruiter-ready assets.</p>
+<p>Career OS is a decoupled, backend-driven platform that acts as the single source of truth for professional identity, career history, technical architectures, skills, certifications, and resumes.</p>
 
 <br />
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Status: Alpha](https://img.shields.io/badge/Status-Alpha-orange.svg)]()
-[![Made with Love](https://img.shields.io/badge/Made%20with-%E2%9D%A4-red.svg)]()
+[![Status: V1 Active](https://img.shields.io/badge/Status-V1%20Active-brightgreen.svg)]()
+[![Stack: Next.js + Django](https://img.shields.io/badge/Stack-Next.js%2015%20%7C%20Django%205%20%7C%20PostgreSQL-0969da.svg)]()
 
 </div>
 
 ---
 
-## Table of Contents
+## 📖 Table of Contents
 
-- [Overview](#overview)
-- [Core Philosophy](#core-philosophy)
-- [What Career OS Generates](#what-career-os-generates)
+- [Overview & Vision](#overview--vision)
+- [System Architecture](#system-architecture)
 - [Repository Structure](#repository-structure)
-- [Getting Started](#getting-started)
-- [Documentation](#documentation)
-- [Roadmap](#roadmap)
-- [Contributing](#contributing)
+- [Featured Engineering Projects](#featured-engineering-projects)
+- [Quick Start with Docker](#quick-start-with-docker)
+- [Documentation Index](#documentation-index)
+- [Roadmap & Next Milestone](#roadmap--next-milestone)
 - [License](#license)
 
 ---
 
-## Overview
+## 🎯 Overview & Vision
 
-Most developers manage their professional presence as a patchwork of disconnected tools — a LinkedIn profile here, a résumé PDF there, a stale portfolio website, and a GitHub bio that was last updated two jobs ago. Every time something changes, they have to update everything manually, inconsistently, and often not at all.
+Most engineers manage their professional presence across fragmented platforms: an outdated resume file, inconsistent LinkedIn bullets, an uncurated GitHub profile, and disconnected notes.
 
-**Career OS solves this.** It treats your professional identity as structured data stored in a Git repository. Every role, project, skill, certification, and blog post lives as a Markdown file with YAML front matter. From this single source of truth, Career OS uses AI to synthesize, tailor, and publish your professional presence across every surface that matters.
+**Career OS transforms this model into an integrated engineering system:**
 
-Think of it as **Infrastructure as Code, but for your career.**
+```
+CAREER DATA  ──►  PRESENTATION  ──►  MANAGEMENT  ──►  ANALYSIS  ──►  ACTION  ──►  OPTIMIZATION
+ (PostgreSQL)      (Public Portfolio)   (Private Dashboard)  (JD Matching)   (Job Apps)      (Intelligence)
+```
 
----
+- **The Public Portfolio is a presentation layer** designed for high-density technical credibility, architecture breakdowns, and recruiter review.
+- **The Private Dashboard (Planned V2) is the control plane** allowing complete career curation without editing source code.
+- **The Relational Database is the single source of truth** powering all presentation surfaces.
 
-## Core Philosophy
-
-| Principle | Description |
-|-----------|-------------|
-| **Git as Source of Truth** | All career data is plain text, version-controlled, and fully portable. No vendor lock-in. |
-| **Write Once, Publish Everywhere** | Define your experience once; generate output for every target platform automatically. |
-| **AI-Augmented, Human-Controlled** | AI generates summaries, tailors content, and catches gaps — but you approve every output. |
-| **Open by Default** | The platform, the prompts, and the generation logic are all open source and auditable. |
-| **Zero Runtime Dependency** | All outputs are static assets. No database, no server, no SaaS subscription required. |
-| **Composable & Extensible** | Built as a collection of independent packages. Use only what you need. |
+For full product philosophy and evolution, see [docs/PRODUCT-VISION.md](docs/PRODUCT-VISION.md) and [docs/PROJECT.md](docs/PROJECT.md).
 
 ---
 
-## What Career OS Generates
+## 🏗️ System Architecture
 
-Career OS transforms your structured Markdown content into:
+Career OS follows a decoupled, three-tier architecture:
 
-| Output | Description |
-|--------|-------------|
-| 🌐 **Portfolio Website** | A statically generated, fully responsive personal site |
-| 📄 **Resume / CV** | LaTeX and PDF resume with role-specific tailoring |
-| 🐙 **GitHub Profile README** | A dynamic `README.md` for your GitHub profile page |
-| 📚 **Project Documentation** | Auto-generated docs pages for each project you list |
-| 🕰️ **Career Timeline** | An interactive visual timeline of your professional journey |
-| ✍️ **Blog** | A Markdown-driven blog published alongside your portfolio |
-| 🤖 **AI Summaries** | LLM-generated professional bios, taglines, and cover letter drafts |
-| 📦 **Recruiter Assets** | One-click export of a recruiter-ready package (PDF resume + cover letter + bio) |
+```
+┌────────────────────────────────────────────────────────┐
+│                  Next.js 15 Frontend                   │
+│   (App Router, React Query, Tailwind CSS, Dark Theme)  │
+└───────────────────────────┬────────────────────────────┘
+                            │ HTTP / REST JSON (/api/v1/)
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│            Django REST Framework API Engine            │
+│   (Modular Domain Apps, drf-spectacular, SimpleJWT)    │
+└───────────────────────────┬────────────────────────────┘
+                            │ SQL (psycopg 3)
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│                  PostgreSQL 16 Engine                  │
+│   (Relational Career Graph, Migrations, Indexes)       │
+└────────────────────────────────────────────────────────┘
+```
+
+For complete technical specifications, see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ---
 
-## Repository Structure
+## 📁 Repository Structure
 
 ```
 career-os/
+├── backend/                  # Django REST Framework API Engine
+│   ├── apps/                 # Modular Domain Applications
+│   │   ├── accounts/         # Authentication & user management
+│   │   ├── companies/        # Companies & organizations
+│   │   ├── experiences/      # Work history, architectures, metrics
+│   │   ├── projects/         # Engineering project showcase
+│   │   ├── skills/           # Skills taxonomy & proficiency
+│   │   ├── technologies/     # Tech stack & tooling registry
+│   │   ├── certifications/   # AWS & industry credentials
+│   │   ├── education/        # Academic degrees & history
+│   │   ├── timeline/         # Chronological milestones
+│   │   ├── site_settings/    # Profile metadata & social links
+│   │   ├── media_assets/     # Asset uploads & media storage
+│   │   ├── seo/              # SEO configurations
+│   │   └── ai_assistant/     # Career copilot query engine
+│   ├── config/               # Django project settings & URL routing
+│   └── manage.py             # Django management CLI
 │
-├── content/raw/              # Source of truth — all career data lives here (P1)
-│   ├── experience/           # Work history (one .md file per role)
-│   ├── projects/             # Projects and open-source contributions
-│   ├── education/            # Degrees, courses, and academic history
-│   ├── skills/               # Technical and soft skills taxonomy
-│   ├── certifications/       # Licenses and certifications
-│   ├── awards/               # Achievements and recognitions
-│   ├── blog/                 # Long-form writing and technical posts
-│   ├── publications/         # External articles, talks, and conference papers
-│   ├── timeline/             # Career milestones and life events
-│   └── assets/               # Raw static media (images, logos, brand)
+├── frontend/                 # Next.js 15 Presentation Layer
+│   ├── src/
+│   │   ├── app/              # App Router Pages (/experience, /projects, /skills, /timeline, /resume)
+│   │   ├── components/       # Reusable UI & Domain Components
+│   │   ├── lib/              # API Client & React Query Hooks
+│   │   └── providers/        # Theme & Query Context Providers
+│   └── package.json          # Frontend dependencies
 │
-├── apps/
-│   ├── website/              # Portfolio website (Next.js 16 + Tailwind v4 + shadcn/ui)
-│   └── api/                  # Future REST/GraphQL API server (marker)
+├── infra/                    # Docker & Infrastructure
+│   ├── docker-compose.yml    # Root Compose definition
+│   ├── docker-compose.backend.yml
+│   ├── docker-compose.frontend.yml
+│   └── docker/               # Container Dockerfiles
 │
-├── packages/                 # Shared internal libraries
-│   ├── content-schema/       # Zod schemas + TypeScript types + defineConfig() (Root Type Authority)
-│   ├── content-parser/       # Parses and validates Markdown content → ContentGraph
-│   ├── sdk/                  # Single read-only query SDK for all platform consumers (@career-os/sdk)
-│   ├── resume-generator/     # Builds resume artifacts (PDF, LaTeX)
-│   ├── github-generator/     # Generates GitHub profile README
-│   ├── ai-engine/            # LLM provider abstraction, prompts (prompts/), orchestration
-│   └── shared-utils/         # Zero-dependency shared utilities
+├── docs/                     # Authoritative Documentation
+│   ├── PRODUCT-VISION.md     # Long-term vision & product lifecycle
+│   ├── PROJECT.md            # Current purpose, technical identity & journey
+│   ├── ROADMAP.md            # Versioned milestones (V1–V8, Exploratory)
+│   └── adr/                  # Architecture Decision Records
 │
-├── infra/                    # Container infrastructure (Dockerfile.dev, compose, .env.example)
+├── .agents/                  # Agent Governance & AI Rules
+│   └── AGENTS.md             # 10 Permanent AI Coding Principles
 │
-├── output/                   # Generated artifacts — gitignored, never committed
-│   ├── resume/               # Generated PDF and LaTeX resume files
-│   ├── github-profile/       # Generated GitHub profile README
-│   ├── recruiter-package/    # Bundled recruiter ZIP files
-│   └── ai-drafts/            # AI-generated content staged for human review
-│
-├── scripts/                  # CLI scripts for generation and publishing
-│   ├── generate/             # Output generation scripts
-│   ├── publish/              # Publishing scripts (GitHub, deployment)
-│   └── validate/             # Content validation and linting
-│
-├── tests/                    # Cross-package integration tests
-│
-├── docs/                     # Extended project documentation
-│   ├── adr/                  # Architecture Decision Records
-│   ├── architecture/         # Diagrams and system design notes
-│   ├── migrations/           # Breaking change migration guides
-│   ├── requirements/         # Feature and non-functional requirements
-│   ├── schemas/              # JSON Schema files for all content types
-│   ├── PROJECT.md            # Vision, goals, non-goals, guiding principles
-│   └── ROADMAP.md            # Versioned development roadmap
-│
-├── .agents/                  # Agent rules and orchestration definitions
-├── .github/                  # GitHub Actions workflows and issue templates
-│
-├── Makefile                  # 1-command developer interface (make dev, make install)
-├── career-os.config.ts       # Platform configuration (generators, paths, providers)
-│
-├── README.md                 # Primary project landing doc
-├── ARCHITECTURE.md           # System architecture and design decisions
-├── CONTRIBUTING.md           # Contribution guide for collaborators
-├── CHANGELOG.md              # Version-tagged changelog
-└── LICENSE                   # MIT License
+├── Makefile                  # Developer CLI (make up, make migrate, make seed)
+├── README.md                 # Primary Landing Documentation
+└── ARCHITECTURE.md           # System Architecture & Technical Specifications
 ```
 
 ---
 
-## Getting Started
+## 🚀 Featured Engineering Projects
 
-> **Note:** Career OS is currently in the **Alpha** phase. The project scaffolding is in place, and active development is underway.
+1. **FinTrack AI:** Autonomous Financial Intelligence Platform (Multi-agent architecture, Celery async task pipelines, LLM reasoning).
+2. **Constellation:** Distributed Telemetry & Observability Engine (High-throughput metric ingestion, Redis queue buffering, time-series analysis).
+3. **Career OS:** Personal Engineering Operating System (Backend-driven career data platform with Next.js presentation layer).
 
-### Prerequisites
+---
 
-| Tool | Minimum Version |
-|------|----------------|
-| [Docker](https://docs.docker.com/get-docker/) | 24.x |
-| [Git](https://git-scm.com) | 2.x |
-
-That's it. Node.js, pnpm, and all build tools run **inside Docker**. Nothing is installed on your host machine.
-
-### Setup
+## ⚡ Quick Start with Docker
 
 ```bash
-# 1. Clone the repository
+# 1. Clone repository
 git clone https://github.com/Harsh324/career-os.git
 cd career-os
 
-# 2. Build the dev container and install all dependencies
-make install
+# 2. Start full stack (Database + Backend + Frontend)
+make up
 
-# 3. Start the development server
-make dev
+# 3. Apply database migrations
+make migrate
+
+# 4. Seed initial career data
+make seed
 ```
 
-### Available Commands
-
-```bash
-make dev          # Start Next.js dev server (http://localhost:3000)
-make shell        # Open a shell inside the dev container
-make build        # Production build
-make lint         # Run ESLint across all packages
-make type-check   # TypeScript type check across all packages
-make test         # Run all tests (Vitest)
-make format       # Auto-format with Prettier
-make clean        # Remove all build artifacts
-```
-
-### Populating Your Content
-
-Career OS content lives in the `content/raw/` directory. Each subdirectory corresponds to a domain of your professional life. Add one Markdown file per entry with YAML front matter. See [ARCHITECTURE.md](ARCHITECTURE.md) for the full schema specification.
-
-### Generating Outputs
-
-```bash
-# Validate all content against schemas
-make content:validate
-
-# Generate all configured outputs
-make generate
-```
+- **Frontend:** [http://localhost:3002](http://localhost:3002)
+- **Backend API:** [http://localhost:8002/api/v1/](http://localhost:8002/api/v1/)
+- **Interactive Swagger Docs:** [http://localhost:8002/api/docs/](http://localhost:8002/api/docs/)
+- **Django Admin:** [http://localhost:8002/admin/](http://localhost:8002/admin/)
 
 ---
 
-## Documentation
+## 📚 Documentation Index
 
 | Document | Purpose |
-|----------|---------|
-| [docs/PROJECT.md](docs/PROJECT.md) | Vision, goals, non-goals, and guiding principles |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | System design, data flow, and technical decisions |
-| [docs/ROADMAP.md](docs/ROADMAP.md) | Versioned feature roadmap and milestone planning |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute, coding standards, and PR process |
-| [CHANGELOG.md](CHANGELOG.md) | Release notes and version history |
+|---|---|
+| [docs/PRODUCT-VISION.md](docs/PRODUCT-VISION.md) | Vision statement, product lifecycle, and control plane vs presentation layer |
+| [docs/PROJECT.md](docs/PROJECT.md) | Current V1 scope, technical identity, and 4-phase evolutionary journey |
+| [docs/ROADMAP.md](docs/ROADMAP.md) | Staged milestones (V1 Current, V2 Dashboard, V3 Resume Studio, V4–V8, Exploratory SaaS) |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Deep technical architecture, domain models, APIs, and container setup |
+| [.agents/AGENTS.md](.agents/AGENTS.md) | 10 permanent engineering principles and strict governance rules for AI coding agents |
 | [docs/adr/](docs/adr/) | Architecture Decision Records |
 
 ---
 
-## Roadmap
+## 🗺️ Roadmap & Next Milestone
 
-Career OS follows a milestone-based roadmap. See [docs/ROADMAP.md](docs/ROADMAP.md) for the full plan.
+- ✅ **V1 — Public Engineering Portfolio (CURRENT):** Fully functional backend-driven showcase.
+- 🎯 **V2 — Private Career Dashboard (NEXT MILESTONE):** Full CRUD management for career data, preview, and publish workflows without code modification.
+- 📋 **V3 — Resume Studio (PLANNED):** In-browser LaTeX workspace with isolated compilation.
 
-| Milestone | Status | Description |
-|-----------|--------|-------------|
-| **v0.1 — Foundation** | 🔄 In Progress | Repository structure, content schema, and parsing pipeline |
-| **v0.2 — Resume Generator** | 📋 Planned | PDF/LaTeX resume generation from content |
-| **v0.3 — Portfolio Website** | 📋 Planned | Static portfolio site generation |
-| **v0.4 — AI Synthesis Layer** | 📋 Planned | LLM-powered bio, summary, and tailoring features |
-| **v0.5 — Publishing Automation** | 📋 Planned | Automated GitHub profile and project README publishing |
-| **v1.0 — Public Release** | 📋 Planned | Stable API, full documentation, and community launch |
+*See [docs/ROADMAP.md](docs/ROADMAP.md) for the complete milestone plan.*
 
 ---
 
-## Contributing
+## 📄 License
 
-Career OS is built to be an open platform, not a personal website generator. Contributions are welcome — whether you're fixing a bug, improving documentation, adding a new output generator, or proposing a new content schema.
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a pull request.
-
----
-
-## License
-
-Career OS is released under the [MIT License](LICENSE). Copyright © 2026 Harsh324.
-
-You are free to use, modify, and distribute this software for personal and commercial purposes. See the [LICENSE](LICENSE) file for full terms.
-
----
-
-<div align="center">
-  <sub>Built with intention. Managed with Git. Powered by AI.</sub>
-</div>
+Career OS is released under the [MIT License](LICENSE). Copyright © 2026 Harsh Tripathi.
