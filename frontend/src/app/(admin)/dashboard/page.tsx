@@ -93,48 +93,38 @@ export default function DashboardOverviewPage() {
 
   return (
     <div className="space-y-8">
-      {/* Welcome Hero Banner */}
-      <div className="relative overflow-hidden p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#161b22] border border-[#d0d7de] dark:border-[#30363d] shadow-sm">
-        {/* Subtle Decorative Ambient Background Glow */}
-        <div className="absolute top-0 right-0 -mt-8 -mr-8 w-64 h-64 bg-gradient-to-br from-[#0969da]/10 to-transparent dark:from-[#58a6ff]/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Streamlined Dashboard Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
+        <div>
+          <h1 className="text-2xl font-bold text-[#24292f] dark:text-white tracking-tight flex items-center gap-2.5">
+            <span>Overview</span>
+            <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-[#0969da]/10 dark:bg-[#58a6ff]/15 text-[#0969da] dark:text-[#58a6ff] border border-[#0969da]/20 dark:border-[#58a6ff]/30">
+              V2.0 Active
+            </span>
+          </h1>
+          <p className="text-xs text-[#57606a] dark:text-[#8b949e] mt-1">
+            Welcome back, <span className="font-semibold text-[#24292f] dark:text-white">{user?.first_name || user?.username || "Admin"}</span> • Authoritative career telemetry and canonical database records.
+          </p>
+        </div>
 
-        <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-xs font-mono text-[#0969da] dark:text-[#58a6ff] font-semibold">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>CAREER OS CONTROL PLANE</span>
-              <span>•</span>
-              <span className="px-2 py-0.5 rounded-full bg-[#0969da]/10 dark:bg-[#58a6ff]/15 border border-[#0969da]/20 dark:border-[#58a6ff]/30 text-[10px]">
-                V2.0 ACTIVE
-              </span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#24292f] dark:text-white tracking-tight">
-              Welcome back, {user?.first_name || user?.username || "Administrator"}
-            </h1>
-            <p className="text-xs sm:text-sm text-[#57606a] dark:text-[#8b949e] max-w-2xl">
-              Authoritative command center for career data governance, draft workflows, LaTeX resume synchronization, and live API telemetry.
-            </p>
-          </div>
+        {/* Action Toolbar */}
+        <div className="flex items-center gap-2.5 shrink-0">
+          <button
+            onClick={fetchStats}
+            disabled={isLoading}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white dark:bg-[#21262d] hover:bg-[#f6f8fa] dark:hover:bg-[#30363d] border border-[#d0d7de] dark:border-[#30363d] text-xs font-medium text-[#24292f] dark:text-[#c9d1d9] transition-all disabled:opacity-50 cursor-pointer shadow-2xs"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin text-[#0969da] dark:text-[#58a6ff]" : ""}`} />
+            <span>Refresh</span>
+          </button>
 
-          {/* Action Toolbar */}
-          <div className="flex flex-wrap items-center gap-3 shrink-0">
-            <button
-              onClick={fetchStats}
-              disabled={isLoading}
-              className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-[#f6f8fa] dark:bg-[#21262d] hover:bg-[#eaeef2] dark:hover:bg-[#30363d] border border-[#d0d7de] dark:border-[#30363d] text-xs font-medium text-[#24292f] dark:text-[#c9d1d9] transition-all disabled:opacity-50 cursor-pointer shadow-2xs"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin text-[#0969da] dark:text-[#58a6ff]" : ""}`} />
-              <span>Refresh Stats</span>
-            </button>
-
-            <button
-              onClick={handleExportJsonResume}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0969da] hover:bg-[#0859b8] text-xs font-semibold text-white transition-all shadow-md shadow-[#0969da]/20 cursor-pointer"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>Export JSON Resume</span>
-            </button>
-          </div>
+          <button
+            onClick={handleExportJsonResume}
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#0969da] hover:bg-[#0859b8] text-xs font-semibold text-white transition-all shadow-xs cursor-pointer"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Export JSON</span>
+          </button>
         </div>
       </div>
 
