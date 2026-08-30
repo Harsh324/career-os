@@ -77,6 +77,7 @@ Before introducing any new service, library, dependency, or architectural abstra
 - **Before adding frontend displays:** Ensure the data is fetched dynamically from `/api/v1/` via React Query hooks.
 - **Before implementing new milestones:** Check [docs/ROADMAP.md](file:///home/harsh/personal/career-os/docs/ROADMAP.md) to confirm milestone priority. Do not build future milestones (V3–V8) prematurely.
 - **Before generating content:** Verify facts against existing database models or ask the user directly (Principle 3).
+- **Branch & PR Workflow:** Never merge feature or doc branches locally into `dev` or `main` unless explicitly instructed. Always push the branch to `origin` and prepare the GitHub Pull Request creation link.
 - **If a requested change violates any principle:** Explicitly state the conflict, cite the principle at risk, and propose an alternative that preserves architectural integrity.
 
 ---
