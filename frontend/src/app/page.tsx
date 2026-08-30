@@ -40,11 +40,9 @@ export default async function HomePage() {
     ]);
 
     if (fetchedSettings) meta = { ...meta, ...fetchedSettings };
-    experiences = fetchedExp;
-
-    featuredProjects = fetchedProj || [];
-
-    certs = fetchedCerts;
+    experiences = Array.isArray(fetchedExp) ? fetchedExp : [];
+    featuredProjects = Array.isArray(fetchedProj) ? fetchedProj : [];
+    certs = Array.isArray(fetchedCerts) ? fetchedCerts : [];
   } catch (err) {
     // API fallback during static compilation
   }

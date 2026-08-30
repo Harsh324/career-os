@@ -51,14 +51,14 @@ seed:
 
 lint:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FULL) exec backend uv run ruff check .
-	cd frontend && npm run lint
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FULL) exec frontend npm run lint
 
 format:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FULL) exec backend uv run ruff format .
 
 test:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FULL) exec backend uv run python manage.py test
-	cd frontend && npm run type-check
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FULL) exec frontend npm run type-check
 
 clean:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FULL) down -v

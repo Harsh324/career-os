@@ -31,11 +31,7 @@ export async function generateStaticParams() {
       return projects.map((p) => ({ slug: p.slug }));
     }
   } catch (err) {}
-  return [
-    { slug: "constellation" },
-    { slug: "career-os" },
-    { slug: "fintrack-ai" },
-  ];
+  return [];
 }
 
 export async function generateMetadata({ params }: ProjectDetailPageProps): Promise<Metadata> {

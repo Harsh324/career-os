@@ -20,18 +20,22 @@ export default async function ResumePage() {
   try {
     const [fetchedSettings, fetchedExp, fetchedSkills, fetchedCerts, fetchedEdu] =
       await Promise.all([
-        fetchSiteSettings(),
-        fetchExperiences(),
-        fetchSkills(),
-        fetchCertifications(),
-        fetchEducation(),
+        fetchSiteSettings().catch(() => null),
+        fetchExperiences().catch(() => []),
+        fetchSkills().catch(() => []),
+        fetchCertifications().catch(() => []),
+        fetchEducation().catch(() => []),
       ]);
 
     if (fetchedSettings) meta = { ...meta, ...fetchedSettings };
-    experiences = fetchedExp;
-    certs = fetchedCerts;
-    education = fetchedEdu;
-  } catch (err) {}
+    experiences = Array.isArray(fetchedExp) ? fetchedExp : [];
+    certs = Array.isArray(fetchedCerts) ? fetchedCerts : [];
+    education = Array.isArray(fetchedEdu) ? fetchedEdu : [];
+  } catch (err) {
+    experiences = [];
+    certs = [];
+    education = [];
+  }
 
   return (
     <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 py-6 sm:py-8 space-y-6">

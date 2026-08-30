@@ -14,8 +14,11 @@ export const metadata: Metadata = {
 export default async function TimelinePage() {
   let timeline: TimelineEvent[] = [];
   try {
-    timeline = await fetchTimeline();
-  } catch (err) {}
+    const fetchedTimeline = await fetchTimeline().catch(() => []);
+    timeline = Array.isArray(fetchedTimeline) ? fetchedTimeline : [];
+  } catch (err) {
+    timeline = [];
+  }
 
   return (
     <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 py-6 sm:py-8 space-y-6">

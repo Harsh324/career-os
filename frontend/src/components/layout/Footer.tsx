@@ -1,16 +1,18 @@
+"use client";
+
 import Link from "next/link";
-import { fetchSiteSettings } from "@/lib/api/services";
+import { usePathname } from "next/navigation";
 import { GithubIcon, LinkedinIcon, TwitterIcon } from "@/components/icons/SocialIcons";
 import { GitNodeIcon } from "@/components/icons/GitNodeIcon";
 import { DEFAULT_SITE_SETTINGS } from "@/lib/constants/site";
 
-export async function Footer() {
-  let meta = DEFAULT_SITE_SETTINGS;
+export function Footer() {
+  const pathname = usePathname();
+  const meta = DEFAULT_SITE_SETTINGS;
 
-  try {
-    const fetched = await fetchSiteSettings();
-    if (fetched) meta = { ...meta, ...fetched };
-  } catch (err) {}
+  if (pathname?.startsWith("/dashboard")) {
+    return null;
+  }
 
   return (
     <footer className="w-full border-t border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#0d1117] transition-colors">

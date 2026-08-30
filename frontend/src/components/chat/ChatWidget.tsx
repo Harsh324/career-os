@@ -471,6 +471,10 @@ export function ChatWidget() {
     ]);
   };
 
+  if (pathname?.startsWith("/dashboard")) {
+    return null;
+  }
+
   return (
     <div className="fixed bottom-4 right-4 z-50 font-sans print:hidden">
       {/* Ultra-Premium Theme-Adaptive Launcher Button */}

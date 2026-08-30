@@ -7,12 +7,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let experiences: any[] = [];
   try {
     const [fetchedProj, fetchedExp] = await Promise.all([
-      fetchProjects(),
-      fetchExperiences(),
+      fetchProjects().catch(() => []),
+      fetchExperiences().catch(() => []),
     ]);
-    projects = fetchedProj;
-    experiences = fetchedExp;
-  } catch (err) {}
+    projects = Array.isArray(fetchedProj) ? fetchedProj : [];
+    experiences = Array.isArray(fetchedExp) ? fetchedExp : [];
+  } catch (err) {
+    projects = [];
+    experiences = [];
+  }
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: baseUrl, lastModified: new Date() },

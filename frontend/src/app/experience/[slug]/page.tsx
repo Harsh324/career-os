@@ -31,10 +31,7 @@ export async function generateStaticParams() {
       return experiences.map((exp) => ({ slug: exp.slug }));
     }
   } catch (err) {}
-  return [
-    { slug: "software-engineer-sms-datatech" },
-    { slug: "software-engineer-intern-sms-datatech" },
-  ];
+  return [];
 }
 
 export async function generateMetadata({ params }: ExperienceDetailPageProps): Promise<Metadata> {

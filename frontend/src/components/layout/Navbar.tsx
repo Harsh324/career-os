@@ -28,6 +28,10 @@ export function Navbar({ name = "Harsh Tripathi", title = "Backend & Cloud Engin
     setMobileMenuOpen(false);
   }, [pathname]);
 
+  if (pathname?.startsWith("/dashboard")) {
+    return null;
+  }
+
   const navItems: { label: string; href: string; icon: React.ComponentType<{ className?: string }>; count?: number }[] = [
     { label: "Overview", href: "/", icon: BookOpen },
     { label: "Experience", href: "/experience", icon: Briefcase },
