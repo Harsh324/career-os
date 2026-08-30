@@ -1,11 +1,10 @@
 "use client";
 
 export default function GlobalError({
-  error,
   reset,
 }: {
-  error?: Error & { digest?: string };
-  reset?: () => void;
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
   return (
     <html lang="en">
@@ -15,14 +14,12 @@ export default function GlobalError({
           <p className="text-xs text-[#8b949e]">
             An unexpected application error occurred.
           </p>
-          {reset && (
-            <button
-              onClick={() => reset()}
-              className="rounded-xl bg-[#0969da] px-4 py-2 text-xs font-mono font-semibold text-white shadow-xs hover:bg-[#085ac1] transition-colors"
-            >
-              Try Again
-            </button>
-          )}
+          <button
+            onClick={() => reset()}
+            className="rounded-xl bg-[#0969da] px-4 py-2 text-xs font-mono font-semibold text-white shadow-sm hover:bg-[#085ac1] transition-colors"
+          >
+            Try Again
+          </button>
         </div>
       </body>
     </html>

@@ -18,12 +18,15 @@ export default async function SkillsPage() {
 
   try {
     const [fetchedSkills, fetchedCerts] = await Promise.all([
-      fetchSkills(),
-      fetchCertifications(),
+      fetchSkills().catch(() => []),
+      fetchCertifications().catch(() => []),
     ]);
-    skills = fetchedSkills;
-    certs = fetchedCerts;
-  } catch (err) {}
+    skills = Array.isArray(fetchedSkills) ? fetchedSkills : [];
+    certs = Array.isArray(fetchedCerts) ? fetchedCerts : [];
+  } catch (err) {
+    skills = [];
+    certs = [];
+  }
 
   // Target visual category order prioritizing Backend & Cloud
   const targetCategoryOrder = [
