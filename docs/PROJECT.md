@@ -48,9 +48,9 @@ The public portfolio delivers a technical representation of career experience ac
 
 ### Featured Engineering Projects
 
-1. **FinTrack AI:** Autonomous Financial Intelligence Platform (Multi-agent financial analysis, Celery task pipelines, market data aggregation, LLM reasoning).
-2. **Constellation:** Distributed Telemetry & System Observability Engine (High-throughput metric ingestion, asynchronous processing, Redis buffering, time-series analysis).
-3. **Career OS:** Personal Engineering Career Operating System (Backend-driven career data platform, DRF REST API, dynamic presentation layer).
+1. **FinTrack AI:** AI-assisted personal finance platform with transaction management, automated transaction processing, bill splitting, and OCR-based automated bill splitting currently in development.
+2. **Constellation:** Self-hosted infrastructure platform for running containerized services with private networking, reverse proxying, monitoring, and automated backups.
+3. **Career OS:** Backend-driven engineering portfolio and career management platform (underlying career platform with the public portfolio serving as its current presentation layer).
 
 ### Professional Positioning & Technical Identity
 
