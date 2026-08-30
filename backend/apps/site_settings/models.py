@@ -9,6 +9,20 @@ class SiteSettings(models.Model):
     location = models.CharField(max_length=255, default="India")
     tagline = models.TextField(blank=True)
     summary = models.TextField(blank=True)
+    engineering_focus = models.JSONField(
+        default=list,
+        blank=True,
+        help_text="Structured list of engineering specializations",
+    )
+    open_to_work = models.BooleanField(
+        default=True,
+        help_text="Career availability status toggle",
+    )
+    target_roles = models.JSONField(
+        default=list,
+        blank=True,
+        help_text="Structured list of target career roles",
+    )
     avatar_url = models.URLField(max_length=1024, blank=True)
     resume_url = models.URLField(max_length=1024, blank=True)
     resume_file = models.FileField(upload_to="resumes/", blank=True, null=True)

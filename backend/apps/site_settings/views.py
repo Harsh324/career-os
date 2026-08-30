@@ -12,7 +12,10 @@ from apps.skills.models import Skill
 
 
 class SiteSettingsView(APIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    def get_permissions(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            return [permissions.AllowAny()]
+        return [permissions.IsAdminUser()]
 
     def get(self, request):
         settings_obj = SiteSettings.objects.first()
@@ -21,9 +24,7 @@ class SiteSettingsView(APIView):
         serializer = SiteSettingsSerializer(settings_obj, context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def put(self, request):
-        if not request.user.is_staff:
-            return Response({"detail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+    def patch(self, request):
         settings_obj = SiteSettings.objects.first()
         if not settings_obj:
             settings_obj = SiteSettings.objects.create()
@@ -34,6 +35,9 @@ class SiteSettingsView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request):
+        return self.patch(request)
 
 
 class JsonResumeView(APIView):
