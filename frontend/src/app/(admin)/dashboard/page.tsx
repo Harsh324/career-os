@@ -188,7 +188,7 @@ export default function DashboardOverviewPage() {
         {/* Last Modified Telemetry */}
         <div className="p-5 rounded-2xl bg-white dark:bg-[#161b22] border border-[#d0d7de] dark:border-[#30363d] shadow-2xs">
           <div className="flex items-center justify-between text-xs text-[#57606a] dark:text-[#8b949e] mb-3 font-mono">
-            <span className="font-semibold">LAST DATA SYNC</span>
+            <span className="font-semibold">LAST PROFILE UPDATE</span>
             <Clock className="w-4 h-4 text-[#8957e5] dark:text-[#a371f7]" />
           </div>
           <div className="flex items-center justify-between">
