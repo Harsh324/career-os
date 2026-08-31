@@ -1,6 +1,8 @@
 import { cookies } from "next/headers";
 import { getBaseURL } from "@/lib/api/client";
 
+export const dynamic = "force-dynamic";
+
 export async function POST() {
   try {
     const cookieStore = await cookies();
