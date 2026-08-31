@@ -26,17 +26,58 @@ export interface Technology {
   description?: string;
 }
 
+export interface SkillRelatedExperience {
+  id: number;
+  title: string;
+  company_name?: string;
+  start_date?: string;
+  end_date?: string;
+  current_position?: boolean;
+  slug: string;
+}
+
+export interface SkillRelatedProject {
+  id: number;
+  title: string;
+  slug: string;
+  project_type: string;
+  status: string;
+}
+
+export interface SkillCertificationDetail {
+  id: number;
+  name: string;
+  issuer: string;
+  issue_date: string;
+  credential_url?: string;
+  badge?: string;
+  slug: string;
+}
+
 export interface Skill {
   id: number;
   name: string;
   slug: string;
   category: string;
-  description?: string;
+  proficiency: "expert" | "advanced" | "proficient" | "familiar" | "learning" | string;
   years: number;
-  experience_level: string;
-  technologies_detail?: Technology[];
+  experience_level?: string;
+  is_core: boolean;
+  is_published: boolean;
   order: number;
-  is_core?: boolean;
+  description?: string;
+  evidence_context?: string;
+  technologies?: number[];
+  technologies_detail?: Technology[];
+  related_experiences?: number[];
+  related_experiences_detail?: SkillRelatedExperience[];
+  related_projects?: number[];
+  related_projects_detail?: SkillRelatedProject[];
+  certifications_detail?: SkillCertificationDetail[];
+  target_roles?: string[];
+  internal_notes?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface ProjectArchitectureFlowStep {

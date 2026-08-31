@@ -1,5 +1,5 @@
 import { getBaseURL } from "./client";
-import type { Experience, Company, Technology, Project, SiteSettings } from "./types";
+import type { Experience, Company, Technology, Project, SiteSettings, Skill } from "./types";
 
 export interface AdminUser {
   id: number;
@@ -305,6 +305,53 @@ export async function updateAdminProject(
  */
 export async function deleteAdminProject(slug: string): Promise<void> {
   return adminFetch<void>(`/projects/${slug}/`, {
+    method: "DELETE",
+  });
+}
+
+/**
+ * Fetch all skills for admin list
+ */
+export async function getAdminSkills(): Promise<Skill[]> {
+  const data = await adminFetch<any>("/skills/");
+  return Array.isArray(data) ? data : data.results || [];
+}
+
+/**
+ * Fetch single skill by slug for admin editor
+ */
+export async function getAdminSkillBySlug(slug: string): Promise<Skill> {
+  return adminFetch<Skill>(`/skills/${slug}/`);
+}
+
+/**
+ * Create a new skill record
+ */
+export async function createAdminSkill(data: Partial<Skill>): Promise<Skill> {
+  return adminFetch<Skill>("/skills/", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Update an existing skill
+ */
+export async function updateAdminSkill(
+  slug: string,
+  data: Partial<Skill>
+): Promise<Skill> {
+  return adminFetch<Skill>(`/skills/${slug}/`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Delete a skill record
+ */
+export async function deleteAdminSkill(slug: string): Promise<void> {
+  return adminFetch<void>(`/skills/${slug}/`, {
     method: "DELETE",
   });
 }
