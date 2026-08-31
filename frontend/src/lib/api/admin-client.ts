@@ -263,9 +263,48 @@ export async function getAdminTechnologies(): Promise<Technology[]> {
 }
 
 /**
- * Fetch all projects for linking
+ * Fetch all projects for admin list
  */
 export async function getAdminProjects(): Promise<Project[]> {
   const data = await adminFetch<any>("/projects/");
   return Array.isArray(data) ? data : data.results || [];
+}
+
+/**
+ * Fetch single project by slug for admin editor
+ */
+export async function getAdminProjectBySlug(slug: string): Promise<Project> {
+  return adminFetch<Project>(`/projects/${slug}/`);
+}
+
+/**
+ * Create a new project record
+ */
+export async function createAdminProject(data: Partial<Project>): Promise<Project> {
+  return adminFetch<Project>("/projects/", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Update an existing project
+ */
+export async function updateAdminProject(
+  slug: string,
+  data: Partial<Project>
+): Promise<Project> {
+  return adminFetch<Project>(`/projects/${slug}/`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Delete a project record
+ */
+export async function deleteAdminProject(slug: string): Promise<void> {
+  return adminFetch<void>(`/projects/${slug}/`, {
+    method: "DELETE",
+  });
 }
