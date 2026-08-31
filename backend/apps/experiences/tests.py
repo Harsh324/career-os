@@ -64,6 +64,9 @@ class ExperienceAPITests(TestCase):
         self.admin_user = User.objects.create_superuser(
             username="admin", email="admin@career-os.dev", password="adminpassword123"
         )
+        self.non_staff_user = User.objects.create_user(
+            username="visitor", email="visitor@example.com", password="visitorpassword123", is_staff=False
+        )
         self.company = Company.objects.create(
             name="SMS DataTech",
             slug="sms-datatech",
@@ -128,6 +131,71 @@ class ExperienceAPITests(TestCase):
 
         # Non-public highlights must be filtered out
         highlights = response.data.get("highlights", [])
+        self.assertEqual(len(highlights), 1)
+        self.assertEqual(highlights[0]["text"], "Public contribution bullet")
+
+    def test_authenticated_non_staff_user_cannot_mutate_experience(self):
+        self.client.force_authenticate(user=self.non_staff_user)
+
+        # Non-staff POST -> 403 Forbidden
+        payload = {
+            "title": "Unauthorized Role",
+            "company": self.company.id,
+            "start_date": "Jan 2025",
+        }
+        res_post = self.client.post("/api/v1/experience/", payload, format="json")
+        self.assertEqual(res_post.status_code, status.HTTP_403_FORBIDDEN)
+
+        # Non-staff PATCH -> 403 Forbidden
+        res_patch = self.client.patch(
+            f"/api/v1/experience/{self.published_exp.slug}/", {"title": "Hacked Title"}, format="json"
+        )
+        self.assertEqual(res_patch.status_code, status.HTTP_403_FORBIDDEN)
+
+        # Non-staff DELETE -> 403 Forbidden
+        res_delete = self.client.delete(f"/api/v1/experience/{self.published_exp.slug}/")
+        self.assertEqual(res_delete.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_authenticated_non_staff_user_cannot_mutate_company(self):
+        self.client.force_authenticate(user=self.non_staff_user)
+
+        # Non-staff company POST -> 403 Forbidden
+        res_post = self.client.post(
+            "/api/v1/companies/",
+            {"name": "Unauthorized Company", "description": "test"},
+            format="json",
+        )
+        self.assertEqual(res_post.status_code, status.HTTP_403_FORBIDDEN)
+
+        # Non-staff company PATCH -> 403 Forbidden
+        res_patch = self.client.patch(
+            f"/api/v1/companies/{self.company.slug}/",
+            {"name": "Hacked Company"},
+            format="json",
+        )
+        self.assertEqual(res_patch.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_authenticated_non_staff_user_receives_masked_data_and_no_drafts(self):
+        self.client.force_authenticate(user=self.non_staff_user)
+
+        # Non-staff cannot see unpublished drafts in list
+        res_list = self.client.get("/api/v1/experience/")
+        self.assertEqual(res_list.status_code, status.HTTP_200_OK)
+        results = res_list.data.get("results", res_list.data)
+        slugs = [item["slug"] for item in results]
+        self.assertIn(self.published_exp.slug, slugs)
+        self.assertNotIn(self.draft_exp.slug, slugs)
+
+        # Non-staff cannot access unpublished draft by slug
+        res_draft_detail = self.client.get(f"/api/v1/experience/{self.draft_exp.slug}/")
+        self.assertEqual(res_draft_detail.status_code, status.HTTP_404_NOT_FOUND)
+
+        # Non-staff receives masked detail data
+        res_detail = self.client.get(f"/api/v1/experience/{self.published_exp.slug}/")
+        self.assertEqual(res_detail.status_code, status.HTTP_200_OK)
+        self.assertNotIn("internal_notes", res_detail.data)
+        self.assertNotIn("target_roles", res_detail.data)
+        highlights = res_detail.data.get("highlights", [])
         self.assertEqual(len(highlights), 1)
         self.assertEqual(highlights[0]["text"], "Public contribution bullet")
 
