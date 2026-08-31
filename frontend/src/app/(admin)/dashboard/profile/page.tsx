@@ -200,31 +200,31 @@ export default function ProfileManagementPage() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-16">
       {/* Top Header & Sticky Action Toolbar */}
-      <div className="sticky top-0 z-20 -mx-4 sm:-mx-8 px-4 sm:px-8 py-3 bg-[#f6f8fa]/95 dark:bg-[#0d1117]/95 backdrop-blur-md border-b border-[#d0d7de] dark:border-[#30363d] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
-        <div>
+      <div className="sticky top-0 z-20 -mx-4 sm:-mx-8 px-4 sm:px-8 py-3 bg-[#f6f8fa]/95 dark:bg-[#0d1117]/95 backdrop-blur-md border-b border-[#d0d7de] dark:border-[#30363d] flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs">
+        <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold tracking-tight text-[#24292f] dark:text-[#f0f6fc]">
+            <h1 className="text-xl font-bold tracking-tight text-[#24292f] dark:text-[#f0f6fc] truncate">
               Profile Management
             </h1>
-            <span className="px-2 py-0.5 text-[10px] font-mono font-semibold rounded-full bg-[#0969da]/10 text-[#0969da] dark:bg-[#58a6ff]/15 dark:text-[#58a6ff]">
+            <span className="px-2 py-0.5 text-[10px] font-mono font-semibold rounded-full bg-[#0969da]/10 text-[#0969da] dark:bg-[#58a6ff]/15 dark:text-[#58a6ff] shrink-0">
               V2.1 Control Plane
             </span>
           </div>
-          <p className="text-xs text-[#57606a] dark:text-[#8b949e] font-sans">
+          <p className="text-xs text-[#57606a] dark:text-[#8b949e] font-sans truncate">
             Authoritative source of truth for identity, positioning, availability, and social links.
           </p>
         </div>
 
-        {/* Action Controls */}
-        <div className="flex items-center gap-2.5 flex-wrap">
+        {/* Action Controls - Guaranteed single row on desktop */}
+        <div className="flex items-center gap-2.5 shrink-0 flex-wrap sm:flex-nowrap">
           {/* Status Indicator */}
           {isDirty ? (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-[#fff8c5] dark:bg-[#382800] text-[#9a6700] dark:text-[#f2cc60] border border-[#d4a72c]/40">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-mono font-medium bg-[#fff8c5] dark:bg-[#382800] text-[#9a6700] dark:text-[#f2cc60] border border-[#d4a72c]/40 shrink-0 whitespace-nowrap">
               <span className="w-2 h-2 rounded-full bg-[#d4a72c] animate-pulse" />
               Unsaved changes
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-[#dafbe1] dark:bg-[#112a1c] text-[#1a7f37] dark:text-[#3fb950] border border-[#4ac26b]/30">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-mono font-medium bg-[#dafbe1] dark:bg-[#112a1c] text-[#1a7f37] dark:text-[#3fb950] border border-[#4ac26b]/30 shrink-0 whitespace-nowrap">
               <ShieldCheck className="w-3.5 h-3.5" />
               Canonical sync active
             </span>
@@ -235,7 +235,7 @@ export default function ProfileManagementPage() {
             type="button"
             onClick={handleReset}
             disabled={!isDirty || isSaving}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#21262d] text-[#24292f] dark:text-[#c9d1d9] hover:bg-[#f6f8fa] dark:hover:bg-[#30363d] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#21262d] text-[#24292f] dark:text-[#c9d1d9] hover:bg-[#f6f8fa] dark:hover:bg-[#30363d] disabled:opacity-40 disabled:cursor-not-allowed transition-all shrink-0 whitespace-nowrap"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             Discard
@@ -245,7 +245,7 @@ export default function ProfileManagementPage() {
           <button
             type="button"
             onClick={() => setIsPreviewOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium border border-[#0969da]/40 dark:border-[#58a6ff]/40 bg-[#0969da]/5 dark:bg-[#58a6ff]/10 text-[#0969da] dark:text-[#58a6ff] hover:bg-[#0969da]/10 dark:hover:bg-[#58a6ff]/20 transition-all font-mono"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium border border-[#0969da]/40 dark:border-[#58a6ff]/40 bg-[#0969da]/5 dark:bg-[#58a6ff]/10 text-[#0969da] dark:text-[#58a6ff] hover:bg-[#0969da]/10 dark:hover:bg-[#58a6ff]/20 transition-all font-mono shrink-0 whitespace-nowrap"
           >
             <Eye className="w-3.5 h-3.5" />
             <span>Preview</span>
@@ -256,7 +256,7 @@ export default function ProfileManagementPage() {
             type="button"
             onClick={handleSave}
             disabled={!isDirty || isSaving}
-            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-medium bg-[#0969da] text-white hover:bg-[#085ac1] disabled:opacity-40 disabled:cursor-not-allowed shadow-xs transition-all font-mono"
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-medium bg-[#0969da] text-white hover:bg-[#085ac1] disabled:opacity-40 disabled:cursor-not-allowed shadow-xs transition-all font-mono shrink-0 whitespace-nowrap"
           >
             {isSaving ? (
               <>

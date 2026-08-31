@@ -16,6 +16,7 @@ export interface ProfileSidebarProps {
   };
   showCTAs?: boolean;
   isInteractiveLinks?: boolean;
+  compact?: boolean;
 }
 
 export function ProfileSidebar({
@@ -23,14 +24,21 @@ export function ProfileSidebar({
   currentCompany,
   showCTAs = true,
   isInteractiveLinks = true,
+  compact = false,
 }: ProfileSidebarProps) {
+  const avatarSizeClasses = compact
+    ? "h-24 w-24 sm:h-28 sm:w-28"
+    : "h-32 w-32 sm:h-44 sm:w-44 lg:h-52 lg:w-52";
+
   return (
-    <div className="space-y-5">
+    <div className={compact ? "space-y-4" : "space-y-5"}>
       {/* Avatar & Profile Identifiers */}
-      <div className="flex flex-col items-center sm:items-start text-center sm:text-left space-y-4">
+      <div className="flex flex-col items-center sm:items-start text-center sm:text-left space-y-3 sm:space-y-4">
         {meta.avatar_url ? (
           <div className="relative group">
-            <div className="relative h-32 w-32 sm:h-44 sm:w-44 lg:h-52 lg:w-52 aspect-square overflow-hidden rounded-full border-2 border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-md">
+            <div
+              className={`relative ${avatarSizeClasses} aspect-square overflow-hidden rounded-full border-2 border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] shadow-md`}
+            >
               <Image
                 src={meta.avatar_url}
                 alt={meta.name || "Profile avatar"}
@@ -42,16 +50,24 @@ export function ProfileSidebar({
             </div>
           </div>
         ) : (
-          <div className="h-32 w-32 sm:h-44 sm:w-44 lg:h-52 lg:w-52 aspect-square rounded-full border-2 border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] flex items-center justify-center text-3xl sm:text-4xl font-bold text-[#57606a] dark:text-[#8b949e] shadow-md">
+          <div
+            className={`${avatarSizeClasses} aspect-square rounded-full border-2 border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] flex items-center justify-center ${
+              compact ? "text-2xl" : "text-3xl sm:text-4xl"
+            } font-bold text-[#57606a] dark:text-[#8b949e] shadow-md`}
+          >
             {meta.name ? meta.name.charAt(0).toUpperCase() : "U"}
           </div>
         )}
 
         <div className="space-y-1 w-full">
-          <h1 className="text-2xl font-bold tracking-tight text-[#24292f] dark:text-[#f0f6fc]">
+          <h1
+            className={`${
+              compact ? "text-xl" : "text-2xl"
+            } font-bold tracking-tight text-[#24292f] dark:text-[#f0f6fc]`}
+          >
             {meta.name || "Your Name"}
           </h1>
-          <p className="text-sm font-mono text-[#0969da] dark:text-[#58a6ff] font-semibold">
+          <p className="text-xs sm:text-sm font-mono text-[#0969da] dark:text-[#58a6ff] font-semibold">
             {meta.title || "Your Professional Title"}
           </p>
           <p className="text-xs text-[#57606a] dark:text-[#8b949e] font-sans leading-normal">
@@ -62,7 +78,7 @@ export function ProfileSidebar({
 
       {/* Availability Status Badge */}
       {meta.open_to_work ? (
-        <div className="rounded-xl border border-[#1f883d]/30 dark:border-[#39d353]/30 bg-[#1f883d]/10 dark:bg-[#238636]/20 px-2.5 py-2 text-[11px] font-mono text-[#1f883d] dark:text-[#39d353] flex items-center gap-1.5 shadow-sm font-medium leading-tight">
+        <div className="rounded-xl border border-[#1f883d]/30 dark:border-[#39d353]/30 bg-[#1f883d]/10 dark:bg-[#238636]/20 px-2.5 py-1.5 text-[11px] font-mono text-[#1f883d] dark:text-[#39d353] flex items-center gap-1.5 shadow-sm font-medium leading-tight">
           <span className="relative flex h-2 w-2 flex-shrink-0">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#39d353] opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-[#1f883d] dark:bg-[#39d353]"></span>
@@ -71,7 +87,7 @@ export function ProfileSidebar({
           <span className="whitespace-normal">Open to Backend & Cloud Roles</span>
         </div>
       ) : (
-        <div className="rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#21262d] px-2.5 py-2 text-[11px] font-mono text-[#57606a] dark:text-[#8b949e] flex items-center gap-1.5 shadow-2xs font-medium leading-tight">
+        <div className="rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#21262d] px-2.5 py-1.5 text-[11px] font-mono text-[#57606a] dark:text-[#8b949e] flex items-center gap-1.5 shadow-2xs font-medium leading-tight">
           <span className="h-2 w-2 rounded-full bg-[#57606a] dark:bg-[#8b949e] flex-shrink-0"></span>
           <span className="whitespace-normal">Not Actively Looking</span>
         </div>
@@ -116,7 +132,11 @@ export function ProfileSidebar({
       )}
 
       {/* Profile Metadata List */}
-      <div className="space-y-2.5 text-xs text-[#57606a] dark:text-[#8b949e] font-sans border-t border-[#d0d7de] dark:border-[#30363d] pt-4">
+      <div
+        className={`space-y-2.5 text-xs text-[#57606a] dark:text-[#8b949e] font-sans border-t border-[#d0d7de] dark:border-[#30363d] ${
+          compact ? "pt-3" : "pt-4"
+        }`}
+      >
         {currentCompany && (
           <div className="flex items-center gap-2.5">
             <Building2 className="h-4 w-4 text-[#57606a] dark:text-[#8b949e] flex-shrink-0" />
