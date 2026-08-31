@@ -39,25 +39,57 @@ export interface Skill {
   is_core?: boolean;
 }
 
+export interface ProjectArchitectureFlowStep {
+  step: number;
+  title: string;
+  detail?: string;
+}
+
+export interface ProjectKeyFeature {
+  title: string;
+  desc: string;
+}
+
+export interface ProjectHighlight {
+  id?: string;
+  text: string;
+  is_public: boolean;
+  target_roles?: string[];
+  order?: number;
+}
+
 export interface Project {
   id: number;
   title: string;
   slug: string;
+  project_type?: "application" | "infrastructure" | "platform" | "open_source" | "experiment" | string;
+  status: "in_development" | "active" | "deployed" | "archived" | string;
+  is_published?: boolean;
+  featured: boolean;
+  order?: number;
   summary: string;
   description?: string;
   problem?: string;
   solution?: string;
+  technical_outcome?: string;
   architecture?: string;
-  lessons_learned?: string[];
-  tech_stack_detail?: Technology[];
-  status: string;
+  timeline?: string;
   repository?: string;
   demo?: string;
+  docs_url?: string;
+  tech_stack?: number[];
+  tech_stack_detail?: Technology[];
+  architecture_flow?: ProjectArchitectureFlowStep[];
+  key_features?: ProjectKeyFeature[];
+  highlights?: ProjectHighlight[];
+  target_roles?: string[];
+  internal_notes?: string;
   screenshots?: string[];
   architecture_images?: string[];
-  timeline?: string;
-  featured: boolean;
-  order?: number;
+  lessons_learned?: string[];
+  roadmap?: string[];
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface TechnicalChallenge {

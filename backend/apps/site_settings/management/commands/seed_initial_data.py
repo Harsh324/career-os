@@ -227,88 +227,172 @@ class Command(BaseCommand):
             slug="career-os",
             defaults={
                 "title": "Career OS",
-                "summary": "Backend-driven engineering portfolio platform built with Django REST Framework, PostgreSQL, Next.js, and Docker containerization.",
-                "description": "Architected as a backend-driven engineering portfolio platform with Django REST Framework as the centralized source of truth for portfolio content.",
-                "problem": "Static portfolio generators lack dynamic content editing, centralized backend APIs, and structured data management.",
-                "solution": "Built a Django REST backend that acts as the centralized source of truth for portfolio content, with a Next.js frontend consuming structured API data.",
-                "status": "Active",
-                "repository": "https://github.com/Harsh324/career-os",
-                "demo": "https://career-os.dev",
+                "project_type": "platform",
+                "status": "active",
+                "is_published": True,
                 "featured": True,
                 "order": 3,
                 "timeline": "2026 – Present",
+                "summary": "Backend-driven engineering portfolio and career management platform built with Django REST Framework, PostgreSQL, Next.js, and Docker.",
+                "description": "Architected as a backend-driven engineering portfolio and career management platform with Django REST Framework as the centralized source of truth for all career records.",
+                "problem": "Static portfolio generators lack dynamic content editing, centralized backend APIs, and structured career evidence management.",
+                "solution": "Built a centralized Django REST backend that acts as the authoritative source of truth for career records, with a Next.js App Router frontend dynamically consuming structured API endpoints.",
+                "technical_outcome": "Centralized content schema management across portfolio UI, PDF generators, and REST APIs with zero data duplication.",
+                "repository": "https://github.com/Harsh324/career-os",
+                "demo": "https://career-os.dev",
+                "docs_url": "",
+                "architecture_flow": [
+                    {"step": 1, "title": "Next.js 15 App Router Frontend", "detail": "REST API Request via React Query"},
+                    {"step": 2, "title": "Django REST Framework (DRF) Central API", "detail": "Single Source of Truth & Masking"},
+                    {"step": 3, "title": "PostgreSQL Storage (Experiences, Projects, Skills)", "detail": "Authoritative Career Data Layer"}
+                ],
+                "key_features": [
+                    {"title": "Centralized Source of Truth", "desc": "PostgreSQL and Django REST Framework backend serving as the canonical source for career records."},
+                    {"title": "Dynamic App Router Presentation", "desc": "Next.js 15 App Router frontend dynamically rendering portfolio pages from structured API data."},
+                    {"title": "Idempotent Seeding & Infrastructure", "desc": "Dockerized local and production environments with automated database migrations and health checks."},
+                    {"title": "Structured Evidence Bank", "desc": "Granular achievement evidence bank with public/private controls ready for Resume Studio."}
+                ],
+                "highlights": [
+                    {
+                        "id": "proj-cos-1",
+                        "text": "Architected centralized Django REST Framework API and PostgreSQL schema establishing single source of truth for portfolio records.",
+                        "is_public": True,
+                        "target_roles": ["Backend Engineering", "Full-Stack Development"],
+                        "order": 0
+                    },
+                    {
+                        "id": "proj-cos-2",
+                        "text": "Built Next.js 15 App Router frontend with React Query caching, dark mode support, and dynamic server-side rendering.",
+                        "is_public": True,
+                        "target_roles": ["Frontend Engineering", "Full-Stack Development"],
+                        "order": 1
+                    }
+                ],
+                "target_roles": ["Backend Engineering", "Full-Stack Development"],
+                "internal_notes": "Foundation platform for all career management and future Resume Studio LaTeX generation.",
             },
         )
-        p1.timeline = "2026 – Present"
-        p1.order = 3
-        p1.save()
-        p1.tech_stack.add(
+        p1.tech_stack.set([
             tech_map["python"],
             tech_map["django"],
             tech_map["postgresql"],
             tech_map["docker"],
             tech_map["nextjs"],
             tech_map["typescript"],
-        )
+        ])
 
         p2, _ = Project.objects.update_or_create(
             slug="fintrack-ai",
             defaults={
                 "title": "FinTrack AI",
-                "summary": "Financial management platform for transaction tracking, automated transaction categorization, and shared expense management.",
-                "description": "Financial backend engine built with Python, Django, PostgreSQL, and Redis. Features include transaction tracking, automated categorization, and shared expense management, with OCR-based automated bill splitting currently in development.",
-                "problem": "Manual transaction tracking and shared expense management is prone to errors.",
-                "solution": "Built a centralized financial management platform leveraging automated categorization rules.",
-                "status": "Active Development",
-                "repository": "https://github.com/Harsh324/fintrack-ai",
-                "demo": "",
+                "project_type": "application",
+                "status": "in_development",
+                "is_published": True,
                 "featured": True,
                 "order": 1,
                 "timeline": "2026 – Present",
+                "summary": "Financial transaction management backend platform for transaction tracking, automated rule categorization, and shared expense processing.",
+                "description": "Financial backend engine built with Python, Django, PostgreSQL, and Redis query caching. Features include transaction tracking, automated categorization rules, and shared expense management, with OCR-based automated bill splitting currently in active development.",
+                "problem": "Manual transaction tracking and shared expense management across groups is prone to categorization errors and calculation discrepancies.",
+                "solution": "Built a centralized financial management backend leveraging automated categorization rule engines, indexed PostgreSQL schemas, and Redis caching.",
+                "technical_outcome": "Enabled automated transaction categorization and reliable expense processing via standardized PostgreSQL schemas.",
+                "repository": "https://github.com/Harsh324/fintrack-ai",
+                "demo": "",
+                "docs_url": "",
+                "architecture_flow": [
+                    {"step": 1, "title": "Financial Transaction Stream Input", "detail": "Ingestion & Validation Pipeline"},
+                    {"step": 2, "title": "Automated Categorization Engine", "detail": "Rule Processing & Pattern Matching"},
+                    {"step": 3, "title": "PostgreSQL Database & Redis Query Cache", "detail": "Persistent Storage & Transient Query Caching"}
+                ],
+                "key_features": [
+                    {"title": "Automated Categorization Engine", "desc": "Rule-based transaction processing engine for financial transaction streams."},
+                    {"title": "PostgreSQL Query Optimization", "desc": "Optimized transaction schema with indexing for fast category aggregations."},
+                    {"title": "Redis Transient Caching", "desc": "Redis caching layer for session and transient state management."},
+                    {"title": "Structured RESTful APIs", "desc": "Django REST Framework endpoints with structured JSON schemas."}
+                ],
+                "highlights": [
+                    {
+                        "id": "proj-ft-1",
+                        "text": "Designed high-performance PostgreSQL transaction schema with multi-column indexing for fast monthly category aggregations.",
+                        "is_public": True,
+                        "target_roles": ["Backend Engineering", "Database Optimization"],
+                        "order": 0
+                    },
+                    {
+                        "id": "proj-ft-2",
+                        "text": "Implemented Redis query caching layer reducing repeated database read latency for dashboard summaries.",
+                        "is_public": True,
+                        "target_roles": ["Backend Engineering", "Distributed Systems"],
+                        "order": 1
+                    }
+                ],
+                "target_roles": ["Backend Engineering", "Database Optimization"],
+                "internal_notes": "OCR bill splitting is currently in development. Keep live demo empty until deployed.",
             },
         )
-        p2.timeline = "2026 – Present"
-        p2.order = 1
-        p2.save()
-        p2.tech_stack.add(
-            tech_map["python"], tech_map["django"], tech_map["postgresql"], tech_map["redis"]
-        )
+        p2.tech_stack.set([
+            tech_map["python"],
+            tech_map["django"],
+            tech_map["postgresql"],
+            tech_map["redis"],
+        ])
 
         p3, _ = Project.objects.update_or_create(
             slug="constellation",
             defaults={
                 "title": "Constellation",
-                "summary": "Self-hosted infrastructure platform for securely running and managing containerized services on a personal homelab.",
-                "description": "Built on Ubuntu Linux with Cloudflare Tunnels, Traefik reverse proxy, shared PostgreSQL/Redis storage, and automated encrypted daily S3 backups.",
-                "problem": "Exposing self-hosted services directly to the internet creates firewall attack surfaces, while unmanaged containers risk data loss without automated backups and health monitoring.",
-                "solution": "Built an automated infrastructure setup with zero open inbound ports using Cloudflare Tunnels, Traefik v3 dynamic routing, isolated internal container networks, and encrypted offsite backups.",
-                "status": "Active / v0.9.2 Baseline",
-                "repository": "https://github.com/Harsh324/constellation",
-                "demo": "https://portal.constellationhq.dev/",
+                "project_type": "infrastructure",
+                "status": "active",
+                "is_published": True,
                 "featured": True,
                 "order": 2,
-                "timeline": "2026 – Present",
+                "timeline": "2026 – Present (v0.9.2 Baseline)",
+                "summary": "Self-hosted infrastructure platform for securely running and managing containerized services on a personal homelab.",
+                "description": "Built on Ubuntu Linux with Cloudflare Tunnels, Traefik reverse proxy, shared PostgreSQL/Redis storage, automated encrypted daily S3 backups, and 3-tier health monitoring.",
+                "problem": "Exposing self-hosted services directly to the internet creates firewall attack surfaces, while unmanaged containers risk data loss without automated backups and health monitoring.",
+                "solution": "Built an automated infrastructure setup with zero open inbound ports using Cloudflare Tunnels, Traefik v3 dynamic routing, isolated internal container networks, and encrypted offsite backups.",
+                "technical_outcome": "Zero inbound attack surface, 100% automated encrypted daily backups with 14-day retention, and real-time Telegram alerts for service outages.",
+                "repository": "https://github.com/Harsh324/constellation",
+                "demo": "https://portal.constellationhq.dev/",
+                "docs_url": "",
+                "architecture_flow": [
+                    {"step": 1, "title": "Zero-Trust Ingress (Cloudflare Tunnel & Tailscale)", "detail": "Secure Gateway Routing"},
+                    {"step": 2, "title": "Traefik v3 Reverse Proxy & Dynamic Service Discovery", "detail": "Automatic Docker Label Discovery & SSL"},
+                    {"step": 3, "title": "Backend Services, Data Tier (PostgreSQL / Redis) & Monitoring", "detail": "Isolated Container Network"}
+                ],
+                "key_features": [
+                    {"title": "Standardized Service Templates", "desc": "Modular Docker Compose configs with isolated internal networks, standardized environment variables, and health checks for every service."},
+                    {"title": "Zero-Trust Ingress & Routing", "desc": "Secure outbound Cloudflare Tunnels with automatic SSL and Traefik v3 reverse proxy for dynamic service discovery."},
+                    {"title": "3-Tier Observability Platform", "desc": "External Cloudflare Workers for instant Telegram outage alerts, Uptime Kuma for internal health checks, and Beszel for server metrics."},
+                    {"title": "Persistent Data & Backups", "desc": "Shared PostgreSQL 17, Redis, and MinIO storage with automated daily age-encrypted S3 backups and 14-day retention."}
+                ],
+                "highlights": [
+                    {
+                        "id": "proj-const-1",
+                        "text": "Architected zero-trust homelab infrastructure utilizing Cloudflare Tunnels and Traefik v3 with zero open inbound firewall ports.",
+                        "is_public": True,
+                        "target_roles": ["DevOps", "Platform Engineering", "Cloud Architecture"],
+                        "order": 0
+                    },
+                    {
+                        "id": "proj-const-2",
+                        "text": "Built automated daily backup pipeline with age encryption and S3 offsite replication with 14-day retention policy.",
+                        "is_public": True,
+                        "target_roles": ["DevOps", "Site Reliability Engineering"],
+                        "order": 1
+                    }
+                ],
+                "target_roles": ["DevOps", "Platform Engineering", "Cloud Architecture"],
+                "internal_notes": "Maintained as primary personal homelab infrastructure baseline.",
             },
         )
-        p3.summary = "Self-hosted infrastructure platform for securely running and managing containerized services on a personal homelab."
-        p3.description = "Built on Ubuntu Linux with Cloudflare Tunnels, Traefik reverse proxy, shared PostgreSQL/Redis storage, and automated encrypted daily S3 backups."
-        p3.problem = "Exposing self-hosted services directly to the internet creates firewall attack surfaces, while unmanaged containers risk data loss without automated backups and health monitoring."
-        p3.solution = "Built an automated infrastructure setup with zero open inbound ports using Cloudflare Tunnels, Traefik v3 dynamic routing, isolated internal container networks, and encrypted offsite backups."
-        p3.status = "Active / v0.9.2 Baseline"
-        p3.demo = "https://portal.constellationhq.dev/"
-        p3.repository = "https://github.com/Harsh324/constellation"
-        p3.timeline = "2026 – Present"
-        p3.order = 2
-        p3.save()
-        p3.tech_stack.set(
-            [
-                tech_map["docker"],
-                tech_map["traefik"],
-                tech_map["postgresql"],
-                tech_map["cloudflare"],
-                tech_map["ubuntu-linux"],
-            ]
-        )
+        p3.tech_stack.set([
+            tech_map["docker"],
+            tech_map["traefik"],
+            tech_map["postgresql"],
+            tech_map["cloudflare"],
+            tech_map["ubuntu-linux"],
+        ])
 
         self.stdout.write("Processed Projects (Career OS, FinTrack AI, Constellation).")
 
