@@ -71,22 +71,33 @@ export interface Metric {
   value: string;
 }
 
+export interface ExperienceHighlight {
+  id?: string;
+  text: string;
+  is_public: boolean;
+  target_roles?: string[];
+  order?: number;
+}
+
 export interface Experience {
-  id: number;
+  id?: number;
   title: string;
   subtitle?: string;
   slug: string;
+  company?: number;
   company_detail?: Company;
   employment_type: string;
   location?: string;
   start_date: string;
   end_date: string;
+  start_year_month?: string;
   current_position: boolean;
+  is_published?: boolean;
   featured: boolean;
   mission?: string;
   summary?: string;
   executive_overview?: string;
-  highlights?: string[];
+  highlights?: Array<ExperienceHighlight | string>;
   responsibilities?: string[];
   focus_areas?: string[];
   tech_groups?: Record<string, string[]>;
@@ -96,8 +107,14 @@ export interface Experience {
   ownership?: string;
   lessons_learned?: string[];
   architecture_diagram?: string;
+  technologies?: number[];
   technologies_detail?: Technology[];
+  related_projects?: number[];
   related_projects_detail?: Project[];
+  target_roles?: string[];
+  internal_notes?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface BlogPost {

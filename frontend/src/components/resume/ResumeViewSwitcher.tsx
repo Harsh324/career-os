@@ -414,9 +414,10 @@ export function ResumeViewSwitcher({
 
                       {exp.highlights && exp.highlights.length > 0 && (
                         <ul className="list-disc list-inside space-y-1 text-xs text-[#57606a] dark:text-[#8b949e] leading-relaxed pl-2">
-                          {exp.highlights.map((h: string, hIdx: number) => (
-                            <li key={hIdx}>{h}</li>
-                          ))}
+                          {exp.highlights.map((h, hIdx) => {
+                            const text = typeof h === "string" ? h : h.text;
+                            return <li key={hIdx}>{text}</li>;
+                          })}
                         </ul>
                       )}
                     </div>

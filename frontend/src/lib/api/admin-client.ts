@@ -1,4 +1,5 @@
 import { getBaseURL } from "./client";
+import type { Experience, Company, Technology, Project, SiteSettings } from "./types";
 
 export interface AdminUser {
   id: number;
@@ -147,6 +148,11 @@ export async function adminFetch<T>(
     throw new Error(errorDetail);
   }
 
+  // Handle 204 No Content
+  if (res.status === 204) {
+    return {} as T;
+  }
+
   return res.json();
 }
 
@@ -167,18 +173,99 @@ export async function getAdminProfile(): Promise<AdminUser> {
 /**
  * Fetch full profile settings for admin control plane (including target_roles)
  */
-export async function getProfileSettings(): Promise<import("./types").SiteSettings> {
-  return adminFetch<import("./types").SiteSettings>("/settings/");
+export async function getProfileSettings(): Promise<SiteSettings> {
+  return adminFetch<SiteSettings>("/settings/");
 }
 
 /**
  * Partial update canonical profile settings
  */
 export async function updateProfileSettings(
-  data: Partial<import("./types").SiteSettings>
-): Promise<import("./types").SiteSettings> {
-  return adminFetch<import("./types").SiteSettings>("/settings/", {
+  data: Partial<SiteSettings>
+): Promise<SiteSettings> {
+  return adminFetch<SiteSettings>("/settings/", {
     method: "PATCH",
     body: JSON.stringify(data),
   });
+}
+
+/**
+ * Fetch all experiences for admin control plane (including drafts)
+ */
+export async function getAdminExperiences(): Promise<Experience[]> {
+  const data = await adminFetch<any>("/experience/");
+  return Array.isArray(data) ? data : data.results || [];
+}
+
+/**
+ * Fetch single experience by slug for admin editor
+ */
+export async function getAdminExperienceBySlug(slug: string): Promise<Experience> {
+  return adminFetch<Experience>(`/experience/${slug}/`);
+}
+
+/**
+ * Create a new canonical experience
+ */
+export async function createAdminExperience(data: Partial<Experience>): Promise<Experience> {
+  return adminFetch<Experience>("/experience/", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Update an existing experience
+ */
+export async function updateAdminExperience(
+  slug: string,
+  data: Partial<Experience>
+): Promise<Experience> {
+  return adminFetch<Experience>(`/experience/${slug}/`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Delete an experience
+ */
+export async function deleteAdminExperience(slug: string): Promise<void> {
+  return adminFetch<void>(`/experience/${slug}/`, {
+    method: "DELETE",
+  });
+}
+
+/**
+ * Fetch all companies for selector dropdown
+ */
+export async function getAdminCompanies(): Promise<Company[]> {
+  const data = await adminFetch<any>("/companies/");
+  return Array.isArray(data) ? data : data.results || [];
+}
+
+/**
+ * Create a new company inline
+ */
+export async function createAdminCompany(data: Partial<Company>): Promise<Company> {
+  return adminFetch<Company>("/companies/", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Fetch all technologies for tagging
+ */
+export async function getAdminTechnologies(): Promise<Technology[]> {
+  const data = await adminFetch<any>("/technologies/");
+  return Array.isArray(data) ? data : data.results || [];
+}
+
+/**
+ * Fetch all projects for linking
+ */
+export async function getAdminProjects(): Promise<Project[]> {
+  const data = await adminFetch<any>("/projects/");
+  return Array.isArray(data) ? data : data.results || [];
 }

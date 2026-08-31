@@ -102,8 +102,11 @@ The public portfolio was refined into an evidence-based engineering showcase:
 - Embedded technical diagrams, infrastructure layouts, and decision rationales.
 - Integrated a comprehensive career timeline and verified AWS certification credentials.
 
-### Current State — Career OS V1
-The current public portfolio represents **V1** of Career OS. It remains concise, high-signal, technical, and recruiter-friendly. The public portfolio is not the entire product—it is the first public window into the Career OS data layer.
+### Current State — Career OS V2 In-Progress (V2.2 Completed)
+The platform is actively transitioning from V1 into **V2 (Private Career Dashboard)**:
+- **V2.0 & V2.1:** Established secure JWT administrative authentication, telemetry dashboards, full-width profile management, and on-demand live draft preview modals.
+- **V2.2:** Implemented full **Work Experience Management**, establishing canonical career chronology (`start_year_month`), structured achievement bullet banks for direct Resume Studio (V3.0) consumption, public/private data masking, inline company creation, and live presentation preview.
+- The public portfolio remains high-signal, recruiter-friendly, and dynamically backed by the authoritative PostgreSQL and Django REST Framework API.
 
 ---
 
