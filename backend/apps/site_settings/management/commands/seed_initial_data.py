@@ -53,6 +53,17 @@ class Command(BaseCommand):
                     "Docker containerization, and AWS infrastructure. Currently building AI-driven data extraction platforms "
                     "and scalable microservices at SMS DataTech in Tokyo."
                 ),
+                "engineering_focus": [
+                    "Backend APIs",
+                    "Distributed Systems",
+                    "AWS Cloud",
+                    "AI Data Platforms",
+                ],
+                "open_to_work": True,
+                "target_roles": [
+                    "Backend Engineering",
+                    "Cloud Architecture",
+                ],
                 "avatar_url": "https://github.com/Harsh324.png",
                 "github_url": "https://github.com/Harsh324",
                 "linkedin_url": "https://linkedin.com/in/harsh324",

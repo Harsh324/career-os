@@ -163,3 +163,22 @@ export async function getDashboardStats(): Promise<DashboardStats> {
 export async function getAdminProfile(): Promise<AdminUser> {
   return adminFetch<AdminUser>("/auth/me/");
 }
+
+/**
+ * Fetch full profile settings for admin control plane (including target_roles)
+ */
+export async function getProfileSettings(): Promise<import("./types").SiteSettings> {
+  return adminFetch<import("./types").SiteSettings>("/settings/");
+}
+
+/**
+ * Partial update canonical profile settings
+ */
+export async function updateProfileSettings(
+  data: Partial<import("./types").SiteSettings>
+): Promise<import("./types").SiteSettings> {
+  return adminFetch<import("./types").SiteSettings>("/settings/", {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
