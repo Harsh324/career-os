@@ -49,35 +49,23 @@
 
 ---
 
-### [PLANNED] Career OS V2 — Private Career Dashboard
+### [CURRENT] Career OS V2 — Private Career Dashboard
 
-**Status:** 🎯 **NEXT IMPLEMENTATION MILESTONE**  
+**Status:** 🚀 **IN PROGRESS (V2.0, V2.1 & V2.2 COMPLETED • V2.3 NEXT)**  
 **Focus:** Administrative control plane allowing the owner to manage, preview, and publish career records without touching source code or re-running database seed scripts.
 
-#### Target Scope
-- **Secure Admin Authentication:** JWT-based authenticated session for the private control plane.
-- **Profile Management:**
-  - Name, headline, bio summary, location, contact channels, public links.
-- **Experience Management:**
-  - Company association, role title, employment type, start/end dates, location.
-  - Responsibilities, key contributions, associated technologies.
-  - Architecture description, technical challenges, solution approaches, quantified impact metrics.
-  - Display ordering and visibility toggles.
-- **Project Management:**
-  - Name, slug, description, project status, repository and live URLs.
-  - Architectural breakdown, key features, technical decisions, trade-offs, and challenges.
-  - Featured status toggle, display ordering, and visibility control.
-- **Skills Taxonomy Management:**
-  - Category grouping (Languages, Backend, Cloud, Databases, etc.), technology links, descriptions, proficiency levels, ordering, and visibility.
-- **Certifications & Education Management:**
-  - Name, issuer, issue date, expiration date, credential URL, credential ID, visibility.
-  - Educational institution, degree, field of study, relevant coursework.
-- **Timeline Milestone Management:**
-  - Date, event title, category, full description, importance weight, ordering.
-- **Publish & Preview Workflow:**
-  ```
-  Edit Record  ──►  Save Draft  ──►  Preview Changes  ──►  Publish  ──►  Public Portfolio Updates
-  ```
+#### Milestone Sub-Phases:
+- [x] **V2.0 — Control Plane Shell & Secure JWT Authentication:** Authenticated dashboard shell, telemetry stats, and token lifecycle.
+- [x] **V2.1 — Profile & Site Settings Management:** Full-width profile editor, desktop single-row toolbar, dirty state tracking, and on-demand `ProfilePreviewModal`.
+- [x] **V2.2 — Work Experience Management:**
+  - Canonical PostgreSQL experience model with derived chronology (`start_year_month`), publication flag (`is_published`), and private career intelligence (`internal_notes`, `target_roles`).
+  - Structured achievement bullets (`highlights`) for granular public/private exposure and direct Resume Studio (V3.0) readiness.
+  - Public vs. private data masking in DRF serializer.
+  - Reusable presentation layer (`ExperienceDetailView`) and on-demand live draft preview (`ExperiencePreviewModal`).
+  - Focused 9-section editor with single-row desktop action bar and inline company creation dialog.
+- [ ] **V2.3 — Projects Showcase Management (Next Milestone):** CRUD for projects, architecture breakdowns, engineering decisions, and live links.
+- [ ] **V2.4 — Skills, Certifications, Education & Timeline Management.**
+- [ ] **V2.5 — Media & Document Asset Management.**
 
 ---
 

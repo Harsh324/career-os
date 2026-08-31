@@ -34,7 +34,7 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
   { name: "Profile & Settings", href: "/dashboard/profile", icon: User, badge: "V2.1", disabled: false },
-  { name: "Work Experience", href: "/dashboard/experience", icon: Briefcase, badge: "V2.2", disabled: true },
+  { name: "Work Experience", href: "/dashboard/experience", icon: Briefcase, badge: "V2.2", disabled: false },
   { name: "Projects Showcase", href: "/dashboard/projects", icon: FolderGit2, badge: "V2.3", disabled: true },
   { name: "Skills Matrix", href: "/dashboard/skills", icon: Cpu, badge: "V2.4", disabled: true },
   { name: "Certifications", href: "/dashboard/certifications", icon: Award, badge: "V2.4", disabled: true },
