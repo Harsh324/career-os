@@ -36,7 +36,7 @@ const NAV_ITEMS: NavItem[] = [
   { name: "Profile & Settings", href: "/dashboard/profile", icon: User, badge: "V2.1", disabled: false },
   { name: "Work Experience", href: "/dashboard/experience", icon: Briefcase, badge: "V2.2", disabled: false },
   { name: "Projects Showcase", href: "/dashboard/projects", icon: FolderGit2, badge: "V2.3", disabled: false },
-  { name: "Skills Matrix", href: "/dashboard/skills", icon: Cpu, badge: "V2.4", disabled: true },
+  { name: "Skills Matrix", href: "/dashboard/skills", icon: Cpu, badge: "V2.4", disabled: false },
   { name: "Certifications", href: "/dashboard/certifications", icon: Award, badge: "V2.4", disabled: true },
   { name: "Education", href: "/dashboard/education", icon: GraduationCap, badge: "V2.4", disabled: true },
   { name: "Career Timeline", href: "/dashboard/timeline", icon: Milestone, badge: "V2.4", disabled: true },
