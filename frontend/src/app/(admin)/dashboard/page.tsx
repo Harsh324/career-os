@@ -257,7 +257,10 @@ export default function DashboardOverviewPage() {
           </div>
 
           {/* Skills (Purple) */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#161b22] border border-[#d0d7de] dark:border-[#30363d] flex flex-col justify-between hover:-translate-y-1 hover:shadow-md transition-all shadow-2xs group">
+          <Link
+            href="/dashboard/skills"
+            className="p-4 rounded-2xl bg-white dark:bg-[#161b22] border border-[#d0d7de] dark:border-[#30363d] flex flex-col justify-between hover:-translate-y-1 hover:border-[#8957e5]/50 hover:shadow-md transition-all shadow-2xs group"
+          >
             <div className="flex items-center justify-between mb-3">
               <div className="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 flex items-center justify-center">
                 <Cpu className="w-4 h-4" />
@@ -272,16 +275,19 @@ export default function DashboardOverviewPage() {
               </div>
               <div className="text-xs font-medium text-[#57606a] dark:text-[#8b949e] mt-0.5">Tech Skills</div>
             </div>
-          </div>
+          </Link>
 
           {/* Certifications (Amber) */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#161b22] border border-[#d0d7de] dark:border-[#30363d] flex flex-col justify-between hover:-translate-y-1 hover:shadow-md transition-all shadow-2xs group">
+          <Link
+            href="/dashboard/certifications"
+            className="p-4 rounded-2xl bg-white dark:bg-[#161b22] border border-[#d0d7de] dark:border-[#30363d] flex flex-col justify-between hover:-translate-y-1 hover:border-[#d97706]/50 hover:shadow-md transition-all shadow-2xs group"
+          >
             <div className="flex items-center justify-between mb-3">
               <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center justify-center">
                 <Award className="w-4 h-4" />
               </div>
-              <span className="text-[9px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded bg-[#f6f8fa] dark:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] border border-[#d0d7de] dark:border-[#30363d]">
-                V2.4
+              <span className="text-[9px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded bg-[#f6f8fa] dark:bg-[#21262d] text-[#0969da] dark:text-[#58a6ff] border border-[#0969da]/30">
+                V2.5
               </span>
             </div>
             <div>
@@ -290,16 +296,19 @@ export default function DashboardOverviewPage() {
               </div>
               <div className="text-xs font-medium text-[#57606a] dark:text-[#8b949e] mt-0.5">Certifications</div>
             </div>
-          </div>
+          </Link>
 
           {/* Education (Cyan) */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#161b22] border border-[#d0d7de] dark:border-[#30363d] flex flex-col justify-between hover:-translate-y-1 hover:shadow-md transition-all shadow-2xs group">
+          <Link
+            href="/dashboard/education"
+            className="p-4 rounded-2xl bg-white dark:bg-[#161b22] border border-[#d0d7de] dark:border-[#30363d] flex flex-col justify-between hover:-translate-y-1 hover:border-[#0969da]/50 hover:shadow-md transition-all shadow-2xs group"
+          >
             <div className="flex items-center justify-between mb-3">
               <div className="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 flex items-center justify-center">
                 <GraduationCap className="w-4 h-4" />
               </div>
-              <span className="text-[9px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded bg-[#f6f8fa] dark:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] border border-[#d0d7de] dark:border-[#30363d]">
-                V2.4
+              <span className="text-[9px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded bg-[#f6f8fa] dark:bg-[#21262d] text-[#0969da] dark:text-[#58a6ff] border border-[#0969da]/30">
+                V2.5
               </span>
             </div>
             <div>
@@ -308,16 +317,19 @@ export default function DashboardOverviewPage() {
               </div>
               <div className="text-xs font-medium text-[#57606a] dark:text-[#8b949e] mt-0.5">Degrees & Edu</div>
             </div>
-          </div>
+          </Link>
 
           {/* Milestones (Orange) */}
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#161b22] border border-[#d0d7de] dark:border-[#30363d] flex flex-col justify-between hover:-translate-y-1 hover:shadow-md transition-all shadow-2xs group">
+          <Link
+            href="/dashboard/timeline"
+            className="p-4 rounded-2xl bg-white dark:bg-[#161b22] border border-[#d0d7de] dark:border-[#30363d] flex flex-col justify-between hover:-translate-y-1 hover:border-orange-500/50 hover:shadow-md transition-all shadow-2xs group"
+          >
             <div className="flex items-center justify-between mb-3">
               <div className="w-8 h-8 rounded-lg bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 flex items-center justify-center">
                 <Milestone className="w-4 h-4" />
               </div>
-              <span className="text-[9px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded bg-[#f6f8fa] dark:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] border border-[#d0d7de] dark:border-[#30363d]">
-                V2.4
+              <span className="text-[9px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded bg-[#f6f8fa] dark:bg-[#21262d] text-[#0969da] dark:text-[#58a6ff] border border-[#0969da]/30">
+                V2.5
               </span>
             </div>
             <div>
@@ -326,7 +338,7 @@ export default function DashboardOverviewPage() {
               </div>
               <div className="text-xs font-medium text-[#57606a] dark:text-[#8b949e] mt-0.5">Timeline Events</div>
             </div>
-          </div>
+          </Link>
         </div>
       </div>
 

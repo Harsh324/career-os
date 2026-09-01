@@ -1099,7 +1099,12 @@ class Command(BaseCommand):
                 "location": "Nagpur, India",
                 "start_date": "Dec 2020",
                 "end_date": "Jun 2024",
+                "currently_studying": False,
                 "grade": "First Class",
+                "order": 1,
+                "is_published": True,
+                "is_featured": True,
+                "description": "4-year undergraduate engineering program focusing on computer systems, algorithmic foundations, database internals, and distributed architecture.",
                 "achievements": [
                     "Graduated with B.Tech in Computer Science and Engineering.",
                     "Studied Core Computer Science, Distributed Systems, Relational Databases, and System Design.",
@@ -1111,32 +1116,70 @@ class Command(BaseCommand):
                     "Computer Networks",
                     "System Design",
                 ],
+                "target_roles": ["Backend Engineering", "Platform Engineering", "Software Engineering"],
+                "internal_notes": "B.Tech degree from IIIT Nagpur (Indian Institute of Information Technology). Graduated First Class.",
             },
         )
         self.stdout.write("Processed Education (IIIT Nagpur).")
 
         # 8. Certifications
-        Certification.objects.get_or_create(
+        cert1, _ = Certification.objects.update_or_create(
             slug="aws-solutions-architect",
             defaults={
                 "name": "AWS Certified Solutions Architect – Associate",
                 "issuer": "Amazon Web Services",
+                "credential_id": "9c0287d7cbf04661a24c19a061a02e76",
                 "credential_url": "https://cp.certmetrics.com/amazon/en/public/verify/credential/9c0287d7cbf04661a24c19a061a02e76",
                 "issue_date": "2025-08-19",
                 "expiry_date": "2028-08-19",
+                "does_not_expire": False,
+                "verification_status": "verified",
+                "category": "Cloud & Infrastructure",
+                "is_published": True,
+                "is_featured": True,
+                "order": 1,
+                "description": "Validates expertise in designing resilient, high-performing, secure, and cost-optimized architectures on Amazon Web Services.",
+                "target_roles": ["Cloud Architecture", "Platform Engineering", "Backend Engineering"],
+                "internal_notes": "Verified official AWS credential validating VPC, ECS, S3, RDS, IAM, and high-availability architecture.",
             },
         )
-        Certification.objects.get_or_create(
+        if "aws" in tech_map:
+            cert1.related_technologies.add(tech_map["aws"])
+        for s_slug in ["aws-skill", "aws-cloud-arch-skill", "ecs-fargate-skill", "s3-skill"]:
+            s_obj = Skill.objects.filter(slug=s_slug).first()
+            if s_obj:
+                cert1.related_skills.add(s_obj)
+
+        cert2, _ = Certification.objects.update_or_create(
             slug="aws-cloudops-engineer",
             defaults={
                 "name": "AWS Certified CloudOps Engineer – Associate",
                 "issuer": "Amazon Web Services",
+                "credential_id": "6a4511dc5dc84e709d958785ad74ba96",
                 "credential_url": "https://cp.certmetrics.com/amazon/en/public/verify/credential/6a4511dc5dc84e709d958785ad74ba96",
                 "issue_date": "2026-04-01",
                 "expiry_date": "2029-04-01",
+                "does_not_expire": False,
+                "verification_status": "verified",
+                "category": "Cloud & Infrastructure",
+                "is_published": True,
+                "is_featured": True,
+                "order": 2,
+                "description": "Validates technical proficiency in deploying, managing, and operating scalable systems on AWS with automated CI/CD and CloudWatch monitoring.",
+                "target_roles": ["Cloud Architecture", "DevOps", "Platform Engineering", "Site Reliability Engineering"],
+                "internal_notes": "Covers CloudFormation IaC, CloudWatch alarms, ECS deployments, and automated operational runbooks.",
             },
         )
-        self.stdout.write("Processed Certifications.")
+        if "aws" in tech_map:
+            cert2.related_technologies.add(tech_map["aws"])
+        if "docker" in tech_map:
+            cert2.related_technologies.add(tech_map["docker"])
+        for s_slug in ["aws-skill", "cloudformation-skill", "cloudwatch-skill", "ecs-fargate-skill"]:
+            s_obj = Skill.objects.filter(slug=s_slug).first()
+            if s_obj:
+                cert2.related_skills.add(s_obj)
+
+        self.stdout.write("Processed Certifications (AWS SAA & CloudOps).")
 
         # 9. Timeline Events
         timeline_events = [
@@ -1149,6 +1192,10 @@ class Command(BaseCommand):
                 "category": "Education",
                 "icon": "GraduationCap",
                 "order": 1,
+                "is_milestone": False,
+                "is_published": True,
+                "target_roles": ["Education"],
+                "internal_notes": "Undergraduate studies commencement.",
             },
             {
                 "title": "Software Engineer Intern",
@@ -1159,6 +1206,10 @@ class Command(BaseCommand):
                 "category": "Career",
                 "icon": "Briefcase",
                 "order": 2,
+                "is_milestone": True,
+                "is_published": True,
+                "target_roles": ["Backend Engineering", "Software Engineering"],
+                "internal_notes": "First professional software engineering role in Tokyo.",
             },
             {
                 "title": "B.Tech Computer Science Graduation",
@@ -1169,6 +1220,10 @@ class Command(BaseCommand):
                 "category": "Education",
                 "icon": "GraduationCap",
                 "order": 3,
+                "is_milestone": True,
+                "is_published": True,
+                "target_roles": ["Education"],
+                "internal_notes": "Graduated First Class in CSE.",
             },
             {
                 "title": "Backend & Cloud Engineer",
@@ -1179,6 +1234,10 @@ class Command(BaseCommand):
                 "category": "Career",
                 "icon": "Briefcase",
                 "order": 4,
+                "is_milestone": True,
+                "is_published": True,
+                "target_roles": ["Backend Engineering", "Cloud Architecture", "Platform Engineering"],
+                "internal_notes": "Full-time backend and cloud engineering role.",
             },
             {
                 "title": "AWS Certified Solutions Architect – Associate",
@@ -1190,6 +1249,10 @@ class Command(BaseCommand):
                 "icon": "Award",
                 "link": "https://cp.certmetrics.com/amazon/en/public/verify/credential/9c0287d7cbf04661a24c19a061a02e76",
                 "order": 5,
+                "is_milestone": True,
+                "is_published": True,
+                "target_roles": ["Cloud Architecture"],
+                "internal_notes": "Official AWS SAA certification earned.",
             },
             {
                 "title": "AWS Certified CloudOps Engineer – Associate",
@@ -1201,6 +1264,10 @@ class Command(BaseCommand):
                 "icon": "Award",
                 "link": "https://cp.certmetrics.com/amazon/en/public/verify/credential/6a4511dc5dc84e709d958785ad74ba96",
                 "order": 6,
+                "is_milestone": True,
+                "is_published": True,
+                "target_roles": ["Cloud Architecture", "DevOps"],
+                "internal_notes": "Official AWS CloudOps certification earned.",
             },
         ]
         for te in timeline_events:
