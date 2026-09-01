@@ -1087,7 +1087,7 @@ class Command(BaseCommand):
                     if proj_item:
                         skill_obj.related_projects.add(proj_item)
 
-        self.stdout.write("Processed 28 Skills with canonical proficiency and relational evidence.")
+        self.stdout.write("Processed 32 Skills with canonical proficiency and relational evidence.")
 
         # 7. Education (IIIT Nagpur Dec 2020 – Jun 2024)
         Education.objects.update_or_create(

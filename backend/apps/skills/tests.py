@@ -143,6 +143,27 @@ class SkillAPITests(TestCase):
         del_res = self.client.delete(f"/api/v1/skills/{self.published_skill.slug}/")
         self.assertEqual(del_res.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_authenticated_non_staff_receives_masked_data_and_draft_404(self):
+        self.client.force_authenticate(user=self.non_staff_user)
+
+        # List receives only published skills
+        list_res = self.client.get("/api/v1/skills/")
+        self.assertEqual(list_res.status_code, status.HTTP_200_OK)
+        results = list_res.data.get("results", list_res.data)
+        slugs = [s["slug"] for s in results]
+        self.assertIn("python-backend", slugs)
+        self.assertNotIn("rust-systems", slugs)
+
+        # Detail on published skill has notes and target_roles stripped
+        detail_res = self.client.get(f"/api/v1/skills/{self.published_skill.slug}/")
+        self.assertEqual(detail_res.status_code, status.HTTP_200_OK)
+        self.assertNotIn("internal_notes", detail_res.data)
+        self.assertNotIn("target_roles", detail_res.data)
+
+        # Draft detail returns 404
+        draft_res = self.client.get(f"/api/v1/skills/{self.draft_skill.slug}/")
+        self.assertEqual(draft_res.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_staff_receives_unmasked_data_and_drafts(self):
         self.client.force_authenticate(user=self.admin_user)
         response = self.client.get("/api/v1/skills/")
