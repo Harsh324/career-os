@@ -93,12 +93,7 @@ export default function TimelineDashboardPage() {
       return matchesCat && matchesSource && matchesQuery;
     });
 
-    return [...result].sort((a, b) => {
-      const dateA = a.date_sort || "0000-00-00";
-      const dateB = b.date_sort || "0000-00-00";
-      if (dateA !== dateB) return dateB.localeCompare(dateA);
-      return (a.order || 0) - (b.order || 0);
-    });
+    return result;
   }, [events, selectedCategory, selectedSourceType, searchQuery]);
 
   const handleTogglePublish = async (item: TimelineEvent) => {

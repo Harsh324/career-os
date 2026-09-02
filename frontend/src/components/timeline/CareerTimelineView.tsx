@@ -43,7 +43,7 @@ export function CareerTimelineView({
         (item) => item.category?.toLowerCase() === selectedCategory.toLowerCase()
       );
     }
-    return [...items].sort((a, b) => (a.order || 0) - (b.order || 0));
+    return items;
   }, [timeline, selectedCategory, isDraftPreview]);
 
   const getSourceBadge = (sourceType?: string) => {

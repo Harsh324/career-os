@@ -30,14 +30,33 @@ export function TimelinePreviewModal({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  // Include the active item in the preview stream if not already present
+  // Include the active item in the preview stream and preserve chronological order
   const previewItems = React.useMemo(() => {
     if (allTimeline.length === 0) return [timelineItem];
-    const exists = allTimeline.some((t) => (t.slug && t.slug === timelineItem.slug) || (t.id && t.id === timelineItem.id));
-    if (!exists) {
-      return [...allTimeline, timelineItem];
-    }
-    return allTimeline.map((t) => (t.slug === timelineItem.slug || t.id === timelineItem.id ? timelineItem : t));
+    const exists = allTimeline.some(
+      (t) =>
+        (t.slug && t.slug === timelineItem.slug) ||
+        (t.id && t.id === timelineItem.id)
+    );
+    const list = !exists
+      ? [timelineItem, ...allTimeline]
+      : allTimeline.map((t) =>
+          t.slug === timelineItem.slug || t.id === timelineItem.id
+            ? timelineItem
+            : t
+        );
+
+    return [...list].sort((a, b) => {
+      const dateA = a.date_sort || "0000-00-00";
+      const dateB = b.date_sort || "0000-00-00";
+      if (dateA !== dateB) return dateB.localeCompare(dateA);
+      const orderA = a.order ?? 50;
+      const orderB = b.order ?? 50;
+      if (orderA !== orderB) return orderA - orderB;
+      const keyA = `${a.source_type || ""}:${a.source_slug || a.slug || ""}`;
+      const keyB = `${b.source_type || ""}:${b.source_slug || b.slug || ""}`;
+      return keyA.localeCompare(keyB);
+    });
   }, [allTimeline, timelineItem]);
 
   if (!isOpen) return null;
