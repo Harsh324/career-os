@@ -1181,98 +1181,39 @@ class Command(BaseCommand):
 
         self.stdout.write("Processed Certifications (AWS SAA & CloudOps).")
 
-        # 9. Timeline Events
-        timeline_events = [
+        # 9. Timeline Events (Manual Milestones Only)
+        # Note: Experiences, Education, and Certifications are now projected dynamically
+        # as the single source of truth. Clean up deprecated duplicate static records.
+        deprecated_slugs = [
+            "1-iiit-nagpur-enrollment",
+            "2-sms-internship",
+            "3-iiit-nagpur-graduation",
+            "4-sms-fulltime",
+            "5-aws-solutions-architect",
+            "6-aws-cloudops-engineer",
+        ]
+        TimelineEvent.objects.filter(slug__in=deprecated_slugs).delete()
+
+        # Seed genuine manual milestones that do not belong to Experience, Education, or Certifications
+        manual_milestones = [
             {
-                "title": "B.Tech Computer Science Enrollment",
-                "slug": "1-iiit-nagpur-enrollment",
-                "subtitle": "IIIT Nagpur (Nagpur, India)",
-                "description": "Enrolled in B.Tech in Computer Science and Engineering at Indian Institute of Information Technology, Nagpur.",
-                "date": "Dec 2020",
-                "category": "Education",
-                "icon": "GraduationCap",
+                "title": "Engineering Relocation to Tokyo",
+                "slug": "engineering-relocation-tokyo",
+                "subtitle": "Tokyo, Japan",
+                "description": "Relocated to Tokyo, Japan to build cloud backend infrastructure and data platforms.",
+                "date": "Oct 2024",
+                "category": "Milestone",
+                "icon": "Rocket",
                 "order": 1,
-                "is_milestone": False,
-                "is_published": True,
-                "target_roles": ["Education"],
-                "internal_notes": "Undergraduate studies commencement.",
-            },
-            {
-                "title": "Software Engineer Intern",
-                "slug": "2-sms-internship",
-                "subtitle": "SMS DataTech (Tokyo, Japan)",
-                "description": "Developed backend services using Django REST Framework and MySQL for the POGO internal dashboard.",
-                "date": "Jul 2023 – May 2024",
-                "category": "Career",
-                "icon": "Briefcase",
-                "order": 2,
                 "is_milestone": True,
                 "is_published": True,
-                "target_roles": ["Backend Engineering", "Software Engineering"],
-                "internal_notes": "First professional software engineering role in Tokyo.",
-            },
-            {
-                "title": "B.Tech Computer Science Graduation",
-                "slug": "3-iiit-nagpur-graduation",
-                "subtitle": "IIIT Nagpur",
-                "description": "Graduated with B.Tech in Computer Science and Engineering from IIIT Nagpur.",
-                "date": "Jun 2024",
-                "category": "Education",
-                "icon": "GraduationCap",
-                "order": 3,
-                "is_milestone": True,
-                "is_published": True,
-                "target_roles": ["Education"],
-                "internal_notes": "Graduated First Class in CSE.",
-            },
-            {
-                "title": "Backend & Cloud Engineer",
-                "slug": "4-sms-fulltime",
-                "subtitle": "SMS DataTech (Tokyo, Japan)",
-                "description": "Building AI-driven scraping platforms, Celery async pipelines, Docker containers, and AWS ECS/Fargate cloud infrastructure.",
-                "date": "Oct 2024 – Present",
-                "category": "Career",
-                "icon": "Briefcase",
-                "order": 4,
-                "is_milestone": True,
-                "is_published": True,
-                "target_roles": ["Backend Engineering", "Cloud Architecture", "Platform Engineering"],
-                "internal_notes": "Full-time backend and cloud engineering role.",
-            },
-            {
-                "title": "AWS Certified Solutions Architect – Associate",
-                "slug": "5-aws-solutions-architect",
-                "subtitle": "Amazon Web Services",
-                "description": "Earned official AWS Certified Solutions Architect – Associate credential.",
-                "date": "Aug 2025",
-                "category": "Certification",
-                "icon": "Award",
-                "link": "https://cp.certmetrics.com/amazon/en/public/verify/credential/9c0287d7cbf04661a24c19a061a02e76",
-                "order": 5,
-                "is_milestone": True,
-                "is_published": True,
-                "target_roles": ["Cloud Architecture"],
-                "internal_notes": "Official AWS SAA certification earned.",
-            },
-            {
-                "title": "AWS Certified CloudOps Engineer – Associate",
-                "slug": "6-aws-cloudops-engineer",
-                "subtitle": "Amazon Web Services",
-                "description": "Earned official AWS Certified CloudOps Engineer – Associate credential.",
-                "date": "Apr 2026",
-                "category": "Certification",
-                "icon": "Award",
-                "link": "https://cp.certmetrics.com/amazon/en/public/verify/credential/6a4511dc5dc84e709d958785ad74ba96",
-                "order": 6,
-                "is_milestone": True,
-                "is_published": True,
-                "target_roles": ["Cloud Architecture", "DevOps"],
-                "internal_notes": "Official AWS CloudOps certification earned.",
+                "target_roles": ["Backend Engineering", "Cloud Architecture"],
+                "internal_notes": "Career relocation to Japan for full-time engineering role.",
             },
         ]
-        for te in timeline_events:
+        for te in manual_milestones:
             TimelineEvent.objects.update_or_create(slug=te["slug"], defaults=te)
-        self.stdout.write("Processed Timeline Events.")
+        self.stdout.write("Processed Manual Milestones & De-duplicated Timeline Events.")
 
         # 10. SEO Metadata
         seo_data = [

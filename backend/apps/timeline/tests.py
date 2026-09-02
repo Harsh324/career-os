@@ -3,6 +3,10 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from apps.certifications.models import Certification
+from apps.companies.models import Company
+from apps.education.models import Education
+from apps.experiences.models import Experience
 from apps.timeline.models import TimelineEvent
 
 User = get_user_model()
@@ -13,187 +17,271 @@ class TimelineModelTests(TestCase):
         te = TimelineEvent.objects.create(
             title="Spoke at Tokyo Python Meetup",
             date="Nov 2025",
-            category="Career",
+            category="Milestone",
         )
         self.assertEqual(te.slug, "spoke-at-tokyo-python-meetup")
 
     def test_auto_slug_collision_handling(self):
         t1 = TimelineEvent.objects.create(
-            title="Graduation",
+            title="Milestone Event",
             date="Jun 2024",
-            category="Education",
+            category="Milestone",
         )
         t2 = TimelineEvent.objects.create(
-            title="Graduation",
+            title="Milestone Event",
             date="Jun 2028",
-            category="Education",
+            category="Milestone",
         )
-        self.assertEqual(t1.slug, "graduation")
-        self.assertEqual(t2.slug, "graduation-1")
+        self.assertEqual(t1.slug, "milestone-event")
+        self.assertEqual(t2.slug, "milestone-event-1")
 
 
-class TimelineAPITests(TestCase):
+class TimelineProjectionAPITests(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.admin_user = User.objects.create_superuser(
             username="admin", email="admin@career-os.dev", password="adminpassword123"
         )
         self.non_staff_user = User.objects.create_user(
-            username="visitor", email="visitor@example.com", password="visitorpassword123", is_staff=False
+            username="visitor",
+            email="visitor@example.com",
+            password="visitorpassword123",
+            is_staff=False,
         )
 
-        self.published_event = TimelineEvent.objects.create(
+        self.company = Company.objects.create(
+            name="SMS DataTech",
+            slug="sms-datatech",
+            location="Tokyo, Japan",
+        )
+
+        # 1. Canonical Experience
+        self.exp = Experience.objects.create(
             title="Backend & Cloud Engineer",
-            slug="sms-fulltime",
-            subtitle="SMS DataTech",
-            description="Building Celery pipelines and AWS ECS infrastructure.",
-            date="Oct 2024 – Present",
-            category="Career",
-            icon="Briefcase",
-            order=4,
+            slug="software-engineer-sms",
+            company=self.company,
+            start_date="Oct 2024",
+            end_date="Present",
+            current_position=True,
+            summary="Building Celery pipelines and AWS ECS cloud infrastructure.",
+            is_published=True,
+            featured=True,
+            target_roles=["Backend Engineering"],
+            internal_notes="Full-time role notes.",
+        )
+
+        # 2. Canonical Education
+        self.edu = Education.objects.create(
+            institution="IIIT Nagpur",
+            degree="B.Tech in Computer Science and Engineering",
+            slug="iiit-nagpur",
+            location="Nagpur, India",
+            start_date="Dec 2020",
+            end_date="Jun 2024",
+            description="Computer science undergraduate degree.",
+            is_published=True,
+            is_featured=True,
+            target_roles=["Education"],
+            internal_notes="Graduated with honors.",
+        )
+
+        # 3. Canonical Certification
+        self.cert = Certification.objects.create(
+            name="AWS Certified Solutions Architect – Associate",
+            slug="aws-solutions-architect",
+            issuer="Amazon Web Services",
+            issue_date="2025-08-19",
+            credential_url="https://cp.certmetrics.com/amazon/verify/sample",
+            description="AWS Cloud architecture validation.",
+            is_published=True,
+            is_featured=True,
+            target_roles=["Cloud Architecture"],
+            internal_notes="Passed on first attempt.",
+        )
+
+        # 4. Manual Milestone
+        self.manual = TimelineEvent.objects.create(
+            title="Engineering Relocation to Tokyo",
+            slug="engineering-relocation-tokyo",
+            subtitle="Tokyo, Japan",
+            description="Relocated to Tokyo for engineering role.",
+            date="Oct 2024",
+            category="Milestone",
+            icon="Rocket",
             is_milestone=True,
             is_published=True,
-            target_roles=["Backend Engineering"],
-            internal_notes="Full-time promotion.",
+            target_roles=["Career Transition"],
+            internal_notes="Relocation package details.",
         )
 
-        self.draft_event = TimelineEvent.objects.create(
-            title="Draft Milestone",
-            slug="draft-milestone",
-            date="2027",
-            category="Milestone",
+        # 5. Draft Canonical Record
+        self.draft_exp = Experience.objects.create(
+            title="Draft Future Role",
+            slug="draft-future-role",
+            company=self.company,
+            start_date="2027",
             is_published=False,
-            is_milestone=False,
-            order=99,
             target_roles=["Future"],
-            internal_notes="Draft milestone notes.",
+            internal_notes="Draft role notes.",
         )
 
-    def test_anonymous_cannot_see_draft_in_list(self):
+    def test_published_experience_projects_to_timeline(self):
         res = self.client.get("/api/v1/timeline/")
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        results = res.data.get("results", res.data)
-        slugs = [e["slug"] for e in results]
-        self.assertIn("sms-fulltime", slugs)
-        self.assertNotIn("draft-milestone", slugs)
+        results = res.data if isinstance(res.data, list) else res.data.get("results", [])
+        exp_entry = next((e for e in results if e["source_slug"] == "software-engineer-sms"), None)
+        self.assertIsNotNone(exp_entry)
+        self.assertEqual(exp_entry["source_type"], "experience")
+        self.assertEqual(exp_entry["title"], "Backend & Cloud Engineer")
+        self.assertEqual(exp_entry["category"], "Career")
+        self.assertEqual(exp_entry["icon"], "Briefcase")
+        self.assertTrue(exp_entry["is_milestone"])
 
-    def test_anonymous_cannot_get_draft_detail(self):
-        res = self.client.get(f"/api/v1/timeline/{self.draft_event.slug}/")
-        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_anonymous_receives_masked_public_data(self):
-        res = self.client.get(f"/api/v1/timeline/{self.published_event.slug}/")
+    def test_published_education_projects_to_timeline(self):
+        res = self.client.get("/api/v1/timeline/")
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertNotIn("internal_notes", res.data)
-        self.assertNotIn("target_roles", res.data)
-        self.assertEqual(res.data["title"], "Backend & Cloud Engineer")
+        results = res.data if isinstance(res.data, list) else res.data.get("results", [])
+        edu_entry = next((e for e in results if e["source_slug"] == "iiit-nagpur"), None)
+        self.assertIsNotNone(edu_entry)
+        self.assertEqual(edu_entry["source_type"], "education")
+        self.assertEqual(edu_entry["title"], "B.Tech in Computer Science and Engineering")
+        self.assertEqual(edu_entry["category"], "Education")
+        self.assertEqual(edu_entry["icon"], "GraduationCap")
 
-    def test_non_staff_mutations_forbidden(self):
-        self.client.force_authenticate(user=self.non_staff_user)
+    def test_published_certification_projects_to_timeline(self):
+        res = self.client.get("/api/v1/timeline/")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        results = res.data if isinstance(res.data, list) else res.data.get("results", [])
+        cert_entry = next((e for e in results if e["source_slug"] == "aws-solutions-architect"), None)
+        self.assertIsNotNone(cert_entry)
+        self.assertEqual(cert_entry["source_type"], "certification")
+        self.assertEqual(cert_entry["title"], "AWS Certified Solutions Architect – Associate")
+        self.assertEqual(cert_entry["category"], "Certification")
+        self.assertEqual(cert_entry["icon"], "Award")
+        self.assertEqual(cert_entry["date"], "Aug 2025")
 
-        # POST attempt
-        post_res = self.client.post(
-            "/api/v1/timeline/",
-            {"title": "Hacked Event", "date": "2026", "category": "Career"},
-            format="json",
-        )
-        self.assertEqual(post_res.status_code, status.HTTP_403_FORBIDDEN)
+    def test_manual_milestone_projects_to_timeline(self):
+        res = self.client.get("/api/v1/timeline/")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        results = res.data if isinstance(res.data, list) else res.data.get("results", [])
+        manual_entry = next((e for e in results if e["source_slug"] == "engineering-relocation-tokyo"), None)
+        self.assertIsNotNone(manual_entry)
+        self.assertEqual(manual_entry["source_type"], "manual_milestone")
+        self.assertEqual(manual_entry["title"], "Engineering Relocation to Tokyo")
+        self.assertEqual(manual_entry["icon"], "Rocket")
 
-        # PATCH attempt
-        patch_res = self.client.patch(
-            f"/api/v1/timeline/{self.published_event.slug}/",
-            {"title": "Tampered Name"},
-            format="json",
-        )
-        self.assertEqual(patch_res.status_code, status.HTTP_403_FORBIDDEN)
+    def test_unpublished_canonical_records_hidden_from_public(self):
+        res = self.client.get("/api/v1/timeline/")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        results = res.data if isinstance(res.data, list) else res.data.get("results", [])
+        slugs = [e.get("source_slug") for e in results]
+        self.assertNotIn("draft-future-role", slugs)
 
-        # DELETE attempt
-        del_res = self.client.delete(f"/api/v1/timeline/{self.published_event.slug}/")
-        self.assertEqual(del_res.status_code, status.HTTP_403_FORBIDDEN)
+    def test_staff_can_view_drafts_in_projection(self):
+        self.client.force_authenticate(user=self.admin_user)
+        res = self.client.get("/api/v1/timeline/")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        results = res.data if isinstance(res.data, list) else res.data.get("results", [])
+        slugs = [e.get("source_slug") for e in results]
+        self.assertIn("draft-future-role", slugs)
 
-    def test_authenticated_non_staff_data_masking_and_draft_isolation(self):
-        self.client.force_authenticate(user=self.non_staff_user)
+    def test_private_intelligence_masked_for_anonymous(self):
+        res = self.client.get("/api/v1/timeline/")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        results = res.data if isinstance(res.data, list) else res.data.get("results", [])
+        for item in results:
+            self.assertNotIn("internal_notes", item)
+            self.assertNotIn("target_roles", item)
 
-        list_res = self.client.get("/api/v1/timeline/")
-        self.assertEqual(list_res.status_code, status.HTTP_200_OK)
-        results = list_res.data.get("results", list_res.data)
-        slugs = [e["slug"] for e in results]
-        self.assertIn("sms-fulltime", slugs)
-        self.assertNotIn("draft-milestone", slugs)
+    def test_private_intelligence_visible_for_staff(self):
+        self.client.force_authenticate(user=self.admin_user)
+        res = self.client.get("/api/v1/timeline/")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        results = res.data if isinstance(res.data, list) else res.data.get("results", [])
+        exp_entry = next((e for e in results if e["source_slug"] == "software-engineer-sms"), None)
+        self.assertIsNotNone(exp_entry)
+        self.assertEqual(exp_entry.get("internal_notes"), "Full-time role notes.")
+        self.assertEqual(exp_entry.get("target_roles"), ["Backend Engineering"])
 
-        detail_res = self.client.get(f"/api/v1/timeline/{self.published_event.slug}/")
-        self.assertEqual(detail_res.status_code, status.HTTP_200_OK)
-        self.assertNotIn("internal_notes", detail_res.data)
-        self.assertNotIn("target_roles", detail_res.data)
-
-        draft_res = self.client.get(f"/api/v1/timeline/{self.draft_event.slug}/")
-        self.assertEqual(draft_res.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_staff_receives_unmasked_data_and_drafts(self):
+    def test_derived_entry_mutation_rejected(self):
         self.client.force_authenticate(user=self.admin_user)
 
-        list_res = self.client.get("/api/v1/timeline/")
-        self.assertEqual(list_res.status_code, status.HTTP_200_OK)
-        results = list_res.data.get("results", list_res.data)
-        slugs = [e["slug"] for e in results]
-        self.assertIn("sms-fulltime", slugs)
-        self.assertIn("draft-milestone", slugs)
+        # Attempt to patch a derived experience via timeline API
+        res_patch = self.client.patch(
+            "/api/v1/timeline/exp-software-engineer-sms/",
+            {"title": "Tampered Title"},
+            format="json",
+        )
+        self.assertEqual(res_patch.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("error", res_patch.data)
 
-        detail_res = self.client.get(f"/api/v1/timeline/{self.published_event.slug}/")
-        self.assertEqual(detail_res.status_code, status.HTTP_200_OK)
-        self.assertIn("internal_notes", detail_res.data)
-        self.assertEqual(detail_res.data["internal_notes"], "Full-time promotion.")
-        self.assertIn("target_roles", detail_res.data)
+        # Attempt to delete a derived certification via timeline API
+        res_del = self.client.delete("/api/v1/timeline/cert-aws-solutions-architect/")
+        self.assertEqual(res_del.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("error", res_del.data)
 
-    def test_staff_crud_lifecycle(self):
+    def test_manual_milestone_crud_lifecycle(self):
         self.client.force_authenticate(user=self.admin_user)
 
-        # 1. Create
-        create_payload = {
-            "title": "AWS Summit Tokyo 2026",
-            "subtitle": "Attendee & Architecture Workshop",
-            "description": "Participated in enterprise AWS infrastructure deep dive.",
-            "date": "May 2026",
-            "category": "Career",
+        # 1. Create Manual Milestone
+        payload = {
+            "title": "AWS Community Day Speaker",
+            "subtitle": "Tokyo, Japan",
+            "description": "Delivered keynote on serverless async queues.",
+            "date": "Dec 2026",
+            "category": "Milestone",
             "icon": "Award",
-            "link": "https://aws.amazon.com/events/summits/tokyo/",
-            "order": 7,
             "is_milestone": True,
             "is_published": True,
-            "target_roles": ["Cloud Architecture"],
-            "internal_notes": "Key contacts made in cloud networking.",
+            "target_roles": ["Public Speaking"],
+            "internal_notes": "Conference notes.",
         }
-        create_res = self.client.post("/api/v1/timeline/", create_payload, format="json")
-        self.assertEqual(create_res.status_code, status.HTTP_201_CREATED)
-        slug = create_res.data["slug"]
-        self.assertEqual(slug, "aws-summit-tokyo-2026")
+        res_post = self.client.post("/api/v1/timeline/", payload, format="json")
+        self.assertEqual(res_post.status_code, status.HTTP_201_CREATED)
+        slug = res_post.data["slug"]
+        self.assertEqual(slug, "aws-community-day-speaker")
 
-        # 2. Update (PATCH)
-        patch_res = self.client.patch(
+        # 2. Update Manual Milestone
+        res_patch = self.client.patch(
             f"/api/v1/timeline/{slug}/",
-            {"order": 6, "is_milestone": False},
+            {"description": "Updated keynote details."},
             format="json",
         )
-        self.assertEqual(patch_res.status_code, status.HTTP_200_OK)
-        self.assertEqual(patch_res.data["order"], 6)
-        self.assertFalse(patch_res.data["is_milestone"])
+        self.assertEqual(res_patch.status_code, status.HTTP_200_OK)
+        self.assertEqual(res_patch.data["description"], "Updated keynote details.")
 
-        # 3. Delete
-        del_res = self.client.delete(f"/api/v1/timeline/{slug}/")
-        self.assertEqual(del_res.status_code, status.HTTP_204_NO_CONTENT)
+        # 3. Delete Manual Milestone
+        res_del = self.client.delete(f"/api/v1/timeline/{slug}/")
+        self.assertEqual(res_del.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(TimelineEvent.objects.filter(slug=slug).exists())
 
-    def test_query_filtering(self):
-        self.client.force_authenticate(user=self.admin_user)
+    def test_canonical_update_propagates_immediately(self):
+        # 1. Verify initial title
+        res1 = self.client.get("/api/v1/timeline/")
+        exp1 = next((e for e in res1.data if e["source_slug"] == "software-engineer-sms"), None)
+        self.assertEqual(exp1["title"], "Backend & Cloud Engineer")
 
-        res_cat = self.client.get("/api/v1/timeline/?category=Career")
-        self.assertEqual(res_cat.status_code, status.HTTP_200_OK)
-        results = res_cat.data.get("results", res_cat.data)
-        for e in results:
-            self.assertEqual(e["category"], "Career")
+        # 2. Update canonical Experience model directly
+        self.exp.title = "Lead Backend & Cloud Architect"
+        self.exp.save()
 
-        res_mile = self.client.get("/api/v1/timeline/?milestone=true")
-        self.assertEqual(res_mile.status_code, status.HTTP_200_OK)
-        results = res_mile.data.get("results", res_mile.data)
-        for e in results:
-            self.assertTrue(e["is_milestone"])
+        # 3. Verify timeline projection immediately reflects updated title without secondary edits
+        res2 = self.client.get("/api/v1/timeline/")
+        exp2 = next((e for e in res2.data if e["source_slug"] == "software-engineer-sms"), None)
+        self.assertEqual(exp2["title"], "Lead Backend & Cloud Architect")
+
+        # 4. Update canonical Education degree
+        self.edu.degree = "B.Tech in Artificial Intelligence & Computer Science"
+        self.edu.save()
+
+        res3 = self.client.get("/api/v1/timeline/")
+        edu3 = next((e for e in res3.data if e["source_slug"] == "iiit-nagpur"), None)
+        self.assertEqual(edu3["title"], "B.Tech in Artificial Intelligence & Computer Science")
+
+        # 5. Update canonical Certification issue date
+        self.cert.issue_date = "2026-01-15"
+        self.cert.save()
+
+        res4 = self.client.get("/api/v1/timeline/")
+        cert4 = next((e for e in res4.data if e["source_slug"] == "aws-solutions-architect"), None)
+        self.assertEqual(cert4["date"], "Jan 2026")

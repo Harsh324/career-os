@@ -20,6 +20,8 @@ import {
   Server,
   LayoutGrid,
   List,
+  ArrowUpRight,
+  Sparkles,
 } from "lucide-react";
 import type { TimelineEvent } from "@/lib/api/types";
 import {
@@ -37,6 +39,7 @@ export default function TimelineDashboardPage() {
   // Search & Filter State
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedSourceType, setSelectedSourceType] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"stream" | "table">("stream");
 
   // Preview & Delete Modals
@@ -51,7 +54,7 @@ export default function TimelineDashboardPage() {
       const data = await getAdminTimelineEvents();
       setEvents(data);
     } catch (err: any) {
-      setError(err.message || "Failed to load timeline events.");
+      setError(err.message || "Failed to load timeline projection.");
     } finally {
       setIsLoading(false);
     }
@@ -75,6 +78,10 @@ export default function TimelineDashboardPage() {
         selectedCategory === "all" ||
         e.category?.toLowerCase() === selectedCategory.toLowerCase();
 
+      const matchesSource =
+        selectedSourceType === "all" ||
+        e.source_type?.toLowerCase() === selectedSourceType.toLowerCase();
+
       const q = searchQuery.toLowerCase();
       const matchesQuery =
         !q ||
@@ -83,13 +90,19 @@ export default function TimelineDashboardPage() {
         e.description?.toLowerCase().includes(q) ||
         e.date.toLowerCase().includes(q);
 
-      return matchesCat && matchesQuery;
+      return matchesCat && matchesSource && matchesQuery;
     });
 
-    return [...result].sort((a, b) => (a.order || 0) - (b.order || 0));
-  }, [events, selectedCategory, searchQuery]);
+    return [...result].sort((a, b) => {
+      const dateA = a.date_sort || "0000-00-00";
+      const dateB = b.date_sort || "0000-00-00";
+      if (dateA !== dateB) return dateB.localeCompare(dateA);
+      return (a.order || 0) - (b.order || 0);
+    });
+  }, [events, selectedCategory, selectedSourceType, searchQuery]);
 
   const handleTogglePublish = async (item: TimelineEvent) => {
+    if (item.source_type !== "manual_milestone") return;
     const nextState = !item.is_published;
     try {
       await updateAdminTimelineEvent(item.slug, { is_published: nextState });
@@ -102,6 +115,7 @@ export default function TimelineDashboardPage() {
   };
 
   const handleToggleMilestone = async (item: TimelineEvent) => {
+    if (item.source_type !== "manual_milestone") return;
     const nextState = !item.is_milestone;
     try {
       await updateAdminTimelineEvent(item.slug, { is_milestone: nextState });
@@ -115,15 +129,70 @@ export default function TimelineDashboardPage() {
 
   const handleDelete = async () => {
     if (!deletingItem) return;
+    if (deletingItem.source_type !== "manual_milestone") return;
     setIsDeleting(true);
     try {
       await deleteAdminTimelineEvent(deletingItem.slug);
       setEvents((prev) => prev.filter((e) => e.slug !== deletingItem.slug));
       setDeletingItem(null);
     } catch (err: any) {
-      alert(`Failed to delete timeline event: ${err.message}`);
+      alert(`Failed to delete milestone: ${err.message}`);
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const getAdminSourceUrl = (item: TimelineEvent): string => {
+    const slug = item.source_slug || item.slug;
+    switch (item.source_type) {
+      case "experience":
+        return `/dashboard/experience/${slug}`;
+      case "education":
+        return `/dashboard/education/${slug}`;
+      case "certification":
+        return `/dashboard/certifications/${slug}`;
+      case "project":
+        return `/dashboard/projects/${slug}`;
+      case "manual_milestone":
+      default:
+        return `/dashboard/timeline/${slug}`;
+    }
+  };
+
+  const getSourceBadge = (sourceType?: string) => {
+    switch (sourceType) {
+      case "experience":
+        return (
+          <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/20">
+            Experience
+          </span>
+        );
+      case "education":
+        return (
+          <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-700 dark:text-purple-400 border border-purple-500/20">
+            Education
+          </span>
+        );
+      case "certification":
+        return (
+          <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+            Certification
+          </span>
+        );
+      case "project":
+        return (
+          <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20">
+            Project
+          </span>
+        );
+      case "manual_milestone":
+        return (
+          <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+            Manual Milestone
+          </span>
+        );
+      default:
+        return null;
     }
   };
 
@@ -153,11 +222,11 @@ export default function TimelineDashboardPage() {
             <Milestone className="w-6 h-6 text-[#0969da] dark:text-[#58a6ff]" />
             <span>Career Timeline Management</span>
             <span className="text-xs font-mono font-medium px-2 py-0.5 rounded-full bg-[#0969da]/10 text-[#0969da] dark:text-[#58a6ff] border border-[#0969da]/30">
-              V2.5 Active
+              Aggregated Projection
             </span>
           </h1>
           <p className="text-xs text-[#57606a] dark:text-[#8b949e] mt-1">
-            Chronological career trajectory, promotions, milestones, and public narrative stream.
+            Dynamic timeline projected from Experience, Education, Certifications, and Manual Milestones.
           </p>
         </div>
 
@@ -176,7 +245,7 @@ export default function TimelineDashboardPage() {
             className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#0969da] hover:bg-[#0859b8] text-xs font-semibold text-white transition-all shadow-xs"
           >
             <Plus className="w-4 h-4" />
-            <span>New Timeline Event</span>
+            <span>Add Manual Milestone</span>
           </Link>
         </div>
       </div>
@@ -197,30 +266,34 @@ export default function TimelineDashboardPage() {
       {/* Telemetry Strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div className="p-4 rounded-xl bg-white dark:bg-[#161b22] border border-[#d0d7de] dark:border-[#30363d] shadow-2xs">
-          <div className="text-xs font-mono text-[#57606a] dark:text-[#8b949e]">TOTAL EVENTS</div>
+          <div className="text-xs font-mono text-[#57606a] dark:text-[#8b949e]">PROJECTED EVENTS</div>
           <div className="text-2xl font-bold text-[#24292f] dark:text-white font-mono mt-1">
             {isLoading ? "-" : events.length}
           </div>
         </div>
 
         <div className="p-4 rounded-xl bg-white dark:bg-[#161b22] border border-[#d0d7de] dark:border-[#30363d] shadow-2xs">
-          <div className="text-xs font-mono text-[#57606a] dark:text-[#8b949e]">KEY MILESTONES</div>
-          <div className="text-2xl font-bold text-[#0969da] dark:text-[#58a6ff] font-mono mt-1">
-            {isLoading ? "-" : events.filter((e) => e.is_milestone).length}
-          </div>
-        </div>
-
-        <div className="p-4 rounded-xl bg-white dark:bg-[#161b22] border border-[#d0d7de] dark:border-[#30363d] shadow-2xs">
           <div className="text-xs font-mono text-[#57606a] dark:text-[#8b949e]">CAREER ROLES</div>
-          <div className="text-2xl font-bold text-[#1a7f37] dark:text-[#3fb950] font-mono mt-1">
-            {isLoading ? "-" : events.filter((e) => e.category === "Career").length}
+          <div className="text-2xl font-bold text-[#0969da] dark:text-[#58a6ff] font-mono mt-1">
+            {isLoading ? "-" : events.filter((e) => e.source_type === "experience").length}
           </div>
         </div>
 
         <div className="p-4 rounded-xl bg-white dark:bg-[#161b22] border border-[#d0d7de] dark:border-[#30363d] shadow-2xs">
-          <div className="text-xs font-mono text-[#57606a] dark:text-[#8b949e]">PUBLISHED</div>
+          <div className="text-xs font-mono text-[#57606a] dark:text-[#8b949e]">CREDENTIALS & DEGREES</div>
+          <div className="text-2xl font-bold text-[#1a7f37] dark:text-[#3fb950] font-mono mt-1">
+            {isLoading
+              ? "-"
+              : events.filter(
+                  (e) => e.source_type === "certification" || e.source_type === "education"
+                ).length}
+          </div>
+        </div>
+
+        <div className="p-4 rounded-xl bg-white dark:bg-[#161b22] border border-[#d0d7de] dark:border-[#30363d] shadow-2xs">
+          <div className="text-xs font-mono text-[#57606a] dark:text-[#8b949e]">MANUAL MILESTONES</div>
           <div className="text-2xl font-bold text-[#8957e5] dark:text-[#a371f7] font-mono mt-1">
-            {isLoading ? "-" : events.filter((e) => e.is_published).length}
+            {isLoading ? "-" : events.filter((e) => e.source_type === "manual_milestone").length}
           </div>
         </div>
       </div>
@@ -238,7 +311,20 @@ export default function TimelineDashboardPage() {
           />
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Source Type Filter */}
+          <select
+            value={selectedSourceType}
+            onChange={(e) => setSelectedSourceType(e.target.value)}
+            className="px-3 py-1.5 rounded-lg bg-[#f6f8fa] dark:bg-[#0d1117] border border-[#d0d7de] dark:border-[#30363d] text-xs font-mono text-[#24292f] dark:text-[#f0f6fc] focus:outline-hidden"
+          >
+            <option value="all">All Sources</option>
+            <option value="experience">Experience</option>
+            <option value="education">Education</option>
+            <option value="certification">Certification</option>
+            <option value="manual_milestone">Manual Milestone</option>
+          </select>
+
           {categories.length > 0 && (
             <select
               value={selectedCategory}
@@ -254,13 +340,14 @@ export default function TimelineDashboardPage() {
             </select>
           )}
 
+          {/* View Mode Switcher */}
           <div className="flex items-center rounded-lg border border-[#d0d7de] dark:border-[#30363d] p-0.5 bg-[#f6f8fa] dark:bg-[#0d1117]">
             <button
               onClick={() => setViewMode("stream")}
-              className={`p-1.5 rounded-md transition-colors ${
+              className={`p-1.5 rounded-md transition-colors cursor-pointer ${
                 viewMode === "stream"
                   ? "bg-white dark:bg-[#21262d] text-[#0969da] dark:text-[#58a6ff] shadow-2xs"
-                  : "text-[#57606a] dark:text-[#8b949e]"
+                  : "text-[#57606a] dark:text-[#8b949e] hover:text-[#24292f] dark:hover:text-white"
               }`}
               title="Stream View"
             >
@@ -268,10 +355,10 @@ export default function TimelineDashboardPage() {
             </button>
             <button
               onClick={() => setViewMode("table")}
-              className={`p-1.5 rounded-md transition-colors ${
+              className={`p-1.5 rounded-md transition-colors cursor-pointer ${
                 viewMode === "table"
                   ? "bg-white dark:bg-[#21262d] text-[#0969da] dark:text-[#58a6ff] shadow-2xs"
-                  : "text-[#57606a] dark:text-[#8b949e]"
+                  : "text-[#57606a] dark:text-[#8b949e] hover:text-[#24292f] dark:hover:text-white"
               }`}
               title="Table View"
             >
@@ -289,114 +376,145 @@ export default function TimelineDashboardPage() {
             No timeline events found
           </div>
           <p className="text-xs text-[#57606a] dark:text-[#8b949e]">
-            {searchQuery || selectedCategory !== "all"
-              ? "Try adjusting your search query or category filter."
-              : "Add your first career milestone or event."}
+            {searchQuery || selectedCategory !== "all" || selectedSourceType !== "all"
+              ? "Try adjusting your search query or filter."
+              : "Add your first manual milestone or populate canonical Experience/Education records."}
           </p>
         </div>
       ) : viewMode === "stream" ? (
         <div className="relative border-l-2 border-[#d0d7de] dark:border-[#30363d] ml-4 sm:ml-6 pl-6 sm:pl-8 space-y-6">
-          {filteredEvents.map((item) => (
-            <div key={item.slug || item.id} className="relative group">
-              {/* Node Icon */}
-              <div className="absolute -left-[31px] sm:-left-[39px] top-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] text-[#0969da] dark:text-[#58a6ff] shadow-xs group-hover:border-[#0969da] dark:group-hover:border-[#58a6ff] transition-colors">
-                {getIcon(item.icon)}
-              </div>
-
-              <div
-                className={`rounded-2xl border bg-white dark:bg-[#161b22] p-5 space-y-3 shadow-xs transition-all hover:border-[#0969da]/50 dark:hover:border-[#58a6ff]/50 ${
-                  item.is_milestone
-                    ? "border-[#0969da]/40 dark:border-[#58a6ff]/40 bg-[#f6f8fa]/30 dark:bg-[#161b22]"
-                    : "border-[#d0d7de] dark:border-[#30363d]"
-                }`}
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-sm sm:text-base font-bold text-[#24292f] dark:text-[#f0f6fc] group-hover:text-[#0969da] dark:group-hover:text-[#58a6ff] transition-colors">
-                      {item.title}
-                    </h3>
-                    {item.is_milestone && (
-                      <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-[#0969da]/10 text-[#0969da] dark:text-[#58a6ff] border border-[#0969da]/30">
-                        Key Milestone
-                      </span>
-                    )}
-                    {item.category && (
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[#f6f8fa] dark:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] border border-[#d0d7de] dark:border-[#30363d]">
-                        {item.category}
-                      </span>
-                    )}
-                  </div>
-
-                  <span className="text-xs font-mono font-semibold text-[#0969da] dark:text-[#58a6ff] rounded-full bg-[#f6f8fa] dark:bg-[#21262d] px-2.5 py-0.5 border border-[#d0d7de] dark:border-[#30363d] self-start sm:self-auto">
-                    {item.date}
-                  </span>
+          {filteredEvents.map((item) => {
+            const isManual = item.source_type === "manual_milestone";
+            return (
+              <div key={item.id || item.slug} className="relative group">
+                {/* Node Icon */}
+                <div className="absolute -left-[31px] sm:-left-[39px] top-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#d0d7de] dark:border-[#30363d] bg-white dark:bg-[#161b22] text-[#0969da] dark:text-[#58a6ff] shadow-xs group-hover:border-[#0969da] dark:group-hover:border-[#58a6ff] transition-colors">
+                  {getIcon(item.icon)}
                 </div>
 
-                {item.subtitle && (
-                  <p className="text-xs font-mono font-semibold text-[#0969da] dark:text-[#58a6ff]">
-                    {item.subtitle}
-                  </p>
-                )}
+                <div
+                  className={`rounded-2xl border bg-white dark:bg-[#161b22] p-5 space-y-3 shadow-xs transition-all hover:border-[#0969da]/50 dark:hover:border-[#58a6ff]/50 ${
+                    item.is_milestone
+                      ? "border-[#0969da]/40 dark:border-[#58a6ff]/40 bg-[#f6f8fa]/30 dark:bg-[#161b22]"
+                      : "border-[#d0d7de] dark:border-[#30363d]"
+                  }`}
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="text-sm sm:text-base font-bold text-[#24292f] dark:text-[#f0f6fc] group-hover:text-[#0969da] dark:group-hover:text-[#58a6ff] transition-colors">
+                        {item.title}
+                      </h3>
+                      {item.is_milestone && (
+                        <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-[#0969da]/10 text-[#0969da] dark:text-[#58a6ff] border border-[#0969da]/30">
+                          Key Milestone
+                        </span>
+                      )}
+                      {item.category && (
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[#f6f8fa] dark:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] border border-[#d0d7de] dark:border-[#30363d]">
+                          {item.category}
+                        </span>
+                      )}
+                      {getSourceBadge(item.source_type)}
+                    </div>
 
-                {item.description && (
-                  <p className="text-xs text-[#57606a] dark:text-[#8b949e] leading-relaxed">
-                    {item.description}
-                  </p>
-                )}
-
-                {/* Actions Toolbar */}
-                <div className="flex items-center justify-between pt-3 border-t border-[#d0d7de]/60 dark:border-[#30363d]/60">
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => handleTogglePublish(item)}
-                      className={`text-[11px] font-mono px-2.5 py-0.5 rounded-full border cursor-pointer transition-colors ${
-                        item.is_published
-                          ? "bg-[#dafbe1] dark:bg-[#1f883d]/20 text-[#1a7f37] dark:text-[#3fb950] border-[#1a7f37]/30"
-                          : "bg-[#f6f8fa] dark:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] border-[#d0d7de] dark:border-[#30363d]"
-                      }`}
-                    >
-                      {item.is_published ? "Published" : "Draft"}
-                    </button>
-
-                    <button
-                      onClick={() => handleToggleMilestone(item)}
-                      className={`text-[11px] font-mono px-2.5 py-0.5 rounded-full border cursor-pointer transition-colors ${
-                        item.is_milestone
-                          ? "bg-[#0969da]/10 text-[#0969da] dark:text-[#58a6ff] border-[#0969da]/30"
-                          : "bg-[#f6f8fa] dark:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] border-[#d0d7de] dark:border-[#30363d]"
-                      }`}
-                    >
-                      {item.is_milestone ? "Key Milestone" : "Regular Event"}
-                    </button>
+                    <span className="text-xs font-mono font-semibold text-[#0969da] dark:text-[#58a6ff] rounded-full bg-[#f6f8fa] dark:bg-[#21262d] px-2.5 py-0.5 border border-[#d0d7de] dark:border-[#30363d] self-start sm:self-auto">
+                      {item.date}
+                    </span>
                   </div>
 
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      onClick={() => setPreviewItem(item)}
-                      className="p-1.5 rounded-md hover:bg-[#f6f8fa] dark:hover:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] hover:text-[#0969da] dark:hover:text-[#58a6ff] cursor-pointer"
-                      title="Live Preview"
-                    >
-                      <Eye className="w-4 h-4" />
-                    </button>
-                    <Link
-                      href={`/dashboard/timeline/${item.slug}`}
-                      className="p-1.5 rounded-md hover:bg-[#f6f8fa] dark:hover:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] hover:text-[#0969da] dark:hover:text-[#58a6ff]"
-                      title="Edit Record"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </Link>
-                    <button
-                      onClick={() => setDeletingItem(item)}
-                      className="p-1.5 rounded-md hover:bg-[#ffebe9] dark:hover:bg-red-950/40 text-[#cf222e] dark:text-red-400 cursor-pointer"
-                      title="Delete Record"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                  {item.subtitle && (
+                    <p className="text-xs font-mono font-semibold text-[#0969da] dark:text-[#58a6ff]">
+                      {item.subtitle}
+                    </p>
+                  )}
+
+                  {item.description && (
+                    <p className="text-xs text-[#57606a] dark:text-[#8b949e] leading-relaxed">
+                      {item.description}
+                    </p>
+                  )}
+
+                  {/* Actions Toolbar */}
+                  <div className="flex items-center justify-between pt-3 border-t border-[#d0d7de]/60 dark:border-[#30363d]/60">
+                    <div className="flex items-center gap-3">
+                      {isManual ? (
+                        <>
+                          <button
+                            onClick={() => handleTogglePublish(item)}
+                            className={`text-[11px] font-mono px-2.5 py-0.5 rounded-full border cursor-pointer transition-colors ${
+                              item.is_published
+                                ? "bg-[#dafbe1] dark:bg-[#1f883d]/20 text-[#1a7f37] dark:text-[#3fb950] border-[#1a7f37]/30"
+                                : "bg-[#f6f8fa] dark:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] border-[#d0d7de] dark:border-[#30363d]"
+                            }`}
+                          >
+                            {item.is_published ? "Published" : "Draft"}
+                          </button>
+
+                          <button
+                            onClick={() => handleToggleMilestone(item)}
+                            className={`text-[11px] font-mono px-2.5 py-0.5 rounded-full border cursor-pointer transition-colors ${
+                              item.is_milestone
+                                ? "bg-[#0969da]/10 text-[#0969da] dark:text-[#58a6ff] border-[#0969da]/30"
+                                : "bg-[#f6f8fa] dark:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] border-[#d0d7de] dark:border-[#30363d]"
+                            }`}
+                          >
+                            {item.is_milestone ? "Key Milestone" : "Regular Event"}
+                          </button>
+                        </>
+                      ) : (
+                        <span className="text-[11px] font-mono text-[#57606a] dark:text-[#8b949e] flex items-center gap-1">
+                          <span>Canonical source:</span>
+                          <span className="capitalize font-semibold text-[#24292f] dark:text-[#f0f6fc]">
+                            {item.source_type}
+                          </span>
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setPreviewItem(item)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono bg-[#f6f8fa] dark:bg-[#21262d] hover:bg-[#eaeef2] dark:hover:bg-[#30363d] text-[#57606a] dark:text-[#8b949e] hover:text-[#0969da] dark:hover:text-[#58a6ff] border border-[#d0d7de] dark:border-[#30363d] cursor-pointer"
+                        title="Live Preview"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Preview</span>
+                      </button>
+
+                      {isManual ? (
+                        <>
+                          <Link
+                            href={`/dashboard/timeline/${item.slug}`}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono bg-white dark:bg-[#161b22] hover:bg-[#f6f8fa] dark:hover:bg-[#21262d] text-[#0969da] dark:text-[#58a6ff] border border-[#0969da]/30 hover:border-[#0969da]"
+                            title="Edit Milestone"
+                          >
+                            <Edit className="w-3.5 h-3.5" />
+                            <span>Edit</span>
+                          </Link>
+                          <button
+                            onClick={() => setDeletingItem(item)}
+                            className="p-1.5 rounded-md hover:bg-[#ffebe9] dark:hover:bg-red-950/40 text-[#cf222e] dark:text-red-400 cursor-pointer"
+                            title="Delete Milestone"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </>
+                      ) : (
+                        <Link
+                          href={getAdminSourceUrl(item)}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono bg-[#0969da]/10 hover:bg-[#0969da]/20 text-[#0969da] dark:text-[#58a6ff] border border-[#0969da]/30 transition-colors"
+                          title="Open canonical source record in control plane"
+                        >
+                          <span>Open Source</span>
+                          <ArrowUpRight className="w-3.5 h-3.5" />
+                        </Link>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         /* Table View */
@@ -404,7 +522,7 @@ export default function TimelineDashboardPage() {
           <table className="w-full text-left text-xs">
             <thead className="bg-[#f6f8fa] dark:bg-[#21262d] border-b border-[#d0d7de] dark:border-[#30363d] font-mono text-[#57606a] dark:text-[#8b949e]">
               <tr>
-                <th className="p-3">Order</th>
+                <th className="p-3">Source</th>
                 <th className="p-3">Title</th>
                 <th className="p-3">Category</th>
                 <th className="p-3">Date</th>
@@ -414,110 +532,127 @@ export default function TimelineDashboardPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#d0d7de]/60 dark:divide-[#30363d]/60">
-              {filteredEvents.map((item) => (
-                <tr key={item.slug || item.id} className="hover:bg-[#f6f8fa]/50 dark:hover:bg-[#21262d]/50">
-                  <td className="p-3 font-mono text-center w-12 text-[#57606a]">{item.order}</td>
-                  <td className="p-3">
-                    <div className="font-bold text-[#24292f] dark:text-[#f0f6fc]">{item.title}</div>
-                    {item.subtitle && (
-                      <div className="font-mono text-[11px] text-[#0969da] dark:text-[#58a6ff]">
-                        {item.subtitle}
-                      </div>
-                    )}
-                  </td>
-                  <td className="p-3">
-                    <span className="px-2 py-0.5 rounded-md bg-[#f6f8fa] dark:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] border border-[#d0d7de] dark:border-[#30363d] font-mono text-[11px]">
-                      {item.category}
-                    </span>
-                  </td>
-                  <td className="p-3 font-mono text-[11px] text-[#57606a] dark:text-[#8b949e]">
-                    {item.date}
-                  </td>
-                  <td className="p-3">
-                    {item.is_milestone ? (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-[#0969da]/10 text-[#0969da] dark:text-[#58a6ff] border border-[#0969da]/30">
-                        Key
+              {filteredEvents.map((item) => {
+                const isManual = item.source_type === "manual_milestone";
+                return (
+                  <tr key={item.id || item.slug} className="hover:bg-[#f6f8fa]/50 dark:hover:bg-[#21262d]/50">
+                    <td className="p-3 font-mono text-center w-28">
+                      {getSourceBadge(item.source_type)}
+                    </td>
+                    <td className="p-3">
+                      <div className="font-bold text-[#24292f] dark:text-[#f0f6fc]">{item.title}</div>
+                      {item.subtitle && (
+                        <div className="font-mono text-[11px] text-[#0969da] dark:text-[#58a6ff]">
+                          {item.subtitle}
+                        </div>
+                      )}
+                    </td>
+                    <td className="p-3">
+                      <span className="px-2 py-0.5 rounded-md bg-[#f6f8fa] dark:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] border border-[#d0d7de] dark:border-[#30363d] font-mono text-[11px]">
+                        {item.category}
                       </span>
-                    ) : (
-                      <span className="text-[10px] font-mono text-[#57606a]">Regular</span>
-                    )}
-                  </td>
-                  <td className="p-3">
-                    <button
-                      onClick={() => handleTogglePublish(item)}
-                      className={`text-[10px] font-mono px-2 py-0.5 rounded-full border cursor-pointer ${
-                        item.is_published
-                          ? "bg-[#dafbe1] dark:bg-[#1f883d]/20 text-[#1a7f37] dark:text-[#3fb950] border-[#1a7f37]/30"
-                          : "bg-[#f6f8fa] dark:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] border-[#d0d7de] dark:border-[#30363d]"
-                      }`}
-                    >
-                      {item.is_published ? "Published" : "Draft"}
-                    </button>
-                  </td>
-                  <td className="p-3 text-right">
-                    <div className="flex items-center justify-end gap-1.5">
-                      <button
-                        onClick={() => setPreviewItem(item)}
-                        className="p-1 rounded hover:bg-[#f6f8fa] dark:hover:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] hover:text-[#0969da] cursor-pointer"
-                        title="Preview"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                      </button>
-                      <Link
-                        href={`/dashboard/timeline/${item.slug}`}
-                        className="p-1 rounded hover:bg-[#f6f8fa] dark:hover:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] hover:text-[#0969da]"
-                        title="Edit"
-                      >
-                        <Edit className="w-3.5 h-3.5" />
-                      </Link>
-                      <button
-                        onClick={() => setDeletingItem(item)}
-                        className="p-1 rounded hover:bg-[#ffebe9] dark:hover:bg-red-950/40 text-[#cf222e] dark:text-red-400 cursor-pointer"
-                        title="Delete"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="p-3 font-mono text-[11px] text-[#57606a] dark:text-[#8b949e]">
+                      {item.date}
+                    </td>
+                    <td className="p-3">
+                      {item.is_milestone ? (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-[#0969da]/10 text-[#0969da] dark:text-[#58a6ff] border border-[#0969da]/30">
+                          Key
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-mono text-[#57606a]">Regular</span>
+                      )}
+                    </td>
+                    <td className="p-3">
+                      {isManual ? (
+                        <button
+                          onClick={() => handleTogglePublish(item)}
+                          className={`text-[10px] font-mono px-2 py-0.5 rounded-full border cursor-pointer ${
+                            item.is_published
+                              ? "bg-[#dafbe1] dark:bg-[#1f883d]/20 text-[#1a7f37] dark:text-[#3fb950] border-[#1a7f37]/30"
+                              : "bg-[#f6f8fa] dark:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] border-[#d0d7de] dark:border-[#30363d]"
+                          }`}
+                        >
+                          {item.is_published ? "Published" : "Draft"}
+                        </button>
+                      ) : (
+                        <span className="text-[10px] font-mono text-[#57606a] dark:text-[#8b949e]">
+                          {item.is_published ? "Published" : "Draft"}
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-3 text-right">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          onClick={() => setPreviewItem(item)}
+                          className="p-1 rounded-md hover:bg-[#f6f8fa] dark:hover:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] hover:text-[#0969da] dark:hover:text-[#58a6ff] cursor-pointer"
+                          title="Live Preview"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                        </button>
+
+                        {isManual ? (
+                          <>
+                            <Link
+                              href={`/dashboard/timeline/${item.slug}`}
+                              className="p-1 rounded-md hover:bg-[#f6f8fa] dark:hover:bg-[#21262d] text-[#57606a] dark:text-[#8b949e] hover:text-[#0969da] dark:hover:text-[#58a6ff]"
+                              title="Edit Milestone"
+                            >
+                              <Edit className="w-3.5 h-3.5" />
+                            </Link>
+                            <button
+                              onClick={() => setDeletingItem(item)}
+                              className="p-1 rounded-md hover:bg-[#ffebe9] dark:hover:bg-red-950/40 text-[#cf222e] dark:text-red-400 cursor-pointer"
+                              title="Delete Milestone"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </>
+                        ) : (
+                          <Link
+                            href={getAdminSourceUrl(item)}
+                            className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded text-[11px] font-mono text-[#0969da] dark:text-[#58a6ff] hover:underline"
+                            title="Open canonical source record"
+                          >
+                            <span>Open</span>
+                            <ArrowUpRight className="w-3 h-3" />
+                          </Link>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       )}
 
-      {/* Live Preview Modal */}
-      {previewItem && (
-        <TimelinePreviewModal
-          timelineItem={previewItem}
-          allTimeline={events}
-          isOpen={true}
-          onClose={() => setPreviewItem(null)}
-          isDirty={false}
-        />
-      )}
-
       {/* Delete Confirmation Modal */}
       {deletingItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="w-full max-w-md rounded-2xl bg-white dark:bg-[#161b22] border border-[#d0d7de] dark:border-[#30363d] p-6 space-y-4 shadow-xl">
-            <div className="flex items-center gap-3 text-[#cf222e] dark:text-red-400">
-              <AlertTriangle className="w-6 h-6 shrink-0" />
-              <h3 className="text-base font-bold text-[#24292f] dark:text-white">
-                Delete Timeline Event?
-              </h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="w-full max-w-md rounded-2xl bg-white dark:bg-[#161b22] border border-[#d0d7de] dark:border-[#30363d] p-6 shadow-2xl space-y-4">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-xl bg-[#ffebe9] dark:bg-red-950/40 text-[#cf222e] dark:text-red-400 shrink-0">
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-[#24292f] dark:text-[#f0f6fc]">
+                  Delete Manual Milestone?
+                </h3>
+                <p className="text-xs text-[#57606a] dark:text-[#8b949e] mt-1">
+                  Are you sure you want to delete <span className="font-semibold text-[#24292f] dark:text-white font-mono">&quot;{deletingItem.title}&quot;</span>? This action cannot be undone.
+                </p>
+              </div>
             </div>
-            <p className="text-xs text-[#57606a] dark:text-[#8b949e] leading-relaxed">
-              Are you sure you want to permanently delete{" "}
-              <strong className="text-[#24292f] dark:text-white">{deletingItem.title}</strong>? This action
-              cannot be undone.
-            </p>
+
             <div className="flex items-center justify-end gap-2.5 pt-2">
               <button
                 type="button"
                 onClick={() => setDeletingItem(null)}
                 disabled={isDeleting}
-                className="px-3.5 py-1.5 rounded-lg bg-[#f6f8fa] dark:bg-[#21262d] border border-[#d0d7de] dark:border-[#30363d] text-xs font-semibold text-[#24292f] dark:text-[#c9d1d9] cursor-pointer"
+                className="px-3.5 py-1.5 rounded-lg border border-[#d0d7de] dark:border-[#30363d] text-xs font-medium text-[#57606a] dark:text-[#8b949e] hover:bg-[#f6f8fa] dark:hover:bg-[#21262d] transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -525,13 +660,23 @@ export default function TimelineDashboardPage() {
                 type="button"
                 onClick={handleDelete}
                 disabled={isDeleting}
-                className="px-4 py-1.5 rounded-lg bg-[#cf222e] hover:bg-red-700 text-xs font-semibold text-white cursor-pointer disabled:opacity-50"
+                className="px-3.5 py-1.5 rounded-lg bg-[#cf222e] hover:bg-[#a40e26] text-xs font-semibold text-white transition-colors cursor-pointer shadow-xs disabled:opacity-50"
               >
-                {isDeleting ? "Deleting..." : "Delete Permanently"}
+                {isDeleting ? "Deleting..." : "Confirm Delete"}
               </button>
             </div>
           </div>
         </div>
+      )}
+
+      {/* Live Preview Modal */}
+      {previewItem && (
+        <TimelinePreviewModal
+          isOpen={!!previewItem}
+          onClose={() => setPreviewItem(null)}
+          timelineItem={previewItem}
+          allTimeline={events}
+        />
       )}
     </div>
   );

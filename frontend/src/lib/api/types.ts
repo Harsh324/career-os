@@ -205,13 +205,24 @@ export interface BlogPost {
   related_experiences_detail?: Experience[];
 }
 
+export type TimelineSourceType =
+  | "experience"
+  | "education"
+  | "certification"
+  | "project"
+  | "manual_milestone";
+
 export interface TimelineEvent {
-  id?: number;
+  id?: string | number;
   title: string;
   slug: string;
+  source_type?: TimelineSourceType;
+  source_id?: number | null;
+  source_slug?: string;
   subtitle?: string;
   description?: string;
   date: string;
+  date_sort?: string;
   category: string;
   icon: string;
   link?: string;
@@ -223,6 +234,8 @@ export interface TimelineEvent {
   created_at?: string;
   updated_at?: string;
 }
+
+export type TimelineEntry = TimelineEvent;
 
 export interface Education {
   id?: number;

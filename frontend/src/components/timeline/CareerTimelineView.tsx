@@ -46,6 +46,43 @@ export function CareerTimelineView({
     return [...items].sort((a, b) => (a.order || 0) - (b.order || 0));
   }, [timeline, selectedCategory, isDraftPreview]);
 
+  const getSourceBadge = (sourceType?: string) => {
+    switch (sourceType) {
+      case "experience":
+        return (
+          <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/20">
+            Experience
+          </span>
+        );
+      case "education":
+        return (
+          <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-700 dark:text-purple-400 border border-purple-500/20">
+            Education
+          </span>
+        );
+      case "certification":
+        return (
+          <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+            Certification
+          </span>
+        );
+      case "project":
+        return (
+          <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20">
+            Project
+          </span>
+        );
+      case "manual_milestone":
+        return (
+          <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+            Manual Milestone
+          </span>
+        );
+      default:
+        return null;
+    }
+  };
+
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case "GraduationCap":
@@ -155,6 +192,7 @@ export function CareerTimelineView({
                           {item.category}
                         </span>
                       )}
+                      {getSourceBadge(item.source_type)}
                     </div>
                     <span className="text-[11px] font-mono font-semibold text-[#0969da] dark:text-[#58a6ff] rounded-full bg-[#f6f8fa] dark:bg-[#21262d] px-2.5 py-0.5 border border-[#d0d7de] dark:border-[#30363d] self-start sm:self-auto shrink-0">
                       {item.date}
