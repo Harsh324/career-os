@@ -40,7 +40,7 @@ const NAV_ITEMS: NavItem[] = [
   { name: "Certifications", href: "/dashboard/certifications", icon: Award, badge: "V2.5", disabled: false },
   { name: "Education", href: "/dashboard/education", icon: GraduationCap, badge: "V2.5", disabled: false },
   { name: "Career Timeline", href: "/dashboard/timeline", icon: Milestone, badge: "V2.5", disabled: false },
-  { name: "Media Assets", href: "/dashboard/media", icon: ImageIcon, badge: "V2.6", disabled: true },
+  { name: "Media Assets", href: "/dashboard/media", icon: ImageIcon, badge: "V2.6", disabled: false },
 ];
 
 function DashboardShellContent({ children }: { children: React.ReactNode }) {

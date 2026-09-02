@@ -42,6 +42,7 @@ class DashboardOverviewStatsView(APIView):
         from apps.certifications.models import Certification
         from apps.education.models import Education
         from apps.experiences.models import Experience
+        from apps.media_assets.models import MediaAsset
         from apps.projects.models import Project
         from apps.site_settings.models import SiteSettings
         from apps.skills.models import Skill
@@ -66,6 +67,7 @@ class DashboardOverviewStatsView(APIView):
                 "certifications": Certification.objects.count(),
                 "education": Education.objects.count(),
                 "timeline_events": TimelineEvent.objects.count(),
+                "media_assets": MediaAsset.objects.count(),
             },
             "site_settings": {
                 "name": settings_obj.name if settings_obj else "Harsh Tripathi",
