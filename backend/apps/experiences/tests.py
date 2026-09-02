@@ -65,15 +65,22 @@ class ExperienceAPITests(TestCase):
             username="admin", email="admin@career-os.dev", password="adminpassword123"
         )
         self.non_staff_user = User.objects.create_user(
-            username="visitor", email="visitor@example.com", password="visitorpassword123", is_staff=False
+            username="visitor",
+            email="visitor@example.com",
+            password="visitorpassword123",
+            is_staff=False,
         )
         self.company = Company.objects.create(
             name="SMS DataTech",
             slug="sms-datatech",
             description="Leading cloud and backend engineering solutions.",
         )
-        self.tech_python = Technology.objects.create(name="Python", slug="python", category="Languages")
-        self.tech_django = Technology.objects.create(name="Django", slug="django", category="Backend")
+        self.tech_python = Technology.objects.create(
+            name="Python", slug="python", category="Languages"
+        )
+        self.tech_django = Technology.objects.create(
+            name="Django", slug="django", category="Backend"
+        )
 
         self.published_exp = Experience.objects.create(
             title="Software Engineer (Backend and Cloud)",
@@ -148,7 +155,9 @@ class ExperienceAPITests(TestCase):
 
         # Non-staff PATCH -> 403 Forbidden
         res_patch = self.client.patch(
-            f"/api/v1/experience/{self.published_exp.slug}/", {"title": "Hacked Title"}, format="json"
+            f"/api/v1/experience/{self.published_exp.slug}/",
+            {"title": "Hacked Title"},
+            format="json",
         )
         self.assertEqual(res_patch.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -211,8 +220,13 @@ class ExperienceAPITests(TestCase):
         # Verify admin detail view includes private fields
         detail_res = self.client.get(f"/api/v1/experience/{self.published_exp.slug}/")
         self.assertEqual(detail_res.status_code, status.HTTP_200_OK)
-        self.assertEqual(detail_res.data["internal_notes"], "Private interview stories and architectural trade-offs.")
-        self.assertEqual(detail_res.data["target_roles"], ["Backend Engineering", "Cloud Architecture"])
+        self.assertEqual(
+            detail_res.data["internal_notes"],
+            "Private interview stories and architectural trade-offs.",
+        )
+        self.assertEqual(
+            detail_res.data["target_roles"], ["Backend Engineering", "Cloud Architecture"]
+        )
         self.assertEqual(len(detail_res.data["highlights"]), 2)
 
     def test_unauthenticated_write_operations_rejected(self):
@@ -225,7 +239,9 @@ class ExperienceAPITests(TestCase):
         self.assertEqual(res_post.status_code, status.HTTP_401_UNAUTHORIZED)
 
         res_patch = self.client.patch(
-            f"/api/v1/experience/{self.published_exp.slug}/", {"title": "Updated Title"}, format="json"
+            f"/api/v1/experience/{self.published_exp.slug}/",
+            {"title": "Updated Title"},
+            format="json",
         )
         self.assertEqual(res_patch.status_code, status.HTTP_401_UNAUTHORIZED)
 
@@ -257,7 +273,13 @@ class ExperienceAPITests(TestCase):
                 }
             ],
             "metrics": [{"label": "Uptime", "value": "99.99%"}],
-            "challenges": [{"problem": "Manual deployment", "solution": "IaC automation", "impact": "Zero downtime"}],
+            "challenges": [
+                {
+                    "problem": "Manual deployment",
+                    "solution": "IaC automation",
+                    "impact": "Zero downtime",
+                }
+            ],
             "technologies": [self.tech_python.id],
             "target_roles": ["Cloud Architecture"],
             "internal_notes": "Key project for 2025 performance review.",
@@ -274,7 +296,9 @@ class ExperienceAPITests(TestCase):
             format="json",
         )
         self.assertEqual(patch_res.status_code, status.HTTP_200_OK)
-        self.assertEqual(patch_res.data["summary"], "Updated summary for cloud platform engineer role.")
+        self.assertEqual(
+            patch_res.data["summary"], "Updated summary for cloud platform engineer role."
+        )
 
         # 3. Delete Experience
         delete_res = self.client.delete(f"/api/v1/experience/{new_slug}/")

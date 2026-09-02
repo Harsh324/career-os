@@ -1,5 +1,15 @@
 import { getBaseURL } from "./client";
-import type { Experience, Company, Technology, Project, SiteSettings, Skill } from "./types";
+import type {
+  Experience,
+  Company,
+  Technology,
+  Project,
+  SiteSettings,
+  Skill,
+  Certification,
+  Education,
+  TimelineEvent,
+} from "./types";
 
 export interface AdminUser {
   id: number;
@@ -355,3 +365,149 @@ export async function deleteAdminSkill(slug: string): Promise<void> {
     method: "DELETE",
   });
 }
+
+/**
+ * Fetch all certifications for admin list
+ */
+export async function getAdminCertifications(): Promise<Certification[]> {
+  const data = await adminFetch<any>("/certifications/");
+  return Array.isArray(data) ? data : data.results || [];
+}
+
+/**
+ * Fetch single certification by slug for admin editor
+ */
+export async function getAdminCertificationBySlug(slug: string): Promise<Certification> {
+  return adminFetch<Certification>(`/certifications/${slug}/`);
+}
+
+/**
+ * Create a new certification record
+ */
+export async function createAdminCertification(
+  data: Partial<Certification>
+): Promise<Certification> {
+  return adminFetch<Certification>("/certifications/", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Update an existing certification
+ */
+export async function updateAdminCertification(
+  slug: string,
+  data: Partial<Certification>
+): Promise<Certification> {
+  return adminFetch<Certification>(`/certifications/${slug}/`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Delete a certification record
+ */
+export async function deleteAdminCertification(slug: string): Promise<void> {
+  return adminFetch<void>(`/certifications/${slug}/`, {
+    method: "DELETE",
+  });
+}
+
+/**
+ * Fetch all education records for admin list
+ */
+export async function getAdminEducation(): Promise<Education[]> {
+  const data = await adminFetch<any>("/education/");
+  return Array.isArray(data) ? data : data.results || [];
+}
+
+/**
+ * Fetch single education record by slug for admin editor
+ */
+export async function getAdminEducationBySlug(slug: string): Promise<Education> {
+  return adminFetch<Education>(`/education/${slug}/`);
+}
+
+/**
+ * Create a new education record
+ */
+export async function createAdminEducation(data: Partial<Education>): Promise<Education> {
+  return adminFetch<Education>("/education/", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Update an existing education record
+ */
+export async function updateAdminEducation(
+  slug: string,
+  data: Partial<Education>
+): Promise<Education> {
+  return adminFetch<Education>(`/education/${slug}/`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Delete an education record
+ */
+export async function deleteAdminEducation(slug: string): Promise<void> {
+  return adminFetch<void>(`/education/${slug}/`, {
+    method: "DELETE",
+  });
+}
+
+/**
+ * Fetch all timeline events for admin list
+ */
+export async function getAdminTimelineEvents(): Promise<TimelineEvent[]> {
+  const data = await adminFetch<any>("/timeline/");
+  return Array.isArray(data) ? data : data.results || [];
+}
+
+/**
+ * Fetch single timeline event by slug for admin editor
+ */
+export async function getAdminTimelineEventBySlug(slug: string): Promise<TimelineEvent> {
+  return adminFetch<TimelineEvent>(`/timeline/${slug}/`);
+}
+
+/**
+ * Create a new timeline event
+ */
+export async function createAdminTimelineEvent(
+  data: Partial<TimelineEvent>
+): Promise<TimelineEvent> {
+  return adminFetch<TimelineEvent>("/timeline/", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Update an existing timeline event
+ */
+export async function updateAdminTimelineEvent(
+  slug: string,
+  data: Partial<TimelineEvent>
+): Promise<TimelineEvent> {
+  return adminFetch<TimelineEvent>(`/timeline/${slug}/`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Delete a timeline event
+ */
+export async function deleteAdminTimelineEvent(slug: string): Promise<void> {
+  return adminFetch<void>(`/timeline/${slug}/`, {
+    method: "DELETE",
+  });
+}
+

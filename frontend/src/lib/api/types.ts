@@ -205,22 +205,40 @@ export interface BlogPost {
   related_experiences_detail?: Experience[];
 }
 
+export type TimelineSourceType =
+  | "experience"
+  | "education"
+  | "certification"
+  | "project"
+  | "manual_milestone";
+
 export interface TimelineEvent {
-  id: number;
+  id?: string | number;
   title: string;
   slug: string;
+  source_type?: TimelineSourceType;
+  source_id?: number | null;
+  source_slug?: string;
   subtitle?: string;
   description?: string;
   date: string;
+  date_sort?: string;
   category: string;
   icon: string;
   link?: string;
-  order: number;
+  order?: number;
   is_milestone?: boolean;
+  is_published?: boolean;
+  target_roles?: string[];
+  internal_notes?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
+export type TimelineEntry = TimelineEvent;
+
 export interface Education {
-  id: number;
+  id?: number;
   institution: string;
   degree: string;
   field_of_study?: string;
@@ -228,21 +246,50 @@ export interface Education {
   location?: string;
   start_date: string;
   end_date: string;
+  currently_studying?: boolean;
   grade?: string;
+  description?: string;
   achievements?: string[];
   relevant_courses?: string[];
+  is_published?: boolean;
+  is_featured?: boolean;
+  order?: number;
+  target_roles?: string[];
+  internal_notes?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Certification {
-  id: number;
+  id?: number;
   name: string;
   slug: string;
   issuer: string;
+  credential_id?: string;
   credential_url?: string;
   issue_date: string;
   expiry_date?: string;
+  does_not_expire?: boolean;
+  verification_status?: "verified" | "in_progress" | "expired" | string;
+  category?: string;
+  is_published?: boolean;
+  is_featured?: boolean;
+  order?: number;
+  description?: string;
   badge?: string;
+  badge_file?: string;
+  related_skills?: number[];
   related_skills_detail?: Skill[];
+  related_technologies?: number[];
+  related_technologies_detail?: Technology[];
+  related_experiences?: number[];
+  related_experiences_detail?: SkillRelatedExperience[];
+  related_projects?: number[];
+  related_projects_detail?: SkillRelatedProject[];
+  target_roles?: string[];
+  internal_notes?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface SiteSettings {

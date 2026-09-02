@@ -27,7 +27,9 @@ class Skill(models.Model):
 
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
-    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default="Backend Engineering")
+    category = models.CharField(
+        max_length=100, choices=CATEGORY_CHOICES, default="Backend Engineering"
+    )
     proficiency = models.CharField(max_length=50, choices=PROFICIENCY_CHOICES, default="advanced")
     years = models.DecimalField(max_digits=4, decimal_places=1, default=1.0)
     experience_level = models.CharField(max_length=50, default="Advanced", blank=True)
@@ -41,7 +43,9 @@ class Skill(models.Model):
 
     # Relational Evidence Graph
     technologies = models.ManyToManyField(Technology, related_name="skills", blank=True)
-    related_experiences = models.ManyToManyField(Experience, related_name="related_skills", blank=True)
+    related_experiences = models.ManyToManyField(
+        Experience, related_name="related_skills", blank=True
+    )
     related_projects = models.ManyToManyField(Project, related_name="related_skills", blank=True)
 
     # Private Career Intelligence

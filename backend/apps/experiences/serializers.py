@@ -10,9 +10,7 @@ from apps.technologies.serializers import TechnologySerializer
 
 
 class ExperienceSerializer(serializers.ModelSerializer):
-    company = serializers.PrimaryKeyRelatedField(
-        queryset=Company.objects.all(), required=True
-    )
+    company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all(), required=True)
     technologies = serializers.PrimaryKeyRelatedField(
         queryset=Technology.objects.all(), many=True, required=False
     )
@@ -34,10 +32,7 @@ class ExperienceSerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         request = self.context.get("request")
         is_admin = bool(
-            request
-            and request.user
-            and request.user.is_authenticated
-            and request.user.is_staff
+            request and request.user and request.user.is_authenticated and request.user.is_staff
         )
 
         if not is_admin:

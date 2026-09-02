@@ -20,15 +20,9 @@ class ProjectModelTests(TestCase):
         self.assertEqual(project.slug, "auto-slug-project")
 
     def test_project_ordering(self):
-        p1 = Project.objects.create(
-            title="P1", summary="s1", order=2, featured=False
-        )
-        p2 = Project.objects.create(
-            title="P2", summary="s2", order=1, featured=True
-        )
-        p3 = Project.objects.create(
-            title="P3", summary="s3", order=1, featured=False
-        )
+        p1 = Project.objects.create(title="P1", summary="s1", order=2, featured=False)
+        p2 = Project.objects.create(title="P2", summary="s2", order=1, featured=True)
+        p3 = Project.objects.create(title="P3", summary="s3", order=1, featured=False)
         projects = list(Project.objects.filter(id__in=[p1.id, p2.id, p3.id]))
         self.assertEqual(projects[0].id, p2.id)
         self.assertEqual(projects[1].id, p3.id)
@@ -42,10 +36,17 @@ class ProjectAPITests(TestCase):
             username="admin", email="admin@career-os.dev", password="adminpassword123"
         )
         self.non_staff_user = User.objects.create_user(
-            username="visitor", email="visitor@example.com", password="visitorpassword123", is_staff=False
+            username="visitor",
+            email="visitor@example.com",
+            password="visitorpassword123",
+            is_staff=False,
         )
-        self.tech_docker = Technology.objects.create(name="Docker", slug="docker", category="DevOps")
-        self.tech_python = Technology.objects.create(name="Python", slug="python", category="Languages")
+        self.tech_docker = Technology.objects.create(
+            name="Docker", slug="docker", category="DevOps"
+        )
+        self.tech_python = Technology.objects.create(
+            name="Python", slug="python", category="Languages"
+        )
 
         self.published_project = Project.objects.create(
             title="Published Public Project",
@@ -63,12 +64,8 @@ class ProjectAPITests(TestCase):
             technical_outcome="Zero attack surface.",
             repository="https://github.com/example/repo",
             demo="https://demo.example.com",
-            architecture_flow=[
-                {"step": 1, "title": "Ingress", "detail": "Cloudflare Tunnel"}
-            ],
-            key_features=[
-                {"title": "Feature 1", "desc": "Description 1"}
-            ],
+            architecture_flow=[{"step": 1, "title": "Ingress", "detail": "Cloudflare Tunnel"}],
+            key_features=[{"title": "Feature 1", "desc": "Description 1"}],
             highlights=[
                 {
                     "id": "ach-1",
@@ -185,9 +182,7 @@ class ProjectAPITests(TestCase):
             detail_res.data["internal_notes"],
             "Confidential architecture trade-offs and benchmark numbers.",
         )
-        self.assertEqual(
-            detail_res.data["target_roles"], ["DevOps", "Platform Engineering"]
-        )
+        self.assertEqual(detail_res.data["target_roles"], ["DevOps", "Platform Engineering"])
         self.assertEqual(len(detail_res.data["highlights"]), 2)
 
     def test_authenticated_admin_crud_workflow(self):

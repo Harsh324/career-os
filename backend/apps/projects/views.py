@@ -17,9 +17,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Project.objects.all().prefetch_related("tech_stack")
         is_staff = bool(
-            self.request.user
-            and self.request.user.is_authenticated
-            and self.request.user.is_staff
+            self.request.user and self.request.user.is_authenticated and self.request.user.is_staff
         )
         if not is_staff:
             queryset = queryset.filter(is_published=True)

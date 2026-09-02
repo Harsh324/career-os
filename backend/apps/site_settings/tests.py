@@ -48,7 +48,9 @@ class SiteSettingsAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["name"], "Harsh Tripathi")
         self.assertEqual(response.data["title"], "Backend & Cloud Engineer")
-        self.assertEqual(response.data["engineering_focus"], ["Backend APIs", "Distributed Systems", "AWS Cloud"])
+        self.assertEqual(
+            response.data["engineering_focus"], ["Backend APIs", "Distributed Systems", "AWS Cloud"]
+        )
         self.assertTrue(response.data["open_to_work"])
         # target_roles must NOT be exposed to anonymous public visitors
         self.assertNotIn("target_roles", response.data)
@@ -59,7 +61,9 @@ class SiteSettingsAPITests(APITestCase):
         response = self.client.get(self.settings_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("target_roles", response.data)
-        self.assertEqual(response.data["target_roles"], ["Backend Engineering", "Cloud Architecture"])
+        self.assertEqual(
+            response.data["target_roles"], ["Backend Engineering", "Cloud Architecture"]
+        )
 
     def test_admin_patch_profile_success(self):
         """Admin PATCH updates canonical profile in PostgreSQL."""
@@ -75,7 +79,10 @@ class SiteSettingsAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["title"], "Lead Backend & Distributed Systems Engineer")
         self.assertFalse(response.data["open_to_work"])
-        self.assertEqual(response.data["engineering_focus"], ["Distributed Systems", "Event-Driven Architecture", "AWS Cloud"])
+        self.assertEqual(
+            response.data["engineering_focus"],
+            ["Distributed Systems", "Event-Driven Architecture", "AWS Cloud"],
+        )
         self.assertEqual(response.data["target_roles"], ["Principal Backend Engineer"])
 
         # Verify DB persistence
@@ -135,4 +142,7 @@ class SiteSettingsAPITests(APITestCase):
         )
         response = self.client.get(self.json_resume_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["basics"]["summary"], "Updated specialized summary for JSON resume testing.")
+        self.assertEqual(
+            response.data["basics"]["summary"],
+            "Updated specialized summary for JSON resume testing.",
+        )

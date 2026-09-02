@@ -25,9 +25,7 @@ class Project(models.Model):
     project_type = models.CharField(
         max_length=50, choices=PROJECT_TYPE_CHOICES, default="application"
     )
-    status = models.CharField(
-        max_length=50, choices=STATUS_CHOICES, default="active"
-    )
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default="active")
     is_published = models.BooleanField(default=True, db_index=True)
     featured = models.BooleanField(default=False, db_index=True)
     order = models.IntegerField(default=0)

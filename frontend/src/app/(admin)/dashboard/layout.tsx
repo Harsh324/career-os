@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   ShieldCheck,
   LayoutDashboard,
@@ -37,16 +37,23 @@ const NAV_ITEMS: NavItem[] = [
   { name: "Work Experience", href: "/dashboard/experience", icon: Briefcase, badge: "V2.2", disabled: false },
   { name: "Projects Showcase", href: "/dashboard/projects", icon: FolderGit2, badge: "V2.3", disabled: false },
   { name: "Skills Matrix", href: "/dashboard/skills", icon: Cpu, badge: "V2.4", disabled: false },
-  { name: "Certifications", href: "/dashboard/certifications", icon: Award, badge: "V2.4", disabled: true },
-  { name: "Education", href: "/dashboard/education", icon: GraduationCap, badge: "V2.4", disabled: true },
-  { name: "Career Timeline", href: "/dashboard/timeline", icon: Milestone, badge: "V2.4", disabled: true },
+  { name: "Certifications", href: "/dashboard/certifications", icon: Award, badge: "V2.5", disabled: false },
+  { name: "Education", href: "/dashboard/education", icon: GraduationCap, badge: "V2.5", disabled: false },
+  { name: "Career Timeline", href: "/dashboard/timeline", icon: Milestone, badge: "V2.5", disabled: false },
   { name: "Media Assets", href: "/dashboard/media", icon: ImageIcon, badge: "V2.6", disabled: true },
 ];
 
 function DashboardShellContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  React.useEffect(() => {
+    if (!isLoading && !isAuthenticated && pathname !== "/dashboard/login") {
+      router.push("/dashboard/login");
+    }
+  }, [isLoading, isAuthenticated, pathname, router]);
 
   // If viewing login page, do not render admin shell
   if (pathname === "/dashboard/login") {
