@@ -8,7 +8,9 @@ class TimelineEvent(models.Model):
     subtitle = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
     date = models.CharField(max_length=50)  # e.g. "Dec 2020", "Jul 2023 – May 2024"
-    category = models.CharField(max_length=100, default="Career")  # Education, Career, Certification, Milestone
+    category = models.CharField(
+        max_length=100, default="Career"
+    )  # Education, Career, Certification, Milestone
     icon = models.CharField(max_length=50, default="Briefcase")  # Lucide icon name
     link = models.CharField(max_length=255, blank=True)
     order = models.IntegerField(default=0)

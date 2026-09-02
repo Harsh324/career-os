@@ -79,9 +79,7 @@ class TimelineEventViewSet(viewsets.ModelViewSet):
             (
                 item
                 for item in projected
-                if item["slug"] == slug
-                or item.get("source_slug") == slug
-                or item.get("id") == slug
+                if item["slug"] == slug or item.get("source_slug") == slug or item.get("id") == slug
             ),
             None,
         )

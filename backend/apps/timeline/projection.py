@@ -1,6 +1,6 @@
 import re
 from functools import cmp_to_key
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from apps.certifications.models import Certification
 from apps.education.models import Education
@@ -38,7 +38,7 @@ MONTH_NAME_MAP = {
 }
 
 
-def derive_sort_date(date_str: Optional[str]) -> str:
+def derive_sort_date(date_str: str | None) -> str:
     """
     Normalizes human or ISO date strings into a strictly standardized 10-character
     YYYY-MM-DD string for unambiguous, authoritative chronological sorting.
@@ -92,7 +92,7 @@ def derive_sort_date(date_str: Optional[str]) -> str:
     return "0000-00-00"
 
 
-def format_display_date(date_str: Optional[str]) -> str:
+def format_display_date(date_str: str | None) -> str:
     """
     Formats dates like '2025-08-19' into 'Aug 2025', while preserving already-formatted human labels.
     """
@@ -106,7 +106,7 @@ def format_display_date(date_str: Optional[str]) -> str:
     return clean
 
 
-def compare_timeline_entries(a: Dict[str, Any], b: Dict[str, Any]) -> int:
+def compare_timeline_entries(a: dict[str, Any], b: dict[str, Any]) -> int:
     """
     Deterministic chronological comparator for Timeline entries:
     1. Primary: date_sort DESCENDING (newest first, e.g. 2026-04-01 before 2025-08-19)
@@ -136,11 +136,11 @@ def compare_timeline_entries(a: Dict[str, Any], b: Dict[str, Any]) -> int:
 
 def build_timeline_projection(
     is_staff: bool = False,
-    category: Optional[str] = None,
-    is_milestone: Optional[bool] = None,
-    source_type: Optional[str] = None,
-    published: Optional[bool] = None,
-) -> List[Dict[str, Any]]:
+    category: str | None = None,
+    is_milestone: bool | None = None,
+    source_type: str | None = None,
+    published: bool | None = None,
+) -> list[dict[str, Any]]:
     """
     Aggregates canonical entities (Experience, Education, Certification)
     and persisted ManualMilestone (TimelineEvent) records into an authoritatively
@@ -152,7 +152,7 @@ def build_timeline_projection(
     - Certification: Uses issue date.
     - Manual Milestone: Uses explicit date.
     """
-    entries: List[Dict[str, Any]] = []
+    entries: list[dict[str, Any]] = []
 
     # 1. Experiences
     if source_type in [None, "", "all", "experience"]:

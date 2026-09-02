@@ -14,10 +14,7 @@ class EducationSerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         request = self.context.get("request")
         is_admin = bool(
-            request
-            and request.user
-            and request.user.is_authenticated
-            and request.user.is_staff
+            request and request.user and request.user.is_authenticated and request.user.is_staff
         )
 
         if not is_admin:

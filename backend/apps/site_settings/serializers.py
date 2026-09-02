@@ -64,7 +64,12 @@ class SiteSettingsSerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         request = self.context.get("request")
         # Hide private career preferences from anonymous public consumers
-        is_admin = request and hasattr(request, "user") and request.user.is_authenticated and request.user.is_staff
+        is_admin = (
+            request
+            and hasattr(request, "user")
+            and request.user.is_authenticated
+            and request.user.is_staff
+        )
         if not is_admin:
             data.pop("target_roles", None)
         return data

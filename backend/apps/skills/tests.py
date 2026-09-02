@@ -34,7 +34,9 @@ class SkillModelTests(TestCase):
         s3 = Skill.objects.create(name="Beta Skill", category="AI & Data", order=1)
 
         skills = list(Skill.objects.filter(id__in=[s1.id, s2.id, s3.id]))
-        self.assertEqual(skills[0].id, s3.id)  # AI & Data comes before Backend Engineering alphabetically
+        self.assertEqual(
+            skills[0].id, s3.id
+        )  # AI & Data comes before Backend Engineering alphabetically
         self.assertEqual(skills[1].id, s2.id)  # Order 1 before Order 2
         self.assertEqual(skills[2].id, s1.id)
 
@@ -46,11 +48,18 @@ class SkillAPITests(TestCase):
             username="admin", email="admin@career-os.dev", password="adminpassword123"
         )
         self.non_staff_user = User.objects.create_user(
-            username="visitor", email="visitor@example.com", password="visitorpassword123", is_staff=False
+            username="visitor",
+            email="visitor@example.com",
+            password="visitorpassword123",
+            is_staff=False,
         )
 
-        self.tech_python = Technology.objects.create(name="Python", slug="python", category="Languages")
-        self.tech_docker = Technology.objects.create(name="Docker", slug="docker", category="DevOps")
+        self.tech_python = Technology.objects.create(
+            name="Python", slug="python", category="Languages"
+        )
+        self.tech_docker = Technology.objects.create(
+            name="Docker", slug="docker", category="DevOps"
+        )
 
         self.company = Company.objects.create(name="SMS DataTech", slug="sms-datatech")
         self.exp = Experience.objects.create(

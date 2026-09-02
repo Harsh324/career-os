@@ -242,15 +242,39 @@ class Command(BaseCommand):
                 "demo": "https://career-os.dev",
                 "docs_url": "",
                 "architecture_flow": [
-                    {"step": 1, "title": "Next.js 15 App Router Frontend", "detail": "REST API Request via React Query"},
-                    {"step": 2, "title": "Django REST Framework (DRF) Central API", "detail": "Single Source of Truth & Masking"},
-                    {"step": 3, "title": "PostgreSQL Storage (Experiences, Projects, Skills)", "detail": "Authoritative Career Data Layer"}
+                    {
+                        "step": 1,
+                        "title": "Next.js 15 App Router Frontend",
+                        "detail": "REST API Request via React Query",
+                    },
+                    {
+                        "step": 2,
+                        "title": "Django REST Framework (DRF) Central API",
+                        "detail": "Single Source of Truth & Masking",
+                    },
+                    {
+                        "step": 3,
+                        "title": "PostgreSQL Storage (Experiences, Projects, Skills)",
+                        "detail": "Authoritative Career Data Layer",
+                    },
                 ],
                 "key_features": [
-                    {"title": "Centralized Source of Truth", "desc": "PostgreSQL and Django REST Framework backend serving as the canonical source for career records."},
-                    {"title": "Dynamic App Router Presentation", "desc": "Next.js 15 App Router frontend dynamically rendering portfolio pages from structured API data."},
-                    {"title": "Idempotent Seeding & Infrastructure", "desc": "Dockerized local and production environments with automated database migrations and health checks."},
-                    {"title": "Structured Evidence Bank", "desc": "Granular achievement evidence bank with public/private controls ready for Resume Studio."}
+                    {
+                        "title": "Centralized Source of Truth",
+                        "desc": "PostgreSQL and Django REST Framework backend serving as the canonical source for career records.",
+                    },
+                    {
+                        "title": "Dynamic App Router Presentation",
+                        "desc": "Next.js 15 App Router frontend dynamically rendering portfolio pages from structured API data.",
+                    },
+                    {
+                        "title": "Idempotent Seeding & Infrastructure",
+                        "desc": "Dockerized local and production environments with automated database migrations and health checks.",
+                    },
+                    {
+                        "title": "Structured Evidence Bank",
+                        "desc": "Granular achievement evidence bank with public/private controls ready for Resume Studio.",
+                    },
                 ],
                 "highlights": [
                     {
@@ -258,28 +282,30 @@ class Command(BaseCommand):
                         "text": "Architected centralized Django REST Framework API and PostgreSQL schema establishing single source of truth for portfolio records.",
                         "is_public": True,
                         "target_roles": ["Backend Engineering", "Full-Stack Development"],
-                        "order": 0
+                        "order": 0,
                     },
                     {
                         "id": "proj-cos-2",
                         "text": "Built Next.js 15 App Router frontend with React Query caching, dark mode support, and dynamic server-side rendering.",
                         "is_public": True,
                         "target_roles": ["Frontend Engineering", "Full-Stack Development"],
-                        "order": 1
-                    }
+                        "order": 1,
+                    },
                 ],
                 "target_roles": ["Backend Engineering", "Full-Stack Development"],
                 "internal_notes": "Foundation platform for all career management and future Resume Studio LaTeX generation.",
             },
         )
-        p1.tech_stack.set([
-            tech_map["python"],
-            tech_map["django"],
-            tech_map["postgresql"],
-            tech_map["docker"],
-            tech_map["nextjs"],
-            tech_map["typescript"],
-        ])
+        p1.tech_stack.set(
+            [
+                tech_map["python"],
+                tech_map["django"],
+                tech_map["postgresql"],
+                tech_map["docker"],
+                tech_map["nextjs"],
+                tech_map["typescript"],
+            ]
+        )
 
         p2, _ = Project.objects.update_or_create(
             slug="fintrack-ai",
@@ -300,15 +326,39 @@ class Command(BaseCommand):
                 "demo": "",
                 "docs_url": "",
                 "architecture_flow": [
-                    {"step": 1, "title": "Financial Transaction Stream Input", "detail": "Ingestion & Validation Pipeline"},
-                    {"step": 2, "title": "Automated Categorization Engine", "detail": "Rule Processing & Pattern Matching"},
-                    {"step": 3, "title": "PostgreSQL Database & Redis Query Cache", "detail": "Persistent Storage & Transient Query Caching"}
+                    {
+                        "step": 1,
+                        "title": "Financial Transaction Stream Input",
+                        "detail": "Ingestion & Validation Pipeline",
+                    },
+                    {
+                        "step": 2,
+                        "title": "Automated Categorization Engine",
+                        "detail": "Rule Processing & Pattern Matching",
+                    },
+                    {
+                        "step": 3,
+                        "title": "PostgreSQL Database & Redis Query Cache",
+                        "detail": "Persistent Storage & Transient Query Caching",
+                    },
                 ],
                 "key_features": [
-                    {"title": "Automated Categorization Engine", "desc": "Rule-based transaction processing engine for financial transaction streams."},
-                    {"title": "PostgreSQL Query Optimization", "desc": "Optimized transaction schema with indexing for fast category aggregations."},
-                    {"title": "Redis Transient Caching", "desc": "Redis caching layer for session and transient state management."},
-                    {"title": "Structured RESTful APIs", "desc": "Django REST Framework endpoints with structured JSON schemas."}
+                    {
+                        "title": "Automated Categorization Engine",
+                        "desc": "Rule-based transaction processing engine for financial transaction streams.",
+                    },
+                    {
+                        "title": "PostgreSQL Query Optimization",
+                        "desc": "Optimized transaction schema with indexing for fast category aggregations.",
+                    },
+                    {
+                        "title": "Redis Transient Caching",
+                        "desc": "Redis caching layer for session and transient state management.",
+                    },
+                    {
+                        "title": "Structured RESTful APIs",
+                        "desc": "Django REST Framework endpoints with structured JSON schemas.",
+                    },
                 ],
                 "highlights": [
                     {
@@ -316,26 +366,28 @@ class Command(BaseCommand):
                         "text": "Designed high-performance PostgreSQL transaction schema with multi-column indexing for fast monthly category aggregations.",
                         "is_public": True,
                         "target_roles": ["Backend Engineering", "Database Optimization"],
-                        "order": 0
+                        "order": 0,
                     },
                     {
                         "id": "proj-ft-2",
                         "text": "Implemented Redis query caching layer reducing repeated database read latency for dashboard summaries.",
                         "is_public": True,
                         "target_roles": ["Backend Engineering", "Distributed Systems"],
-                        "order": 1
-                    }
+                        "order": 1,
+                    },
                 ],
                 "target_roles": ["Backend Engineering", "Database Optimization"],
                 "internal_notes": "OCR bill splitting is currently in development. Keep live demo empty until deployed.",
             },
         )
-        p2.tech_stack.set([
-            tech_map["python"],
-            tech_map["django"],
-            tech_map["postgresql"],
-            tech_map["redis"],
-        ])
+        p2.tech_stack.set(
+            [
+                tech_map["python"],
+                tech_map["django"],
+                tech_map["postgresql"],
+                tech_map["redis"],
+            ]
+        )
 
         p3, _ = Project.objects.update_or_create(
             slug="constellation",
@@ -356,15 +408,39 @@ class Command(BaseCommand):
                 "demo": "https://portal.constellationhq.dev/",
                 "docs_url": "",
                 "architecture_flow": [
-                    {"step": 1, "title": "Zero-Trust Ingress (Cloudflare Tunnel & Tailscale)", "detail": "Secure Gateway Routing"},
-                    {"step": 2, "title": "Traefik v3 Reverse Proxy & Dynamic Service Discovery", "detail": "Automatic Docker Label Discovery & SSL"},
-                    {"step": 3, "title": "Backend Services, Data Tier (PostgreSQL / Redis) & Monitoring", "detail": "Isolated Container Network"}
+                    {
+                        "step": 1,
+                        "title": "Zero-Trust Ingress (Cloudflare Tunnel & Tailscale)",
+                        "detail": "Secure Gateway Routing",
+                    },
+                    {
+                        "step": 2,
+                        "title": "Traefik v3 Reverse Proxy & Dynamic Service Discovery",
+                        "detail": "Automatic Docker Label Discovery & SSL",
+                    },
+                    {
+                        "step": 3,
+                        "title": "Backend Services, Data Tier (PostgreSQL / Redis) & Monitoring",
+                        "detail": "Isolated Container Network",
+                    },
                 ],
                 "key_features": [
-                    {"title": "Standardized Service Templates", "desc": "Modular Docker Compose configs with isolated internal networks, standardized environment variables, and health checks for every service."},
-                    {"title": "Zero-Trust Ingress & Routing", "desc": "Secure outbound Cloudflare Tunnels with automatic SSL and Traefik v3 reverse proxy for dynamic service discovery."},
-                    {"title": "3-Tier Observability Platform", "desc": "External Cloudflare Workers for instant Telegram outage alerts, Uptime Kuma for internal health checks, and Beszel for server metrics."},
-                    {"title": "Persistent Data & Backups", "desc": "Shared PostgreSQL 17, Redis, and MinIO storage with automated daily age-encrypted S3 backups and 14-day retention."}
+                    {
+                        "title": "Standardized Service Templates",
+                        "desc": "Modular Docker Compose configs with isolated internal networks, standardized environment variables, and health checks for every service.",
+                    },
+                    {
+                        "title": "Zero-Trust Ingress & Routing",
+                        "desc": "Secure outbound Cloudflare Tunnels with automatic SSL and Traefik v3 reverse proxy for dynamic service discovery.",
+                    },
+                    {
+                        "title": "3-Tier Observability Platform",
+                        "desc": "External Cloudflare Workers for instant Telegram outage alerts, Uptime Kuma for internal health checks, and Beszel for server metrics.",
+                    },
+                    {
+                        "title": "Persistent Data & Backups",
+                        "desc": "Shared PostgreSQL 17, Redis, and MinIO storage with automated daily age-encrypted S3 backups and 14-day retention.",
+                    },
                 ],
                 "highlights": [
                     {
@@ -372,27 +448,29 @@ class Command(BaseCommand):
                         "text": "Architected zero-trust homelab infrastructure utilizing Cloudflare Tunnels and Traefik v3 with zero open inbound firewall ports.",
                         "is_public": True,
                         "target_roles": ["DevOps", "Platform Engineering", "Cloud Architecture"],
-                        "order": 0
+                        "order": 0,
                     },
                     {
                         "id": "proj-const-2",
                         "text": "Built automated daily backup pipeline with age encryption and S3 offsite replication with 14-day retention policy.",
                         "is_public": True,
                         "target_roles": ["DevOps", "Site Reliability Engineering"],
-                        "order": 1
-                    }
+                        "order": 1,
+                    },
                 ],
                 "target_roles": ["DevOps", "Platform Engineering", "Cloud Architecture"],
                 "internal_notes": "Maintained as primary personal homelab infrastructure baseline.",
             },
         )
-        p3.tech_stack.set([
-            tech_map["docker"],
-            tech_map["traefik"],
-            tech_map["postgresql"],
-            tech_map["cloudflare"],
-            tech_map["ubuntu-linux"],
-        ])
+        p3.tech_stack.set(
+            [
+                tech_map["docker"],
+                tech_map["traefik"],
+                tech_map["postgresql"],
+                tech_map["cloudflare"],
+                tech_map["ubuntu-linux"],
+            ]
+        )
 
         self.stdout.write("Processed Projects (Career OS, FinTrack AI, Constellation).")
 
@@ -520,7 +598,11 @@ class Command(BaseCommand):
                 "tech_slugs": ["python"],
                 "exp_slugs": ["software-engineer-sms", "software-engineer-intern-sms"],
                 "proj_slugs": ["career-os", "fintrack-ai"],
-                "target_roles": ["Backend Engineering", "Platform Engineering", "Full-Stack Development"],
+                "target_roles": [
+                    "Backend Engineering",
+                    "Platform Engineering",
+                    "Full-Stack Development",
+                ],
                 "internal_notes": "Primary language for technical interviews, systems design, and DRF backend architecture.",
             },
             {
@@ -608,7 +690,6 @@ class Command(BaseCommand):
                 "target_roles": ["Backend Engineering", "Platform Engineering"],
                 "internal_notes": "Demonstrated performance gains through query analysis and Redis caching layers.",
             },
-
             # 2. Cloud & Infrastructure
             {
                 "name": "AWS",
@@ -624,7 +705,11 @@ class Command(BaseCommand):
                 "tech_slugs": ["aws"],
                 "exp_slugs": ["software-engineer-sms"],
                 "proj_slugs": ["constellation"],
-                "target_roles": ["Cloud Architecture", "Platform Engineering", "Backend Engineering"],
+                "target_roles": [
+                    "Cloud Architecture",
+                    "Platform Engineering",
+                    "Backend Engineering",
+                ],
                 "internal_notes": "Strong grasp of AWS Well-Architected Framework and security best practices.",
             },
             {
@@ -729,7 +814,6 @@ class Command(BaseCommand):
                 "target_roles": ["Cloud Architecture", "Site Reliability Engineering"],
                 "internal_notes": "Configured SNS alarm notifications and metric alarms for CPU/Memory utilization thresholds.",
             },
-
             # 3. Architecture & Distributed Systems
             {
                 "name": "Distributed Systems",
@@ -745,7 +829,11 @@ class Command(BaseCommand):
                 "tech_slugs": ["redis", "docker"],
                 "exp_slugs": ["software-engineer-sms"],
                 "proj_slugs": ["constellation", "career-os"],
-                "target_roles": ["Backend Engineering", "Platform Engineering", "Systems Architecture"],
+                "target_roles": [
+                    "Backend Engineering",
+                    "Platform Engineering",
+                    "Systems Architecture",
+                ],
                 "internal_notes": "Solid understanding of CAP theorem trade-offs and network partition mitigation.",
             },
             {
@@ -799,7 +887,6 @@ class Command(BaseCommand):
                 "target_roles": ["Systems Architecture", "Backend Engineering"],
                 "internal_notes": "Applies domain-driven design and strict data validation at API boundaries.",
             },
-
             # 4. Databases & Caching
             {
                 "name": "PostgreSQL",
@@ -815,7 +902,11 @@ class Command(BaseCommand):
                 "tech_slugs": ["postgresql"],
                 "exp_slugs": ["software-engineer-sms", "software-engineer-intern-sms"],
                 "proj_slugs": ["career-os", "fintrack-ai"],
-                "target_roles": ["Backend Engineering", "Database Administration", "Platform Engineering"],
+                "target_roles": [
+                    "Backend Engineering",
+                    "Database Administration",
+                    "Platform Engineering",
+                ],
                 "internal_notes": "Expertise in EXPLAIN ANALYZE, B-tree/GIN indexes, and migration safety.",
             },
             {
@@ -886,7 +977,6 @@ class Command(BaseCommand):
                 "target_roles": ["Backend Engineering"],
                 "internal_notes": "Solid understanding of index overhead on write throughput.",
             },
-
             # 5. AI & Data
             {
                 "name": "LLM Integrations",
@@ -939,7 +1029,6 @@ class Command(BaseCommand):
                 "target_roles": ["Data Engineering", "Backend Engineering"],
                 "internal_notes": "Emphasizes idempotent processing, transaction safety, and error logging.",
             },
-
             # 6. DevOps & CI/CD
             {
                 "name": "Docker",
@@ -1026,7 +1115,6 @@ class Command(BaseCommand):
                 "target_roles": ["DevOps", "Platform Engineering", "Cloud Architecture"],
                 "internal_notes": "Expert in Traefik reverse proxy container routing and Docker daemon security.",
             },
-
             # 7. Supporting Technologies
             {
                 "name": "TypeScript",
@@ -1116,7 +1204,11 @@ class Command(BaseCommand):
                     "Computer Networks",
                     "System Design",
                 ],
-                "target_roles": ["Backend Engineering", "Platform Engineering", "Software Engineering"],
+                "target_roles": [
+                    "Backend Engineering",
+                    "Platform Engineering",
+                    "Software Engineering",
+                ],
                 "internal_notes": "B.Tech degree from IIIT Nagpur (Indian Institute of Information Technology). Graduated First Class.",
             },
         )
@@ -1139,7 +1231,11 @@ class Command(BaseCommand):
                 "is_featured": True,
                 "order": 1,
                 "description": "Validates expertise in designing resilient, high-performing, secure, and cost-optimized architectures on Amazon Web Services.",
-                "target_roles": ["Cloud Architecture", "Platform Engineering", "Backend Engineering"],
+                "target_roles": [
+                    "Cloud Architecture",
+                    "Platform Engineering",
+                    "Backend Engineering",
+                ],
                 "internal_notes": "Verified official AWS credential validating VPC, ECS, S3, RDS, IAM, and high-availability architecture.",
             },
         )
@@ -1166,7 +1262,12 @@ class Command(BaseCommand):
                 "is_featured": True,
                 "order": 2,
                 "description": "Validates technical proficiency in deploying, managing, and operating scalable systems on AWS with automated CI/CD and CloudWatch monitoring.",
-                "target_roles": ["Cloud Architecture", "DevOps", "Platform Engineering", "Site Reliability Engineering"],
+                "target_roles": [
+                    "Cloud Architecture",
+                    "DevOps",
+                    "Platform Engineering",
+                    "Site Reliability Engineering",
+                ],
                 "internal_notes": "Covers CloudFormation IaC, CloudWatch alarms, ECS deployments, and automated operational runbooks.",
             },
         )
@@ -1174,7 +1275,12 @@ class Command(BaseCommand):
             cert2.related_technologies.add(tech_map["aws"])
         if "docker" in tech_map:
             cert2.related_technologies.add(tech_map["docker"])
-        for s_slug in ["aws-skill", "cloudformation-skill", "cloudwatch-skill", "ecs-fargate-skill"]:
+        for s_slug in [
+            "aws-skill",
+            "cloudformation-skill",
+            "cloudwatch-skill",
+            "ecs-fargate-skill",
+        ]:
             s_obj = Skill.objects.filter(slug=s_slug).first()
             if s_obj:
                 cert2.related_skills.add(s_obj)

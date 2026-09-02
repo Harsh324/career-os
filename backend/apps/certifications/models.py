@@ -1,10 +1,10 @@
 from django.db import models
 from django.utils.text import slugify
 
-from apps.skills.models import Skill
-from apps.technologies.models import Technology
 from apps.experiences.models import Experience
 from apps.projects.models import Project
+from apps.skills.models import Skill
+from apps.technologies.models import Technology
 
 
 class Certification(models.Model):
@@ -42,9 +42,7 @@ class Certification(models.Model):
     related_experiences = models.ManyToManyField(
         Experience, related_name="certifications", blank=True
     )
-    related_projects = models.ManyToManyField(
-        Project, related_name="certifications", blank=True
-    )
+    related_projects = models.ManyToManyField(Project, related_name="certifications", blank=True)
 
     # Private Career Intelligence (Staff-Only)
     target_roles = models.JSONField(default=list, blank=True)

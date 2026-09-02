@@ -243,7 +243,9 @@ class TimelineProjectionAPITests(TestCase):
         res = self.client.get("/api/v1/timeline/")
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         results = res.data if isinstance(res.data, list) else res.data.get("results", [])
-        cert_entry = next((e for e in results if e["source_slug"] == "aws-solutions-architect"), None)
+        cert_entry = next(
+            (e for e in results if e["source_slug"] == "aws-solutions-architect"), None
+        )
         self.assertIsNotNone(cert_entry)
         self.assertEqual(cert_entry["source_type"], "certification")
         self.assertEqual(cert_entry["title"], "AWS Certified Solutions Architect – Associate")
@@ -256,7 +258,9 @@ class TimelineProjectionAPITests(TestCase):
         res = self.client.get("/api/v1/timeline/")
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         results = res.data if isinstance(res.data, list) else res.data.get("results", [])
-        manual_entry = next((e for e in results if e["source_slug"] == "engineering-relocation-tokyo"), None)
+        manual_entry = next(
+            (e for e in results if e["source_slug"] == "engineering-relocation-tokyo"), None
+        )
         self.assertIsNotNone(manual_entry)
         self.assertEqual(manual_entry["source_type"], "manual_milestone")
         self.assertEqual(manual_entry["title"], "Engineering Relocation to Tokyo")

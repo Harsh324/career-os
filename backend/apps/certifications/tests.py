@@ -44,7 +44,10 @@ class CertificationAPITests(TestCase):
             username="admin", email="admin@career-os.dev", password="adminpassword123"
         )
         self.non_staff_user = User.objects.create_user(
-            username="visitor", email="visitor@example.com", password="visitorpassword123", is_staff=False
+            username="visitor",
+            email="visitor@example.com",
+            password="visitorpassword123",
+            is_staff=False,
         )
 
         self.tech_aws = Technology.objects.create(name="AWS", slug="aws", category="Cloud")

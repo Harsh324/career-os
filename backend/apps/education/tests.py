@@ -42,7 +42,10 @@ class EducationAPITests(TestCase):
             username="admin", email="admin@career-os.dev", password="adminpassword123"
         )
         self.non_staff_user = User.objects.create_user(
-            username="visitor", email="visitor@example.com", password="visitorpassword123", is_staff=False
+            username="visitor",
+            email="visitor@example.com",
+            password="visitorpassword123",
+            is_staff=False,
         )
 
         self.published_edu = Education.objects.create(
@@ -94,7 +97,9 @@ class EducationAPITests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertNotIn("internal_notes", res.data)
         self.assertNotIn("target_roles", res.data)
-        self.assertEqual(res.data["institution"], "Indian Institute of Information Technology (IIIT Nagpur)")
+        self.assertEqual(
+            res.data["institution"], "Indian Institute of Information Technology (IIIT Nagpur)"
+        )
 
     def test_non_staff_mutations_forbidden(self):
         self.client.force_authenticate(user=self.non_staff_user)
@@ -102,7 +107,12 @@ class EducationAPITests(TestCase):
         # POST attempt
         post_res = self.client.post(
             "/api/v1/education/",
-            {"institution": "Fake Univ", "degree": "B.A.", "start_date": "2020", "end_date": "2024"},
+            {
+                "institution": "Fake Univ",
+                "degree": "B.A.",
+                "start_date": "2020",
+                "end_date": "2024",
+            },
             format="json",
         )
         self.assertEqual(post_res.status_code, status.HTTP_403_FORBIDDEN)
