@@ -325,3 +325,85 @@ export interface SEOMetadata {
   robots: string;
   structured_data: Record<string, any>;
 }
+
+export type MediaAssetType =
+  | "profile"
+  | "project_image"
+  | "project_logo"
+  | "architecture_diagram"
+  | "certification"
+  | "education"
+  | "company_logo"
+  | "resume"
+  | "document"
+  | "social_preview"
+  | "other";
+
+export interface MediaAsset {
+  id: number;
+  title: string;
+  slug: string;
+  asset_type: MediaAssetType;
+  file?: string | null;
+  file_url: string;
+  external_url?: string;
+  original_filename: string;
+  mime_type: string;
+  file_size: number;
+  width?: number | null;
+  height?: number | null;
+  is_image: boolean;
+  is_document: boolean;
+  alt_text: string;
+  caption?: string;
+  description?: string;
+  tags?: string[];
+  is_published: boolean;
+  is_featured: boolean;
+  display_order: number;
+  related_projects?: number[];
+  related_projects_detail?: Array<{
+    id: number;
+    title: string;
+    slug: string;
+    project_type?: string;
+    status?: string;
+  }>;
+  related_experiences?: number[];
+  related_experiences_detail?: Array<{
+    id: number;
+    title: string;
+    slug: string;
+    company_name?: string;
+    start_date?: string;
+    end_date?: string;
+    current_position?: boolean;
+  }>;
+  related_certifications?: number[];
+  related_certifications_detail?: Array<{
+    id: number;
+    name: string;
+    slug: string;
+    issuer?: string;
+    issue_date?: string;
+  }>;
+  related_education?: number[];
+  related_education_detail?: Array<{
+    id: number;
+    institution: string;
+    degree: string;
+    slug: string;
+  }>;
+  related_skills?: number[];
+  related_skills_detail?: Array<{
+    id: number;
+    name: string;
+    slug: string;
+    category?: string;
+  }>;
+  target_roles?: string[];
+  internal_notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+

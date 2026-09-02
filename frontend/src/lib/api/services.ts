@@ -10,6 +10,7 @@ import type {
   Skill,
   Technology,
   TimelineEvent,
+  MediaAsset,
 } from "./types";
 import { DEFAULT_SITE_SETTINGS } from "../constants/site";
 
@@ -115,6 +116,32 @@ export const fetchCertifications = cache(async (): Promise<Certification[]> => {
     return extractResults(res.data);
   } catch (err) {
     return [];
+  }
+});
+
+export const fetchMediaAssets = cache(
+  async (params?: { asset_type?: string; featured?: boolean }): Promise<MediaAsset[]> => {
+    try {
+      const queryParams: Record<string, string> = {};
+      if (params?.asset_type) queryParams.asset_type = params.asset_type;
+      if (params?.featured !== undefined) queryParams.featured = String(params.featured);
+
+      const res = await apiClient.get<DRFListResponse<MediaAsset> | MediaAsset[]>("/media/", {
+        params: queryParams,
+      });
+      return extractResults(res.data);
+    } catch (err) {
+      return [];
+    }
+  }
+);
+
+export const fetchMediaAssetBySlug = cache(async (slug: string): Promise<MediaAsset | null> => {
+  try {
+    const res = await apiClient.get<MediaAsset>(`/media/${slug}/`);
+    return res.data;
+  } catch (err) {
+    return null;
   }
 });
 

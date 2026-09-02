@@ -9,6 +9,7 @@ import {
   Award,
   GraduationCap,
   Milestone,
+  Image as ImageIcon,
   ExternalLink,
   ShieldCheck,
   Server,
@@ -337,6 +338,27 @@ export default function DashboardOverviewPage() {
                 {isLoading ? "-" : stats?.counts?.timeline_events ?? 0}
               </div>
               <div className="text-xs font-medium text-[#57606a] dark:text-[#8b949e] mt-0.5">Timeline Events</div>
+            </div>
+          </Link>
+
+          {/* Media Assets (Rose) */}
+          <Link
+            href="/dashboard/media"
+            className="p-4 rounded-2xl bg-white dark:bg-[#161b22] border border-[#d0d7de] dark:border-[#30363d] flex flex-col justify-between hover:-translate-y-1 hover:border-rose-500/50 hover:shadow-md transition-all shadow-2xs group"
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 flex items-center justify-center">
+                <ImageIcon className="w-4 h-4" />
+              </div>
+              <span className="text-[9px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded bg-[#f6f8fa] dark:bg-[#21262d] text-[#0969da] dark:text-[#58a6ff] border border-[#0969da]/30">
+                V2.6
+              </span>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-[#24292f] dark:text-white font-mono">
+                {isLoading ? "-" : stats?.counts?.media_assets ?? 0}
+              </div>
+              <div className="text-xs font-medium text-[#57606a] dark:text-[#8b949e] mt-0.5">Media Assets</div>
             </div>
           </Link>
         </div>

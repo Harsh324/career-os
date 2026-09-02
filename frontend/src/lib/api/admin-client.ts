@@ -9,6 +9,7 @@ import type {
   Certification,
   Education,
   TimelineEvent,
+  MediaAsset,
 } from "./types";
 
 export interface AdminUser {
@@ -32,6 +33,7 @@ export interface DashboardStats {
     certifications: number;
     education: number;
     timeline_events: number;
+    media_assets?: number;
   };
   site_settings: {
     name: string;
@@ -510,4 +512,68 @@ export async function deleteAdminTimelineEvent(slug: string): Promise<void> {
     method: "DELETE",
   });
 }
+
+/**
+ * Fetch all media assets for admin list
+ */
+export async function getAdminMediaAssets(params?: {
+  asset_type?: string;
+  is_published?: boolean;
+  is_featured?: boolean;
+  search?: string;
+}): Promise<MediaAsset[]> {
+  const query = new URLSearchParams();
+  if (params?.asset_type && params.asset_type !== "all") query.set("asset_type", params.asset_type);
+  if (params?.is_published !== undefined) query.set("is_published", String(params.is_published));
+  if (params?.is_featured !== undefined) query.set("is_featured", String(params.is_featured));
+  if (params?.search) query.set("search", params.search);
+
+  const qs = query.toString() ? `?${query.toString()}` : "";
+  const data = await adminFetch<any>(`/media/${qs}`);
+  return Array.isArray(data) ? data : data.results || [];
+}
+
+/**
+ * Fetch single media asset by slug for admin editor
+ */
+export async function getAdminMediaAssetBySlug(slug: string): Promise<MediaAsset> {
+  return adminFetch<MediaAsset>(`/media/${slug}/`);
+}
+
+/**
+ * Create a new media asset
+ */
+export async function createAdminMediaAsset(
+  data: FormData | Partial<MediaAsset>
+): Promise<MediaAsset> {
+  const isFormData = data instanceof FormData;
+  return adminFetch<MediaAsset>("/media/", {
+    method: "POST",
+    body: isFormData ? data : JSON.stringify(data),
+  });
+}
+
+/**
+ * Update an existing media asset
+ */
+export async function updateAdminMediaAsset(
+  slug: string,
+  data: FormData | Partial<MediaAsset>
+): Promise<MediaAsset> {
+  const isFormData = data instanceof FormData;
+  return adminFetch<MediaAsset>(`/media/${slug}/`, {
+    method: "PATCH",
+    body: isFormData ? data : JSON.stringify(data),
+  });
+}
+
+/**
+ * Delete a media asset
+ */
+export async function deleteAdminMediaAsset(slug: string): Promise<void> {
+  return adminFetch<void>(`/media/${slug}/`, {
+    method: "DELETE",
+  });
+}
+
 
